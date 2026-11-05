@@ -70,4 +70,4 @@ y=X\beta+u+e,\quad u\sim\mathcal N(0,\sigma_g^2 K),\ e\sim\mathcal N(0,\sigma_e^
 - 引用：`CITATION.cff`。  
 - 安装：`README.md`（HPC `module load python/3.10_mambaforge_*` + `pip install -e .`）。  
 - 差距清单：`BIB_GAP_zh.md`。  
-- 公共仓库：https://github.com/YancyYang02/hapGWAS （`v0.4.1`）。Zenodo DOI 尚未铸造；需所有者启用 GitHub↔Zenodo 并归档 Release，勿编造 DOI。
+- 公共仓库：https://github.com/YancyYang02/hapGWAS （`v0.4.1`）。版本 DOI：[10.5281/zenodo.23984394](https://doi.org/10.5281/zenodo.23984394)。概念 DOI（全版本）：[10.5281/zenodo.23984393](https://doi.org/10.5281/zenodo.23984393)。

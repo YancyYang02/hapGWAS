@@ -12,8 +12,9 @@ All notable changes to hapGWAS are documented in this file.
 - Package / `VERSION` / `CITATION.cff` aligned to **0.4.1**.
 - Documentation: SACJ demoted to exploratory / supplement; App Note main tables use **joint / ACJ / official GHap allele / SNP**.
 - README title bumped to v0.4.1. Install instructions use https://github.com/YancyYang02/hapGWAS.
-- Zenodo DOI is **not** included. Enable the GitHub–Zenodo integration on this repository and archive the `v0.4.1` GitHub Release so Zenodo can mint the DOI.
+- Zenodo version DOI for this release: https://doi.org/10.5281/zenodo.23984394 ([record](https://zenodo.org/records/23984394)).
+- Zenodo concept DOI (all versions): https://doi.org/10.5281/zenodo.23984393.
 
 ### Notes
 - Release packaging checklist: `appnote_hardening/ITEM6_RELEASE_zh.md`.
-- Public source: https://github.com/YancyYang02/hapGWAS (tag `v0.4.1`). Do not invent a Zenodo DOI.
+- Public source: https://github.com/YancyYang02/hapGWAS (tag `v0.4.1`).

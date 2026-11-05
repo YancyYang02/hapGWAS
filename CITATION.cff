@@ -9,8 +9,19 @@ authors:
 license: MIT
 version: 0.4.1
 date-released: "2026-11-05"
+doi: 10.5281/zenodo.23984394
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23984394
+    description: Version DOI for hapGWAS 0.4.1
+  - type: doi
+    value: 10.5281/zenodo.23984393
+    description: Concept DOI for all versions of hapGWAS
+  - type: url
+    value: https://zenodo.org/records/23984394
+    description: Zenodo record for hapGWAS 0.4.1
 repository-code: "https://github.com/YancyYang02/hapGWAS"
-url: "https://github.com/YancyYang02/hapGWAS"
+url: "https://doi.org/10.5281/zenodo.23984394"
 abstract: >
   hapGWAS implements block haplotype GWAS scores under a shared null LMM
   projection, including the Adaptive Collapsed Joint (ACJ) Hamming-neighborhood
