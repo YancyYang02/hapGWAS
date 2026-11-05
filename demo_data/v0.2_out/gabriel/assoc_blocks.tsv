@@ -1,0 +1,2 @@
+block_id	chrom	snp_start	snp_end	n_snps	n_alleles_tested	n_raw_alleles	n_collapsed	collapse_rule	joint_chisq	joint_df	joint_p	joint_q
+1:g0	1	46	50	4	8	11	3	freq(min_freq=0.01,min_count=5)	9.73292	8	0.284274	0.284274

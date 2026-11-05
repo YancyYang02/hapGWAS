@@ -1,0 +1,7 @@
+method	n	power
+snp_bon_p	400	0.9325
+allele_bon_p	400	0.4925
+joint_p	400	0.9
+acj_p	400	0.9025
+pca_p	400	0.665
+ridge_p	400	0.875

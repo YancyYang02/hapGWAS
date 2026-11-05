@@ -1,0 +1,30 @@
+{
+  "trait": "BW6",
+  "null": "lmm",
+  "n_blocks": 749,
+  "thr_block_bonf": 6.675567423230975e-05,
+  "max_gap": 0,
+  "methods": {
+    "joint": {
+      "n_raw_hits": 1,
+      "n_loci": 1,
+      "thr": 6.675567423230975e-05,
+      "pcol": "joint_p",
+      "compression": 1.0
+    },
+    "acj": {
+      "n_raw_hits": 1,
+      "n_loci": 1,
+      "thr": 6.675567423230975e-05,
+      "pcol": "acj_p",
+      "compression": 1.0
+    },
+    "allele_bonf": {
+      "n_raw_hits": 1,
+      "n_loci": 1,
+      "thr": 6.675567423230975e-05,
+      "pcol": "allele_bonf_p",
+      "compression": 1.0
+    }
+  }
+}

@@ -1,0 +1,50 @@
+# Python
+.venv/
+.venv-*/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Large / local genomics (do not ship in public source tree)
+# Synthetic hapGWAS demos under demo_data/ are small and generated; keep them.
+*.vcf
+!demo_data/**/*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.bcf
+*.bcf.csi
+*.bed
+*.bim
+*.fam
+*.ped
+!demo_data/**/*.ped
+*.map
+!demo_data/**/*.map
+*.grm.bin
+*.grm.id
+*.grm.N.bin
+*.rel
+*.rel.id
+
+# Local run outputs / scratch
+out*/
+runs/
+*.log
+appnote_hardening/sync_to_desktop/
+appnote_hardening/sync_to_desktop.tar.gz
+appnote_hardening/_upload_bundle/

@@ -1,0 +1,9 @@
+method	n	power_alpha0.05
+snp_min_p	200	0.99
+snp_bon_p	200	0.965
+allele_min_p	200	0.99
+allele_bon_p	200	0.91
+joint_p	200	0.93
+acj_p	200	0.885
+pca_p	200	0.915
+ridge_p	200	0.925

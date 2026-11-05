@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "hapGWAS: Adaptive Collapsed Joint haplotype association under LMM projection"
+message: If you use this software, please cite it as below.
+type: software
+authors:
+  - family-names: Yang
+    given-names: Yancong
+    affiliation: China Agricultural University
+license: MIT
+version: 0.4.1
+date-released: "2026-11-05"
+repository-code: "https://github.com/YancyYang02/hapGWAS"
+url: "https://github.com/YancyYang02/hapGWAS"
+abstract: >
+  hapGWAS implements block haplotype GWAS scores under a shared null LMM
+  projection, including the Adaptive Collapsed Joint (ACJ) Hamming-neighborhood
+  multi-allelic score, full joint, PCA/ridge, and allele/SNP baselines.
+keywords:
+  - haplotype GWAS
+  - linear mixed model
+  - adaptive collapse
+  - livestock genomics

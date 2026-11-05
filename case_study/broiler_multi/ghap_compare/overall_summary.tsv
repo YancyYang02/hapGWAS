@@ -1,0 +1,19 @@
+	value
+n_traits	61
+n_blocks	2499
+n_snps_window	5000
+window	window=4 step=2
+thr	2.0008003201280518e-05
+total_hits_joint	22
+total_hits_ACJ	25
+total_hits_SACJ	25
+total_hits_GHap	28
+total_hits_SNP	22
+SACJ_gt_GHap	3
+ACJ_gt_GHap	3
+GHap_gt_SACJ	6
+SACJ_eq_GHap	52
+SACJ_gt_SNP	6
+ACJ_gt_SNP	5
+traits_any_hit	12
+winner_among_hit_traits	{'GHap': 5, 'SNP': 3, 'joint': 2, 'SACJ': 1, 'ACJ': 1}

@@ -1,0 +1,87 @@
+{
+  "trait": "AFWR",
+  "null": "lmm",
+  "n_blocks": 749,
+  "thr_block_bonf": 6.675567423230975e-05,
+  "note": "snp_end exclusive; touch=merge overlap OR abutting windows (recommended for step=2 runs)",
+  "modes": {
+    "overlap": {
+      "joint": {
+        "n_raw_hits": 42,
+        "n_loci": 33,
+        "compression": 1.2727272727272727,
+        "mode": "overlap",
+        "pcol": "joint_p",
+        "thr": 6.675567423230975e-05
+      },
+      "acj": {
+        "n_raw_hits": 25,
+        "n_loci": 20,
+        "compression": 1.25,
+        "mode": "overlap",
+        "pcol": "acj_p",
+        "thr": 6.675567423230975e-05
+      },
+      "allele_bonf": {
+        "n_raw_hits": 73,
+        "n_loci": 47,
+        "compression": 1.553191489361702,
+        "mode": "overlap",
+        "pcol": "allele_bonf_p",
+        "thr": 6.675567423230975e-05
+      }
+    },
+    "touch": {
+      "joint": {
+        "n_raw_hits": 42,
+        "n_loci": 28,
+        "compression": 1.5,
+        "mode": "touch",
+        "pcol": "joint_p",
+        "thr": 6.675567423230975e-05
+      },
+      "acj": {
+        "n_raw_hits": 25,
+        "n_loci": 18,
+        "compression": 1.3888888888888888,
+        "mode": "touch",
+        "pcol": "acj_p",
+        "thr": 6.675567423230975e-05
+      },
+      "allele_bonf": {
+        "n_raw_hits": 73,
+        "n_loci": 42,
+        "compression": 1.7380952380952381,
+        "mode": "touch",
+        "pcol": "allele_bonf_p",
+        "thr": 6.675567423230975e-05
+      }
+    },
+    "gap2": {
+      "joint": {
+        "n_raw_hits": 42,
+        "n_loci": 28,
+        "compression": 1.5,
+        "mode": "gap2",
+        "pcol": "joint_p",
+        "thr": 6.675567423230975e-05
+      },
+      "acj": {
+        "n_raw_hits": 25,
+        "n_loci": 18,
+        "compression": 1.3888888888888888,
+        "mode": "gap2",
+        "pcol": "acj_p",
+        "thr": 6.675567423230975e-05
+      },
+      "allele_bonf": {
+        "n_raw_hits": 73,
+        "n_loci": 42,
+        "compression": 1.7380952380952381,
+        "mode": "gap2",
+        "pcol": "allele_bonf_p",
+        "thr": 6.675567423230975e-05
+      }
+    }
+  }
+}

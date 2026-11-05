@@ -1,0 +1,30 @@
+{
+  "trait": "AFWR",
+  "null": "lmm",
+  "n_blocks": 749,
+  "thr_block_bonf": 6.675567423230975e-05,
+  "max_gap": 2,
+  "methods": {
+    "joint": {
+      "n_raw_hits": 42,
+      "n_loci": 28,
+      "thr": 6.675567423230975e-05,
+      "pcol": "joint_p",
+      "compression": 1.5
+    },
+    "acj": {
+      "n_raw_hits": 25,
+      "n_loci": 18,
+      "thr": 6.675567423230975e-05,
+      "pcol": "acj_p",
+      "compression": 1.3888888888888888
+    },
+    "allele_bonf": {
+      "n_raw_hits": 73,
+      "n_loci": 42,
+      "thr": 6.675567423230975e-05,
+      "pcol": "allele_bonf_p",
+      "compression": 1.7380952380952381
+    }
+  }
+}

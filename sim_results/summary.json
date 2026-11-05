@@ -1,0 +1,210 @@
+{
+  "n_rep": 200,
+  "n": 400,
+  "beta_hap": 0.45,
+  "beta_snp": 0.35,
+  "typeI": [
+    {
+      "method": "snp_min_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.14,
+      "lambda_gc": 4.185528690886214
+    },
+    {
+      "method": "snp_bon_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.01,
+      "lambda_gc": 0.3980055228148444
+    },
+    {
+      "method": "allele_min_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.195,
+      "lambda_gc": 5.032437955648898
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.045,
+      "lambda_gc": 0.4490838707671618
+    },
+    {
+      "method": "joint_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.035,
+      "lambda_gc": 1.1554159919314915
+    },
+    {
+      "method": "acj_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.04,
+      "lambda_gc": 1.0558123276631424
+    },
+    {
+      "method": "pca_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.035,
+      "lambda_gc": 1.0696000861200825
+    },
+    {
+      "method": "ridge_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.035,
+      "lambda_gc": 1.207917452395678
+    }
+  ],
+  "power_hap": [
+    {
+      "method": "snp_min_p",
+      "n": 200,
+      "power_alpha0.05": 0.865
+    },
+    {
+      "method": "snp_bon_p",
+      "n": 200,
+      "power_alpha0.05": 0.765
+    },
+    {
+      "method": "allele_min_p",
+      "n": 200,
+      "power_alpha0.05": 0.955
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 200,
+      "power_alpha0.05": 0.9
+    },
+    {
+      "method": "joint_p",
+      "n": 200,
+      "power_alpha0.05": 0.895
+    },
+    {
+      "method": "acj_p",
+      "n": 200,
+      "power_alpha0.05": 0.625
+    },
+    {
+      "method": "pca_p",
+      "n": 200,
+      "power_alpha0.05": 0.85
+    },
+    {
+      "method": "ridge_p",
+      "n": 200,
+      "power_alpha0.05": 0.885
+    }
+  ],
+  "power_snp": [
+    {
+      "method": "snp_min_p",
+      "n": 200,
+      "power_alpha0.05": 0.99
+    },
+    {
+      "method": "snp_bon_p",
+      "n": 200,
+      "power_alpha0.05": 0.965
+    },
+    {
+      "method": "allele_min_p",
+      "n": 200,
+      "power_alpha0.05": 0.99
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 200,
+      "power_alpha0.05": 0.91
+    },
+    {
+      "method": "joint_p",
+      "n": 200,
+      "power_alpha0.05": 0.93
+    },
+    {
+      "method": "acj_p",
+      "n": 200,
+      "power_alpha0.05": 0.885
+    },
+    {
+      "method": "pca_p",
+      "n": 200,
+      "power_alpha0.05": 0.915
+    },
+    {
+      "method": "ridge_p",
+      "n": 200,
+      "power_alpha0.05": 0.925
+    }
+  ],
+  "notes": "ACJ uses genotype-correlation collapse (chi2-calibrated). Raw min-p is anti-conservative; use *_bon_p for fair Type I.",
+  "power_multi_allelic": [
+    {
+      "method": "snp_bon_p",
+      "n": 200,
+      "power_alpha0.05": 0.81
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 200,
+      "power_alpha0.05": 0.67
+    },
+    {
+      "method": "joint_p",
+      "n": 200,
+      "power_alpha0.05": 0.94
+    },
+    {
+      "method": "acj_p",
+      "n": 200,
+      "power_alpha0.05": 0.965
+    },
+    {
+      "method": "pca_p",
+      "n": 200,
+      "power_alpha0.05": 0.75
+    },
+    {
+      "method": "ridge_p",
+      "n": 200,
+      "power_alpha0.05": 0.875
+    }
+  ],
+  "typeI_collinear": [
+    {
+      "method": "snp_bon_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.045
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.055
+    },
+    {
+      "method": "joint_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.03
+    },
+    {
+      "method": "acj_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.035
+    },
+    {
+      "method": "pca_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.055
+    },
+    {
+      "method": "ridge_p",
+      "n": 200,
+      "typeI_alpha0.05": 0.05
+    }
+  ],
+  "acj_defaults": {
+    "hamming_max": 1,
+    "corr_thresh": 0.9,
+    "max_df": "auto6_if_k>=10"
+  }
+}

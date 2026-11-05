@@ -1,0 +1,446 @@
+[
+  {
+    "trait": "BW6",
+    "null_method": "lmm-spectral",
+    "ols": false,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 27028.350735207285,
+    "ve": 104731.07101555288,
+    "hits_block_bonf": {
+      "joint": 1,
+      "acj": 1,
+      "sacj": 1,
+      "allele_bonf": 1,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 2.9295660500064728e-06,
+      "acj": 5.079680938858528e-07,
+      "sacj": 1.3248894693854333e-06,
+      "allele_bonf": 6.204701908773147e-07,
+      "snp_bonf": 0.006765050050316808
+    },
+    "lambda_gc_block": {
+      "joint": 1.1590223006900353,
+      "acj": 1.5611099651798075,
+      "sacj": 1.5972985825645734,
+      "allele_bonf": 0.624915382197396,
+      "snp_bonf": 0.1424356448291377
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 1.8510904996345696,
+    "snp_gw_min_p": 0.001691262512579202,
+    "mode": "lmm"
+  },
+  {
+    "trait": "BW6",
+    "null_method": "ols",
+    "ols": true,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.0,
+    "ve": 134059.91816966332,
+    "hits_block_bonf": {
+      "joint": 1,
+      "acj": 1,
+      "sacj": 1,
+      "allele_bonf": 1,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 3.7840404235626263e-06,
+      "acj": 5.924401597634434e-07,
+      "sacj": 1.6896893801121e-06,
+      "allele_bonf": 8.986503481445922e-07,
+      "snp_bonf": 0.00226576308119552
+    },
+    "lambda_gc_block": {
+      "joint": 1.089449964968761,
+      "acj": 1.5439990420789391,
+      "sacj": 1.5524906987962497,
+      "allele_bonf": 0.5650667922245739,
+      "snp_bonf": 0.23994992309915117
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 2.1888798077222935,
+    "snp_gw_min_p": 0.00056644077029888,
+    "mode": "ols"
+  },
+  {
+    "trait": "AFWR",
+    "null_method": "lmm-spectral",
+    "ols": false,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.01785488012914414,
+    "ve": 0.15621671058173114,
+    "hits_block_bonf": {
+      "joint": 42,
+      "acj": 25,
+      "sacj": 20,
+      "allele_bonf": 73,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 4.0654901866518853e-16,
+      "acj": 1.0335207017930947e-16,
+      "sacj": 1.0335207017930947e-16,
+      "allele_bonf": 5.814224671286699e-18,
+      "snp_bonf": 7.183696876310395e-05
+    },
+    "lambda_gc_block": {
+      "joint": 0.005227821529466922,
+      "acj": 0.03504523739612873,
+      "sacj": 0.038769031584382586,
+      "allele_bonf": 0.0,
+      "snp_bonf": 0.0
+    },
+    "snp_gw_hits_bonf_nsnps": 1,
+    "lambda_gc_snp_gw": 0.8339849716002984,
+    "snp_gw_min_p": 1.7959242190775988e-05,
+    "mode": "lmm"
+  },
+  {
+    "trait": "AFWR",
+    "null_method": "ols",
+    "ols": true,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.0,
+    "ve": 0.17542067230650807,
+    "hits_block_bonf": {
+      "joint": 41,
+      "acj": 24,
+      "sacj": 19,
+      "allele_bonf": 76,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 6.041824746973104e-16,
+      "acj": 1.597981191399865e-16,
+      "sacj": 1.597981191399865e-16,
+      "allele_bonf": 9.463717411967737e-18,
+      "snp_bonf": 0.00011308629575416437
+    },
+    "lambda_gc_block": {
+      "joint": 0.015834314578107463,
+      "acj": 0.07170358426150142,
+      "sacj": 0.09275434936171581,
+      "allele_bonf": 0.0,
+      "snp_bonf": 0.0
+    },
+    "snp_gw_hits_bonf_nsnps": 1,
+    "lambda_gc_snp_gw": 1.2748217802744006,
+    "snp_gw_min_p": 2.8271573938541093e-05,
+    "mode": "ols"
+  },
+  {
+    "trait": "BW3_6",
+    "null_method": "lmm-spectral",
+    "ols": false,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 18071.32941901176,
+    "ve": 70023.86876172287,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 1,
+      "sacj": 1,
+      "allele_bonf": 1,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.0001173666761192895,
+      "acj": 2.189192328627971e-05,
+      "sacj": 6.517416574120135e-05,
+      "allele_bonf": 2.100527385882777e-05,
+      "snp_bonf": 0.005176915346425631
+    },
+    "lambda_gc_block": {
+      "joint": 1.0486097663051561,
+      "acj": 1.403073779962611,
+      "sacj": 1.3788265235688169,
+      "allele_bonf": 0.45060736847952193,
+      "snp_bonf": 0.4269554903141117
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 2.1526184262874026,
+    "snp_gw_min_p": 0.0012942288366064078,
+    "mode": "lmm"
+  },
+  {
+    "trait": "BW3_6",
+    "null_method": "ols",
+    "ols": true,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.0,
+    "ve": 89743.62933251052,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 2,
+      "sacj": 0,
+      "allele_bonf": 1,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.00014396938057187306,
+      "acj": 1.091068227108806e-05,
+      "sacj": 7.809459095711029e-05,
+      "allele_bonf": 2.698988628561434e-05,
+      "snp_bonf": 0.00109839656411051
+    },
+    "lambda_gc_block": {
+      "joint": 1.2900844006920438,
+      "acj": 1.6351768551933556,
+      "sacj": 1.5936429667739593,
+      "allele_bonf": 0.553424426774574,
+      "snp_bonf": 0.7434121920925854
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 2.924251590346629,
+    "snp_gw_min_p": 0.0002745991410276275,
+    "mode": "ols"
+  },
+  {
+    "trait": "EBW6",
+    "null_method": "lmm-spectral",
+    "ols": false,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 3065.5370327572728,
+    "ve": 0.030655676884202055,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 0,
+      "sacj": 0,
+      "allele_bonf": 0,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.0028859819289426343,
+      "acj": 0.0027554397176317493,
+      "sacj": 0.007320003531755197,
+      "allele_bonf": 0.0005853641276168216,
+      "snp_bonf": 0.007456181239852522
+    },
+    "lambda_gc_block": {
+      "joint": 1.1243337868480303,
+      "acj": 1.3981368605308233,
+      "sacj": 1.493668224171369,
+      "allele_bonf": 0.5729750258593415,
+      "snp_bonf": 0.9229614265051468
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 2.3990843839333738,
+    "snp_gw_min_p": 0.0018640453099631304,
+    "mode": "lmm"
+  },
+  {
+    "trait": "EBW6",
+    "null_method": "ols",
+    "ols": true,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.0,
+    "ve": 4182.160742708796,
+    "hits_block_bonf": {
+      "joint": 1,
+      "acj": 3,
+      "sacj": 1,
+      "allele_bonf": 0,
+      "snp_bonf": 8
+    },
+    "min_p": {
+      "joint": 5.4898439543427014e-05,
+      "acj": 4.8399727754040064e-05,
+      "sacj": 5.4898439543427014e-05,
+      "allele_bonf": 0.00012037663102651017,
+      "snp_bonf": 2.0705639411132995e-05
+    },
+    "lambda_gc_block": {
+      "joint": 2.2135699625116914,
+      "acj": 2.1285377747136556,
+      "sacj": 2.3107544246861633,
+      "allele_bonf": 1.7151365638925544,
+      "snp_bonf": 0.6221623415161601
+    },
+    "snp_gw_hits_bonf_nsnps": 8,
+    "lambda_gc_snp_gw": 2.447278659013687,
+    "snp_gw_min_p": 5.176409852783249e-06,
+    "mode": "ols"
+  },
+  {
+    "trait": "GBW6",
+    "null_method": "lmm-spectral",
+    "ols": false,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 2409.556178912405,
+    "ve": 0.02409580274704186,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 0,
+      "sacj": 0,
+      "allele_bonf": 0,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.026883197912784183,
+      "acj": 0.013358234083087865,
+      "sacj": 0.013358234083087865,
+      "allele_bonf": 0.008287100034120282,
+      "snp_bonf": 0.1589765700694661
+    },
+    "lambda_gc_block": {
+      "joint": 0.24056023644943078,
+      "acj": 0.29917439904098064,
+      "sacj": 0.28995460760280595,
+      "allele_bonf": 0.0,
+      "snp_bonf": 0.0
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 0.3498388227526097,
+    "snp_gw_min_p": 0.03974414251736653,
+    "mode": "lmm"
+  },
+  {
+    "trait": "GBW6",
+    "null_method": "ols",
+    "ols": true,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.0,
+    "ve": 3688.3536965638314,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 0,
+      "sacj": 0,
+      "allele_bonf": 0,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.0014279512264280944,
+      "acj": 0.00029961236489057337,
+      "sacj": 0.0004626429346813523,
+      "allele_bonf": 0.000102705369764821,
+      "snp_bonf": 0.00016406522061157788
+    },
+    "lambda_gc_block": {
+      "joint": 1.028484479027778,
+      "acj": 0.8718954048470868,
+      "sacj": 1.0205770633257143,
+      "allele_bonf": 0.3022833521290724,
+      "snp_bonf": 0.0
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 1.1709696419476747,
+    "snp_gw_min_p": 4.101630515289447e-05,
+    "mode": "ols"
+  },
+  {
+    "trait": "ERFI",
+    "null_method": "lmm-spectral",
+    "ols": false,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 2.3749075736663743,
+    "ve": 0.12839706226906278,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 0,
+      "sacj": 0,
+      "allele_bonf": 0,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.003024115677780404,
+      "acj": 0.000575225010197783,
+      "sacj": 0.0038991593235670687,
+      "allele_bonf": 0.00017080151738547647,
+      "snp_bonf": 0.013314722464940231
+    },
+    "lambda_gc_block": {
+      "joint": 0.31104652597281157,
+      "acj": 0.3993732730595163,
+      "sacj": 0.40241979745502854,
+      "allele_bonf": 0.0,
+      "snp_bonf": 0.0
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 0.5172310523168873,
+    "snp_gw_min_p": 0.003328680616235058,
+    "mode": "lmm"
+  },
+  {
+    "trait": "ERFI",
+    "null_method": "ols",
+    "ols": true,
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "thr_block_bonf": 6.675567423230975e-05,
+    "thr_snp_gw_bonf": 3.3333333333333335e-05,
+    "vg": 0.0,
+    "ve": 3.6989016967372113,
+    "hits_block_bonf": {
+      "joint": 0,
+      "acj": 0,
+      "sacj": 0,
+      "allele_bonf": 0,
+      "snp_bonf": 0
+    },
+    "min_p": {
+      "joint": 0.0010454288293153821,
+      "acj": 0.0010454288293153821,
+      "sacj": 0.0010454288293153821,
+      "allele_bonf": 0.0006290708858933613,
+      "snp_bonf": 0.0011570340966693554
+    },
+    "lambda_gc_block": {
+      "joint": 1.0620721052100415,
+      "acj": 0.9372622958874258,
+      "sacj": 0.9102431809118411,
+      "allele_bonf": 0.4148287344134262,
+      "snp_bonf": 4.4355783178990445e-06
+    },
+    "snp_gw_hits_bonf_nsnps": 0,
+    "lambda_gc_snp_gw": 1.0566821958302364,
+    "snp_gw_min_p": 0.00028925852416733885,
+    "mode": "ols"
+  }
+]

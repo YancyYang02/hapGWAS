@@ -1,0 +1,41 @@
+{
+  "pheno_file": "/fs2/home/clwen/YancongYang/DoubleMuscling/cleandata/D8/gemma_claw_per_bw.pheno",
+  "kind": "positional_1col",
+  "n_pheno": 2351,
+  "n_overlap_est": 2351,
+  "nunique": 2322,
+  "chroms": [
+    "33",
+    "4"
+  ],
+  "n_aligned": 2351,
+  "null_method": "ols",
+  "window": 4,
+  "step": 2,
+  "pheno_summary": {
+    "mean": 34.7763394427903,
+    "sd": 9.934250033914443,
+    "n": 2351,
+    "nunique": 2322
+  },
+  "per_chrom": [
+    {
+      "chrom": "33",
+      "n": 2351,
+      "n_snps": 78,
+      "n_blocks": 38,
+      "min_joint_p": 0.021849120917067446,
+      "min_acj_p": 0.008597407459302731,
+      "min_allele_p": 0.000630423459652406
+    },
+    {
+      "chrom": "4",
+      "n": 2351,
+      "n_snps": 3165,
+      "n_blocks": 1581,
+      "min_joint_p": 3.755155048099854e-07,
+      "min_acj_p": 1.3055672907770293e-08,
+      "min_allele_p": 3.352324477094326e-09
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "n": 600,
+  "n_rep": 500,
+  "beta_single": 0.4,
+  "beta_neighbor": 0.24,
+  "typeI": [
+    {
+      "method": "snp_bon_p",
+      "n": 500,
+      "typeI": 0.05,
+      "lambda_gc": 0.10579065160122221
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 500,
+      "typeI": 0.052,
+      "lambda_gc": 0.3449734852754519
+    },
+    {
+      "method": "joint_p",
+      "n": 500,
+      "typeI": 0.04,
+      "lambda_gc": 0.8928469838371451
+    },
+    {
+      "method": "acj_p",
+      "n": 500,
+      "typeI": 0.044,
+      "lambda_gc": 1.093733207248383
+    },
+    {
+      "method": "pca_p",
+      "n": 500,
+      "typeI": 0.056,
+      "lambda_gc": 0.9412029706541798
+    },
+    {
+      "method": "ridge_p",
+      "n": 500,
+      "typeI": 0.04,
+      "lambda_gc": 0.9102466969212769
+    }
+  ],
+  "power_single": [
+    {
+      "method": "snp_bon_p",
+      "n": 500,
+      "power": 0.766,
+      "lambda_gc": 24.954510747651923
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 500,
+      "power": 0.932,
+      "lambda_gc": 45.09815121025182
+    },
+    {
+      "method": "joint_p",
+      "n": 500,
+      "power": 0.942,
+      "lambda_gc": 51.75897251349434
+    },
+    {
+      "method": "acj_p",
+      "n": 500,
+      "power": 0.7,
+      "lambda_gc": 21.396294702515235
+    },
+    {
+      "method": "pca_p",
+      "n": 500,
+      "power": 0.884,
+      "lambda_gc": 44.06548823074813
+    },
+    {
+      "method": "ridge_p",
+      "n": 500,
+      "power": 0.924,
+      "lambda_gc": 47.70556674621017
+    }
+  ],
+  "power_neighbor": [
+    {
+      "method": "snp_bon_p",
+      "n": 500,
+      "power": 0.852,
+      "lambda_gc": 17.178160580445322
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 500,
+      "power": 0.722,
+      "lambda_gc": 12.808481822365634
+    },
+    {
+      "method": "joint_p",
+      "n": 500,
+      "power": 0.964,
+      "lambda_gc": 30.668881806997224
+    },
+    {
+      "method": "acj_p",
+      "n": 500,
+      "power": 0.98,
+      "lambda_gc": 35.4543299510677
+    },
+    {
+      "method": "pca_p",
+      "n": 500,
+      "power": 0.77,
+      "lambda_gc": 15.936500299864692
+    },
+    {
+      "method": "ridge_p",
+      "n": 500,
+      "power": 0.928,
+      "lambda_gc": 23.399750291820745
+    }
+  ],
+  "typeI_neighbor_design": [
+    {
+      "method": "snp_bon_p",
+      "n": 500,
+      "typeI": 0.042,
+      "lambda_gc": 0.35284041161362967
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 500,
+      "typeI": 0.034,
+      "lambda_gc": 0.2622036462269468
+    },
+    {
+      "method": "joint_p",
+      "n": 500,
+      "typeI": 0.05,
+      "lambda_gc": 0.8837516299238013
+    },
+    {
+      "method": "acj_p",
+      "n": 500,
+      "typeI": 0.052,
+      "lambda_gc": 0.9618613535557525
+    },
+    {
+      "method": "pca_p",
+      "n": 500,
+      "typeI": 0.042,
+      "lambda_gc": 0.8480458777042633
+    },
+    {
+      "method": "ridge_p",
+      "n": 500,
+      "typeI": 0.036,
+      "lambda_gc": 0.812886731474518
+    }
+  ],
+  "figure": "/workspace/hapgwas/sim_results/fig_acj_power_tradeoff.png"
+}

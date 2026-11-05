@@ -1,0 +1,2 @@
+locus_id	chrom	snp_start	snp_end	pos_start	pos_end	n_windows	lead_block	lead_p	window_ids
+40:L1	40	1086	1090	-1	-1	1	40:w543	5.07968e-07	40:w543

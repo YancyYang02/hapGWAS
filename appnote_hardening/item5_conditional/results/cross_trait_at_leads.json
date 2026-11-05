@@ -1,0 +1,35 @@
+[
+  {
+    "trait": "AFWR",
+    "at_locus": "BW6_40_L1",
+    "chrom": "40",
+    "pos_start": 625414,
+    "pos_end": 627113,
+    "joint_p": 0.9928558610526694,
+    "acj_p": 0.9065478263852798,
+    "best_local_snp_p": 0.3521647619602736,
+    "best_local_snp_id": "40:639167"
+  },
+  {
+    "trait": "BW6",
+    "at_locus": "AFWR_40_L1",
+    "chrom": "40",
+    "pos_start": 699040,
+    "pos_end": 699111,
+    "joint_p": 0.7680007690209207,
+    "acj_p": 0.736698989249206,
+    "best_local_snp_p": 0.17632547835318765,
+    "best_local_snp_id": "40:699735"
+  },
+  {
+    "trait": "BW3_6",
+    "at_locus": "AFWR_40_L1",
+    "chrom": "40",
+    "pos_start": 699040,
+    "pos_end": 699111,
+    "joint_p": 0.6579202546950198,
+    "acj_p": 0.606833181883853,
+    "best_local_snp_p": 0.1498974172343553,
+    "best_local_snp_id": "40:698167"
+  }
+]
