@@ -17,7 +17,7 @@
 | 3 | 全位点 SNP Bonf（按 #SNP） | **完成（关键性状已制表）** | LMM 下 BW6/BW3_6/EBW6/GBW6/ERFI=0 hit；AFWR=1（40:345244）；见 `item5_conditional/results/snp_gw_summary.tsv` |
 | 4 | 重叠窗口收成位点 | **本轮完成（AFWR/BW6 LMM）** | 见下表；主口径 **touch** |
 | 5 | hap>SNP 条件分析+基因 | **本轮完成（2 loci）** | BW6/AFWR lead 控最强 SNP 后 joint 仍显著；映射 chr4≈RXFP2；见 `item5_conditional/ITEM5_zh.md` |
-| 6 | 公开仓库版本 + Zenodo DOI | 仓库已公开 / DOI 未铸造 | https://github.com/YancyYang02/hapGWAS ，代码 **0.4.1**（`--grm`）；DOI 未编造 |
+| 6 | 公开仓库版本 + Zenodo DOI | 已完成 | https://github.com/YancyYang02/hapGWAS ，代码 **0.4.1**（`--grm`）；版本 DOI 10.5281/zenodo.23984394 |
 
 ## 软件改动
 - `hapgwas` **0.4.1**：`--grm`/`--kinship` → spectral LMM（GCTA `.grm.bin+.id` / npy / npz / 文本）。
@@ -123,5 +123,5 @@
 1. 用 `phased_first5000.vcf.gz` 或全 chr4 / 全基因组 + 同 GRM 扩项1/3/5。
 2. 核对芯片原始坐标对应的正式组装（Galgal6 vs GRCg7b），必要时 liftOver 后再钉基因。
 3. D8 GRM-LMM + λ。
-4. 公开仓库 https://github.com/YancyYang02/hapGWAS ，VERSION 0.4.1；Zenodo DOI 仍待所有者启用 GitHub↔Zenodo（勿编造）。
+4. 公开仓库 https://github.com/YancyYang02/hapGWAS ，VERSION 0.4.1；版本 DOI https://doi.org/10.5281/zenodo.23984394 。
 5. Application Note 初稿按 LMM 主表重写（joint/ACJ/GHap allele/snp_gw），去掉 OLS 主结果与 SACJ 主表。

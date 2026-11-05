@@ -1,7 +1,7 @@
 # 项6：公开仓库 v0.4.1 + Zenodo 发布清单
 
 更新时间：2026-11-05（公开导入）  
-状态：**公开仓库为 https://github.com/YancyYang02/hapGWAS ，版本 0.4.1。** 下方清单是导入前的本地核对记录。Zenodo DOI **仍未铸造、不得编造**：需仓库所有者在 Zenodo 启用 GitHub 集成，并在 `v0.4.1` GitHub Release 发布后由 Zenodo 归档。
+状态：**公开仓库为 https://github.com/YancyYang02/hapGWAS ，版本 0.4.1。** 版本 DOI 为 https://doi.org/10.5281/zenodo.23984394 （记录 https://zenodo.org/records/23984394 ）；概念 DOI 为 https://doi.org/10.5281/zenodo.23984393 。下方清单是导入前的本地核对记录。
 
 ## 0. 当前本地版本状态（已核对）
 
@@ -63,8 +63,8 @@
 
 ### D. 回填 DOI 与 Availability（DOI 到手后）
 
-- [ ] 更新 `CITATION.cff`：写入 `doi:` / `identifiers:`（以 Zenodo 给出的为准；**导入时未写 DOI**）
-- [x] 更新 `APPLICATION_NOTE_en.md` Availability：仓库 URL 已写入；DOI 仍标明未铸造
+- [x] 更新 `CITATION.cff`：`doi` 为版本 DOI 10.5281/zenodo.23984394；`identifiers` 另记概念 DOI 10.5281/zenodo.23984393
+- [x] 更新 `APPLICATION_NOTE_en.md` Availability：仓库 URL 与版本 DOI 已写入
 - [x] 更新 README “git clone” 为 https://github.com/YancyYang02/hapGWAS
 - [ ] 可选：再打一个文档回填小版本或在同一 tag 说明中注明 DOI（按期刊要求）
 

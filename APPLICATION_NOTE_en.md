@@ -1,6 +1,6 @@
 # hapGWAS: Adaptive Collapsed Joint haplotype association under a shared LMM projection
 
-**Bioinformatics Application Note (near-submission draft)** · software v0.4.1 (public tag/DOI pending) · MIT License
+**Bioinformatics Application Note (near-submission draft)** · software v0.4.1 · https://github.com/YancyYang02/hapGWAS · https://doi.org/10.5281/zenodo.23984394 · MIT License
 
 ## Abstract
 
@@ -108,7 +108,8 @@ hapgwas run --geno phased.vcf.gz --pheno pheno.tsv \
 - **Citation metadata:** `CITATION.cff`  
 - **Documentation:** `README.md`, `METHOD_NOTE_zh.md`, simulation summaries under `sim_results/`  
 - **Public source repository:** https://github.com/YancyYang02/hapGWAS (tag `v0.4.1`)  
-- **Zenodo DOI:** not minted with this import. Enable Zenodo’s GitHub integration for this repository and archive the `v0.4.1` GitHub Release; do not invent a DOI.  
+- **Zenodo DOI (v0.4.1):** https://doi.org/10.5281/zenodo.23984394 ([record](https://zenodo.org/records/23984394))  
+- **Zenodo concept DOI (all versions):** https://doi.org/10.5281/zenodo.23984393  
 - **Hardening note (chr4 ~1.5k subset, Chinese summary):** `appnote_hardening/HARDENING_STATUS_zh.md` — LMM λ, official GHap v4.0.0.14 H2H (GHap often more hits than hapGWAS), locus collapse 42→28, conditional survival at RXFP2-proximal leads with OTHER alleles.  
 - **Restrictions:** Example chicken genotypes/phenotypes remain under institutional data governance and are not bundled; scripts in `scripts/` document HPC analysis layouts used for this note.
 

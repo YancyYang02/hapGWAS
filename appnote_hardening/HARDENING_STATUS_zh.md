@@ -68,11 +68,11 @@ VCF `#CHROM=40`，文件名 chr4 → 按 **chr4 / GRCg7b** 注释。
 
 两处 top hap 等位基因均为 **OTHER**（低频塌缩类）——主文必须披露，不可写成具体四位点序列。
 
-## 6. 公开仓库 + Zenodo（项6：仓库已公开；DOI 仍待 Zenodo）
+## 6. 公开仓库 + Zenodo（项6：仓库与 DOI 已回填）
 
 - 本地版本已对齐：**0.4.1**（`VERSION` / `pyproject.toml` / `__version__` / `CITATION.cff` / README 标题 / `CHANGELOG.md`；含 `--grm`/`--kinship`）。
 - 公开仓库：**https://github.com/YancyYang02/hapGWAS**（tag `v0.4.1`）。
-- Zenodo DOI **未申请、未编造**。需所有者在 Zenodo 启用 GitHub↔Zenodo，并归档 `v0.4.1` GitHub Release 后，才把正式 DOI 回填到 `CITATION.cff` 与 Availability。
+- 版本 DOI：**https://doi.org/10.5281/zenodo.23984394**（[记录](https://zenodo.org/records/23984394)）。概念 DOI（全版本）：**https://doi.org/10.5281/zenodo.23984393**。
 - **完整勾选清单**见 `ITEM6_RELEASE_zh.md`。
 
 ## 披露要点（主文必写）

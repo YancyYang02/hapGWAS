@@ -75,6 +75,10 @@ hapgwas run-multi --geno phased.vcf.gz --pheno traits_wide.tsv --ols \
 
 Flags: `--methods all|joint,acj,sacj,allele_bonf,snp_bonf,pca,ridge` (default all; all scores still share one null).
 
-## License / cite
+## Availability / cite
 
-MIT — `LICENSE`. Cite via `CITATION.cff`. Gap checklist vs BIB App Note: `BIB_GAP_zh.md`.
+Source code: https://github.com/YancyYang02/hapGWAS
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23984394.svg)](https://doi.org/10.5281/zenodo.23984394)
+
+MIT — `LICENSE`. Cite release **v0.4.1** with version DOI [10.5281/zenodo.23984394](https://doi.org/10.5281/zenodo.23984394) ([Zenodo record](https://zenodo.org/records/23984394)). Concept DOI for all versions: [10.5281/zenodo.23984393](https://doi.org/10.5281/zenodo.23984393). Metadata: `CITATION.cff`. Gap checklist vs BIB App Note: `BIB_GAP_zh.md`.
