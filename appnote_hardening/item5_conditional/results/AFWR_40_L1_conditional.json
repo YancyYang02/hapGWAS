@@ -1,0 +1,90 @@
+{
+  "locus": {
+    "trait": "AFWR",
+    "locus_id": "AFWR_40_L1",
+    "lead_block": "40:w743",
+    "snp_start": 1486,
+    "snp_end_excl": 1490,
+    "note": "top AFWR touch locus (min joint_p); genome snp_gw has 1 hit elsewhere or local?"
+  },
+  "n": 463,
+  "vg": 0.01785488012914414,
+  "ve": 0.15621671058173114,
+  "null_method": "lmm-spectral",
+  "chrom": "40",
+  "pos_start": 699040,
+  "pos_end": 699111,
+  "snp_ids_in_block": [
+    "40:699040",
+    "40:699043",
+    "40:699051",
+    "40:699111"
+  ],
+  "uncond": {
+    "joint_p": 4.0654901866518853e-16,
+    "joint_df": 4.0,
+    "joint_chisq": 78.26195132311865,
+    "acj_p": 1.0335207017930947e-16,
+    "acj_df": 3.0,
+    "n_alleles": 4
+  },
+  "best_snp_in_block": {
+    "snp_index": 1488,
+    "snp_id": "40:699051",
+    "chrom": "40",
+    "pos": 699051,
+    "chisq": 6.351994261510794,
+    "p": 0.011724942064164447
+  },
+  "best_snp_in_flank": {
+    "snp_index": 1488,
+    "snp_id": "40:699051",
+    "chrom": "40",
+    "pos": 699051,
+    "chisq": 6.351994261510794,
+    "p": 0.011724942064164447
+  },
+  "cond_on_best_block_snp": {
+    "cond_snp_index": 1488,
+    "cond_snp_id": "40:699051",
+    "cond_snp_p": 0.011724942064164447,
+    "cond_joint_chisq": 87.12835469448474,
+    "cond_joint_df": 4,
+    "cond_joint_p": 5.3617191706399235e-18
+  },
+  "cond_on_best_flank_snp": null,
+  "top_hap_allele": {
+    "allele": "OTHER",
+    "freq": 0.0064794816414686825,
+    "marg_p": 1.4535561678216748e-18,
+    "marg_chisq": 77.32041743087989,
+    "n_alleles": 4
+  },
+  "snp_cond_on_top_allele": {
+    "chisq": 0.5870940779690713,
+    "df": 1.0,
+    "p": 0.4435450258414816
+  },
+  "top_allele_cond_on_best_snp": {
+    "chisq": 71.55551724733816,
+    "df": 1.0,
+    "p": 2.695657714103597e-17
+  },
+  "snp_gw": {
+    "n_snps": 1500,
+    "thr_bonf_nsnps": 3.3333333333333335e-05,
+    "hits": 1,
+    "genome_min_p": 1.7959242190775988e-05,
+    "genome_min_row": {
+      "snp_index": 67,
+      "snp_id": "40:345244",
+      "chrom": 40,
+      "pos": 345244,
+      "p": 1.7959242190775988e-05
+    },
+    "flank_min_p": 0.0117249420641644,
+    "flank_hits": 0
+  },
+  "survives_cond_on_best_snp": true,
+  "interpretation_hint": "hap_survives"
+}

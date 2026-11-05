@@ -1,0 +1,97 @@
+{
+  "locus": {
+    "trait": "BW6",
+    "locus_id": "BW6_40_L1",
+    "lead_block": "40:w543",
+    "snp_start": 1086,
+    "snp_end_excl": 1090,
+    "note": "sole BW6 joint/ACJ LMM hit; snp_gw Bonf hits=0"
+  },
+  "n": 463,
+  "vg": 27028.350735207285,
+  "ve": 104731.07101555288,
+  "null_method": "lmm-spectral",
+  "chrom": "40",
+  "pos_start": 625414,
+  "pos_end": 627113,
+  "snp_ids_in_block": [
+    "40:625414",
+    "40:626184",
+    "40:626193",
+    "40:627113"
+  ],
+  "uncond": {
+    "joint_p": 2.9295660500064728e-06,
+    "joint_df": 6.0,
+    "joint_chisq": 35.86400542864684,
+    "acj_p": 5.079680938858528e-07,
+    "acj_df": 3.0,
+    "n_alleles": 6
+  },
+  "best_snp_in_block": {
+    "snp_index": 1086,
+    "snp_id": "40:625414",
+    "chrom": "40",
+    "pos": 625414,
+    "chisq": 1.811904487362039,
+    "p": 0.1782799374964597
+  },
+  "best_snp_in_flank": {
+    "snp_index": 1072,
+    "snp_id": "40:624064",
+    "chrom": "40",
+    "pos": 624064,
+    "chisq": 2.506451241851281,
+    "p": 0.11338099561641302
+  },
+  "cond_on_best_block_snp": {
+    "cond_snp_index": 1086,
+    "cond_snp_id": "40:625414",
+    "cond_snp_p": 0.1782799374964597,
+    "cond_joint_chisq": 36.72225410856991,
+    "cond_joint_df": 6,
+    "cond_joint_p": 1.994583134414284e-06
+  },
+  "cond_on_best_flank_snp": {
+    "cond_snp_index": 1072,
+    "cond_snp_id": "40:624064",
+    "cond_snp_p": 0.11338099561641302,
+    "cond_joint_chisq": 45.227243953075956,
+    "cond_joint_df": 6,
+    "cond_joint_p": 4.217956911631224e-08
+  },
+  "top_hap_allele": {
+    "allele": "OTHER",
+    "freq": 0.009719222462203024,
+    "marg_p": 1.0341169847955246e-07,
+    "marg_chisq": 28.309044178962626,
+    "n_alleles": 6
+  },
+  "snp_cond_on_top_allele": {
+    "chisq": 0.08159615084975111,
+    "df": 1.0,
+    "p": 0.7751458976364811
+  },
+  "top_allele_cond_on_best_snp": {
+    "chisq": 26.578735842450286,
+    "df": 1.0,
+    "p": 2.530132355306277e-07
+  },
+  "snp_gw": {
+    "n_snps": 1500,
+    "thr_bonf_nsnps": 3.3333333333333335e-05,
+    "hits": 0,
+    "genome_min_p": 0.0016912625125792,
+    "genome_min_row": {
+      "snp_index": 138,
+      "snp_id": "40:360033",
+      "chrom": 40,
+      "pos": 360033,
+      "p": 0.0016912625125792
+    },
+    "flank_min_p": 0.113380995616413,
+    "flank_hits": 0
+  },
+  "survives_cond_on_best_snp": true,
+  "interpretation_hint": "hap_survives"
+}

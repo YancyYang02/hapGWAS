@@ -1,0 +1,16 @@
+{
+  "trait": "BW3_6",
+  "at_locus": "BW6_40_L1",
+  "lead_block": "40:w543",
+  "chrom": "40",
+  "pos_start": 625414,
+  "pos_end": 627113,
+  "uncond_joint_p": 0.0001173666761192895,
+  "uncond_acj_p": 2.189192328627971e-05,
+  "best_local_snp_id": "40:624064",
+  "best_local_snp_p": 0.10501165921733384,
+  "cond_joint_p": 2.151054060293956e-06,
+  "block_bonf_thr": 6.675567423230975e-05,
+  "joint_hit_block_bonf": false,
+  "acj_hit_block_bonf": true
+}

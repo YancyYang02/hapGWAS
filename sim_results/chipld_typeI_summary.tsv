@@ -1,0 +1,7 @@
+method	n	typeI
+snp_bon_p	400	0.0525
+allele_bon_p	400	0.0325
+joint_p	400	0.0475
+acj_p	400	0.0475
+pca_p	400	0.0325
+ridge_p	400	0.0375

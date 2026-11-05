@@ -1,0 +1,174 @@
+{
+  "BW6": {
+    "chrom_interpreted_as": "4",
+    "vcf_chrom_field": "40",
+    "pos_start": 625414,
+    "pos_end": 627113,
+    "assembly": "bGalGal1.mat.broiler.GRCg7b (Ensembl current; VCF chrom labeled 40, filename phased_chr4)",
+    "genes_within_250kb_of_midpoint": [
+      {
+        "symbol": "RXFP2",
+        "ensembl_id": "ENSGALG00010015843",
+        "biotype": "protein_coding",
+        "start": 556502,
+        "end": 568839,
+        "strand": -1,
+        "distance_bp": 57424,
+        "relation": "downstream",
+        "description": null
+      },
+      {
+        "symbol": "STARD8",
+        "ensembl_id": "ENSGALG00010015834",
+        "biotype": "protein_coding",
+        "start": 514589,
+        "end": 556489,
+        "strand": 1,
+        "distance_bp": 69774,
+        "relation": "downstream",
+        "description": "StAR related lipid transfer domain containing 8 [Source:HGNC Symbol;Acc:HGNC:19161]"
+      },
+      {
+        "symbol": "gga-mir-6594",
+        "ensembl_id": "ENSGALG00010019913",
+        "biotype": "miRNA",
+        "start": 553063,
+        "end": 553172,
+        "strand": 1,
+        "distance_bp": 73091,
+        "relation": "downstream",
+        "description": "Gallus gallus miR-6594 stem-loop [Source:miRBase;Acc:MI0022414]"
+      },
+      {
+        "symbol": "YIPF6",
+        "ensembl_id": "ENSGALG00010014407",
+        "biotype": "protein_coding",
+        "start": 502340,
+        "end": 509401,
+        "strand": 1,
+        "distance_bp": 116862,
+        "relation": "downstream",
+        "description": "Yip1 domain family member 6 [Source:HGNC Symbol;Acc:HGNC:28304]"
+      },
+      {
+        "symbol": "OPHN1",
+        "ensembl_id": "ENSGALG00010014367",
+        "biotype": "protein_coding",
+        "start": 455832,
+        "end": 502180,
+        "strand": -1,
+        "distance_bp": 124083,
+        "relation": "downstream",
+        "description": "oligophrenin 1 [Source:HGNC Symbol;Acc:HGNC:8148]"
+      },
+      {
+        "symbol": "AR",
+        "ensembl_id": "ENSGALG00010016880",
+        "biotype": "protein_coding",
+        "start": 408217,
+        "end": 454750,
+        "strand": 1,
+        "distance_bp": 171513,
+        "relation": "downstream",
+        "description": "androgen receptor [Source:NCBI gene (formerly Entrezgene);Acc:422165]"
+      },
+      {
+        "symbol": "",
+        "ensembl_id": "ENSGALG00010019604",
+        "biotype": "lncRNA",
+        "start": 359680,
+        "end": 400867,
+        "strand": 1,
+        "distance_bp": 225396,
+        "relation": "downstream",
+        "description": null
+      },
+      {
+        "symbol": "",
+        "ensembl_id": "ENSGALG00010019374",
+        "biotype": "lncRNA",
+        "start": 378023,
+        "end": 379333,
+        "strand": -1,
+        "distance_bp": 246930,
+        "relation": "downstream",
+        "description": null
+      }
+    ]
+  },
+  "AFWR": {
+    "chrom_interpreted_as": "4",
+    "vcf_chrom_field": "40",
+    "pos_start": 699040,
+    "pos_end": 699111,
+    "assembly": "bGalGal1.mat.broiler.GRCg7b (Ensembl current; VCF chrom labeled 40, filename phased_chr4)",
+    "genes_within_250kb_of_midpoint": [
+      {
+        "symbol": "RXFP2",
+        "ensembl_id": "ENSGALG00010015843",
+        "biotype": "protein_coding",
+        "start": 556502,
+        "end": 568839,
+        "strand": -1,
+        "distance_bp": 130236,
+        "relation": "downstream",
+        "description": null
+      },
+      {
+        "symbol": "STARD8",
+        "ensembl_id": "ENSGALG00010015834",
+        "biotype": "protein_coding",
+        "start": 514589,
+        "end": 556489,
+        "strand": 1,
+        "distance_bp": 142586,
+        "relation": "downstream",
+        "description": "StAR related lipid transfer domain containing 8 [Source:HGNC Symbol;Acc:HGNC:19161]"
+      },
+      {
+        "symbol": "gga-mir-6594",
+        "ensembl_id": "ENSGALG00010019913",
+        "biotype": "miRNA",
+        "start": 553063,
+        "end": 553172,
+        "strand": 1,
+        "distance_bp": 145903,
+        "relation": "downstream",
+        "description": "Gallus gallus miR-6594 stem-loop [Source:miRBase;Acc:MI0022414]"
+      },
+      {
+        "symbol": "YIPF6",
+        "ensembl_id": "ENSGALG00010014407",
+        "biotype": "protein_coding",
+        "start": 502340,
+        "end": 509401,
+        "strand": 1,
+        "distance_bp": 189674,
+        "relation": "downstream",
+        "description": "Yip1 domain family member 6 [Source:HGNC Symbol;Acc:HGNC:28304]"
+      },
+      {
+        "symbol": "OPHN1",
+        "ensembl_id": "ENSGALG00010014367",
+        "biotype": "protein_coding",
+        "start": 455832,
+        "end": 502180,
+        "strand": -1,
+        "distance_bp": 196895,
+        "relation": "downstream",
+        "description": "oligophrenin 1 [Source:HGNC Symbol;Acc:HGNC:8148]"
+      },
+      {
+        "symbol": "AR",
+        "ensembl_id": "ENSGALG00010016880",
+        "biotype": "protein_coding",
+        "start": 408217,
+        "end": 454750,
+        "strand": 1,
+        "distance_bp": 244325,
+        "relation": "downstream",
+        "description": "androgen receptor [Source:NCBI gene (formerly Entrezgene);Acc:422165]"
+      }
+    ]
+  }
+}

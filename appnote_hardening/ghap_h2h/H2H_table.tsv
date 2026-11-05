@@ -1,0 +1,3 @@
+trait	null	n	n_blocks_hapgwas	joint_hits	acj_hits	allele_bonf_hits_hapgwas	snp_gw_hits	ghap_version	ghap_n_hap_alleles	ghap_allele_hits	ghap_block_minp_hits	ghap_min_p	hap_joint_min_p	AFWR_joint_loci_touch	notes
+BW6	LMM+GRM	463	749	1	1	1	0	4.0.0.14	8449	11	20	1.0040496155035e-11	2.9295660500064728e-06	1	GHap LMM used PD-regularized GCTA GRM (eig clip 1e-4 + diag 1e-3)
+AFWR	LMM+GRM	463	749	42	25	73	1	4.0.0.14	8449	98	117	1.11223335667036e-103	4.0654901866518853e-16	28	GHap LMM used PD-regularized GCTA GRM (eig clip 1e-4 + diag 1e-3)

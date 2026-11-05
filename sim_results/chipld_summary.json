@@ -1,0 +1,106 @@
+{
+  "source": "D:\\12\u6027\u72b6\\D8_qc",
+  "n_windows_used": 20,
+  "n": 800,
+  "n_rep": 400,
+  "beta_single": 0.35,
+  "beta_neighbor": 0.22,
+  "typeI": [
+    {
+      "method": "snp_bon_p",
+      "n": 400,
+      "typeI": 0.0525
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 400,
+      "typeI": 0.0325
+    },
+    {
+      "method": "joint_p",
+      "n": 400,
+      "typeI": 0.0475
+    },
+    {
+      "method": "acj_p",
+      "n": 400,
+      "typeI": 0.0475
+    },
+    {
+      "method": "pca_p",
+      "n": 400,
+      "typeI": 0.0325
+    },
+    {
+      "method": "ridge_p",
+      "n": 400,
+      "typeI": 0.0375
+    }
+  ],
+  "power_single": [
+    {
+      "method": "snp_bon_p",
+      "n": 400,
+      "power": 0.8375
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 400,
+      "power": 0.995
+    },
+    {
+      "method": "joint_p",
+      "n": 400,
+      "power": 0.93
+    },
+    {
+      "method": "acj_p",
+      "n": 400,
+      "power": 0.4725
+    },
+    {
+      "method": "pca_p",
+      "n": 400,
+      "power": 0.96
+    },
+    {
+      "method": "ridge_p",
+      "n": 400,
+      "power": 0.9825
+    }
+  ],
+  "power_neighbor": [
+    {
+      "method": "snp_bon_p",
+      "n": 400,
+      "power": 0.9325
+    },
+    {
+      "method": "allele_bon_p",
+      "n": 400,
+      "power": 0.4925
+    },
+    {
+      "method": "joint_p",
+      "n": 400,
+      "power": 0.9
+    },
+    {
+      "method": "acj_p",
+      "n": 400,
+      "power": 0.9025
+    },
+    {
+      "method": "pca_p",
+      "n": 400,
+      "power": 0.665
+    },
+    {
+      "method": "ridge_p",
+      "n": 400,
+      "power": 0.875
+    }
+  ],
+  "figure": "/workspace/hapgwas/sim_results/fig_chipld_acj_tradeoff.png",
+  "data_gap": "Breast-shape phased VCF/PED not on local machine; only on HPC /fs2/home/clwen/YancongYang/DoubleMuscling/variant_calling_results/step6.beagle_phased.vcf.gz and step7_phased_final.{bed,bim,fam}. Local unphased chip D8_qc used for LD parameterization."
+}

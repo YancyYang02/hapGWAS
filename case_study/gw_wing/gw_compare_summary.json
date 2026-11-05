@@ -1,0 +1,56 @@
+{
+  "trait": "wing",
+  "pheno_col_1based": 4,
+  "n": 2351,
+  "n_blocks": 16361,
+  "n_alleles": 97766,
+  "n_snps": 32802,
+  "thr_block_bonferroni": 3.0560479188313675e-06,
+  "hits_bonferroni": {
+    "ACJ": 5,
+    "joint": 5,
+    "GHap_like_bon": 6,
+    "SNP_bon": 0,
+    "PCA": 0,
+    "ridge": 2
+  },
+  "min_p": {
+    "ACJ": 6.18972377668417e-09,
+    "joint": 1.8069457289840197e-08,
+    "GHap_like_bon": 2.6382539583220818e-08,
+    "SNP_bon": 8.271823349846881e-06,
+    "PCA": 4.153471888799887e-06,
+    "ridge": 3.3989305065739943e-07
+  },
+  "ACJ_only_vs_GHap": [
+    "1:1:w2323",
+    "4:4:w105",
+    "6:6:w398"
+  ],
+  "GHap_only_vs_ACJ": [
+    "1:1:w2328",
+    "2:2:w399",
+    "2:2:w401",
+    "2:2:w414"
+  ],
+  "shared_ACJ_GHap": [
+    "1:1:w2327",
+    "2:2:w400"
+  ],
+  "ACJ_not_SNP": [
+    "1:1:w2323",
+    "1:1:w2327",
+    "2:2:w400",
+    "4:4:w105",
+    "6:6:w398"
+  ],
+  "suggestive_1e-5_counts": {
+    "ACJ": 8,
+    "joint": 13,
+    "GHap_like_bon": 10,
+    "SNP_bon": 2,
+    "PCA": 6,
+    "ridge": 12
+  },
+  "walltime_sec": 383.44
+}

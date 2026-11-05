@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hapgwas"
+version = "0.4.1"
+description = "Unified haplotype GWAS: LD-block joint multi-df tests + per-allele dosage tests under one LMM projection"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "hapGWAS contributors"}]
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+hapgwas = "hapgwas.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hapgwas*"]
