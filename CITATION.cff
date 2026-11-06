@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "hapGWAS: Adaptive Collapsed Joint haplotype association under LMM projection"
+title: "hapGWAS: haplotype association under one LMM projection"
 message: If you use this software, please cite it as below.
 type: software
 authors:
@@ -7,8 +7,8 @@ authors:
     given-names: Yancong
     affiliation: China Agricultural University
 license: MIT
-version: 0.4.1
-date-released: "2026-11-05"
+version: 0.7.1
+date-released: "2026-11-06"
 doi: 10.5281/zenodo.23984394
 identifiers:
   - type: doi
@@ -23,11 +23,14 @@ identifiers:
 repository-code: "https://github.com/YancyYang02/hapGWAS"
 url: "https://doi.org/10.5281/zenodo.23984394"
 abstract: >
-  hapGWAS implements block haplotype GWAS scores under a shared null LMM
-  projection, including the Adaptive Collapsed Joint (ACJ) Hamming-neighborhood
-  multi-allelic score, full joint, PCA/ridge, and allele/SNP baselines.
+  hapGWAS scans phased haplotype blocks under a shared null LMM projection.
+  The default ranking column is an ACAT omnibus of joint, allele-marginal,
+  and SNP scores. Exact block likelihood ratios, a nested beyond-SNP
+  haplotype score, and an optional leave-one-window-out kinship downdate
+  are also reported. The recorded Zenodo version DOI still refers to the
+  0.4.1 deposit until a new version is minted.
 keywords:
   - haplotype GWAS
   - linear mixed model
-  - adaptive collapse
+  - omnibus association
   - livestock genomics

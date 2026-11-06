@@ -1,7 +1,7 @@
 """
 Unified block-level multi-df joint test + per-HapAllele dosage tests.
 
-Statistical core (v0.4): shared null projection; joint / ACJ / SACJ / PCA / ridge / allele.
+This is the statistical core claimed as hapGWAS's methods contribution:
 both tests share one null-LMM projection (see lmm.project_features), so
 block evidence and allele decomposition are commensurate.
 """
@@ -12,12 +12,16 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
-from scipy import stats
+from scipy import linalg, stats
 
 from hapgwas.dosage import HapDosage, build_dosage, haplotypes_from_phased_snps
+from hapgwas.window_kinship import WindowBasis, lowo_joint_lrt, region_columns
 from hapgwas.blocks import Block
 from hapgwas.lmm import NullFit, project_features
-from hapgwas.adaptive_score import multi_allelic_scores
+from hapgwas.adaptive_score import _qr_joint_score, multi_allelic_scores
+from hapgwas.exact_lrt import block_exact_lrts
+from hapgwas.omnibus import acat, bonf_min
+from hapgwas.tree_kernel import tree_kernel_score
 
 
 @dataclass
@@ -52,11 +56,25 @@ class BlockResult:
     ridge_stat: float | None = None
     ridge_df: float | None = None
     ridge_p: float | None = None
-    sacj_chisq: float | None = None
-    sacj_df: int | None = None
-    sacj_p: float | None = None
-    sacj_ngroups: int | None = None
-    sacj_k: int | None = None
+    allele_min_p: float | None = None
+    allele_bonf_p: float | None = None
+    allele_acat_p: float | None = None
+    snp_min_p: float | None = None
+    snp_bonf_p: float | None = None
+    snp_acat_p: float | None = None
+    omni_p: float | None = None
+    tree_qstat: float | None = None
+    tree_df: float | None = None
+    tree_p: float | None = None
+    beyond_chisq: float | None = None
+    beyond_df: int | None = None
+    beyond_p: float | None = None
+    joint_lrt_stat: float | None = None
+    joint_lrt_df: int | None = None
+    joint_lrt_p: float | None = None
+    beyond_lrt_stat: float | None = None
+    beyond_lrt_df: int | None = None
+    beyond_lrt_p: float | None = None
 
 
 def _safe_p_chi2(chisq: float, df: int) -> float:
@@ -79,18 +97,7 @@ def score_joint_and_marginal(null: NullFit, dosage: np.ndarray) -> tuple[float, 
     if not np.any(keep):
         return 0.0, 0, np.nan, np.full(dosage.shape[1], np.nan), np.full(dosage.shape[1], np.nan)
 
-    Zk = Z[:, keep]
-    Qz, Rz = np.linalg.qr(Zk, mode="reduced")
-    diag = np.abs(np.diag(Rz)) if Rz.ndim == 2 else np.array([abs(Rz)])
-    rank_mask = diag > 1e-8
-    r = int(rank_mask.sum())
-    if r == 0:
-        joint_chisq, joint_df, joint_p = 0.0, 0, np.nan
-    else:
-        Qr = Qz[:, :r]
-        joint_chisq = float(np.sum((Qr.T @ y) ** 2))
-        joint_df = r
-        joint_p = _safe_p_chi2(joint_chisq, joint_df)
+    joint_chisq, joint_df, joint_p = _qr_joint_score(Z, y)
 
     marg_chisq = np.full(dosage.shape[1], np.nan)
     marg_p = np.full(dosage.shape[1], np.nan)
@@ -105,15 +112,58 @@ def score_joint_and_marginal(null: NullFit, dosage: np.ndarray) -> tuple[float, 
     return joint_chisq, joint_df, joint_p, marg_chisq, marg_p
 
 
+def beyond_snp_score(null: NullFit, hap_dosage: np.ndarray, snp_dosage: np.ndarray) -> tuple[float, int, float]:
+    """
+    Score test for haplotype signal orthogonal to the additive SNP dosages
+    in the same block.
+
+    Haplotype dosages span the SNP dosages, plus extra contrasts whenever
+    more than one haplotype is present. Residualize the haplotype design on
+    the SNP design in the whitened space, then compute the joint score.
+    Under a purely additive SNP effect those residuals are null, so the
+    p-value stays uniform. A haplotype pattern that is not a linear function
+    of the SNP dosages remains in the residual and can be detected.
+    """
+    H = project_features(null, hap_dosage)
+    S = project_features(null, snp_dosage)
+    keep = np.sum(S * S, axis=0) > 1e-8
+    if np.any(keep):
+        # Pivoted QR so a near-zero direction in the middle is not treated as a real SNP.
+        Qs, Rs, _piv = linalg.qr(S[:, keep], mode="economic", pivoting=True)
+        diag = np.abs(np.diag(Rs)) if Rs.ndim == 2 else np.array([abs(float(Rs))])
+        rank = int(np.sum(diag > 1e-8))
+        if rank:
+            H = H - Qs[:, :rank] @ (Qs[:, :rank].T @ H)
+    return _qr_joint_score(H, null.y_tilde)
+
+
+def score_snp_matrix(null: NullFit, dosage: np.ndarray, chunk: int = 1024) -> tuple[np.ndarray, np.ndarray]:
+    """1-df score tests for many SNP dosages. dosage is (n,) or (n, m)."""
+    dosage = np.asarray(dosage, dtype=float)
+    if dosage.ndim == 1:
+        dosage = dosage.reshape(-1, 1)
+    n_snps = dosage.shape[1]
+    chisq = np.full(n_snps, np.nan)
+    y = null.y_tilde
+    for start in range(0, n_snps, chunk):
+        stop = min(n_snps, start + chunk)
+        Z = project_features(null, dosage[:, start:stop])
+        ss = np.sum(Z * Z, axis=0)
+        zy = Z.T @ y
+        ok = ss > 1e-8
+        part = np.full(stop - start, np.nan)
+        part[ok] = (zy[ok] ** 2) / ss[ok]
+        chisq[start:stop] = part
+    p = np.full(n_snps, np.nan)
+    ok = np.isfinite(chisq)
+    p[ok] = stats.chi2.sf(np.clip(chisq[ok], 0.0, None), 1)
+    return chisq, p
+
+
 def score_snp(null: NullFit, snp_dosage: np.ndarray) -> tuple[float, float]:
     """1-df score test for a SNP dosage vector. Returns (chisq, p)."""
-    Z = project_features(null, snp_dosage.reshape(-1, 1))
-    y = null.y_tilde
-    ss = float(np.sum(Z * Z))
-    if ss <= 1e-8:
-        return np.nan, np.nan
-    chisq = float((float(np.asarray(Z.T @ y).ravel()[0]) ** 2) / ss)
-    return chisq, _safe_p_chi2(chisq, 1)
+    chisq, p = score_snp_matrix(null, snp_dosage)
+    return float(chisq[0]), float(p[0])
 
 
 def condition_on_snp(
@@ -135,18 +185,7 @@ def condition_on_snp(
         Zc = Zp - Sp @ coef
     else:
         Zc = Zp
-    y = null.y_tilde
-    col_ss = np.sum(Zc * Zc, axis=0)
-    keep = col_ss > 1e-8
-    if not np.any(keep):
-        return 0.0, 0, np.nan
-    Qz, Rz = np.linalg.qr(Zc[:, keep], mode="reduced")
-    diag = np.abs(np.diag(Rz)) if Rz.ndim == 2 else np.array([abs(float(Rz))])
-    r = int((diag > 1e-8).sum())
-    if r == 0:
-        return 0.0, 0, np.nan
-    chisq = float(np.sum((Qz[:, :r].T @ y) ** 2))
-    return chisq, r, _safe_p_chi2(chisq, r)
+    return _qr_joint_score(Zc, null.y_tilde)
 
 
 def _pick_top_snp_in_block(
@@ -189,7 +228,31 @@ def test_block(
         drop_ref=True,
     )
     joint_chisq, joint_df, joint_p, marg_c, marg_p = score_joint_and_marginal(null, hap.dosage)
-    ms = multi_allelic_scores(null, hap.dosage, allele_labels=hap.alleles)
+    ms = multi_allelic_scores(
+        null, hap.dosage, allele_labels=hap.alleles, frequencies=hap.frequencies
+    )
+    _snp_chi, snp_p = score_snp_matrix(null, h1.astype(float) + h2.astype(float))
+    allele_min_p, allele_bonf_p = bonf_min(marg_p)
+    snp_min_p, snp_bonf_p = bonf_min(snp_p)
+    allele_acat_p = acat(marg_p)
+    snp_acat_p = acat(snp_p)
+    # Default block p-value. ACJ is reported beside it, but it is not in the
+    # combination: on short windows it often dilutes. ACAT of the joint score,
+    # the allele-marginal ACAT, and the in-window SNP ACAT tracks whichever
+    # architecture is actually present (Liu & Xie 2020).
+    omni_p = acat([joint_p, allele_acat_p, snp_acat_p])
+    Z_hap = project_features(null, hap.dosage)
+    tree_qstat, tree_df, tree_p = tree_kernel_score(Z_hap, null.y_tilde, hap.alleles)
+    snp_dosage = h1.astype(float) + h2.astype(float)
+    beyond_chisq, beyond_df, beyond_p = beyond_snp_score(null, hap.dosage, snp_dosage)
+    (
+        joint_lrt_stat,
+        joint_lrt_df,
+        joint_lrt_p,
+        beyond_lrt_stat,
+        beyond_lrt_df,
+        beyond_lrt_p,
+    ) = block_exact_lrts(null, hap.dosage, snp_dosage)
 
     cond_idx = condition_snp
     cond_snp_p = None
@@ -257,11 +320,25 @@ def test_block(
         ridge_stat=ms.ridge.stat,
         ridge_df=ms.ridge.df_satt,
         ridge_p=ms.ridge.p,
-        sacj_chisq=ms.sacj.chisq,
-        sacj_df=ms.sacj.df,
-        sacj_p=ms.sacj.p,
-        sacj_ngroups=ms.sacj.n_groups,
-        sacj_k=ms.sacj.k_spectral,
+        allele_min_p=allele_min_p,
+        allele_bonf_p=allele_bonf_p,
+        allele_acat_p=allele_acat_p,
+        snp_min_p=snp_min_p,
+        snp_bonf_p=snp_bonf_p,
+        snp_acat_p=snp_acat_p,
+        omni_p=omni_p,
+        tree_qstat=tree_qstat,
+        tree_df=tree_df,
+        tree_p=tree_p,
+        beyond_chisq=beyond_chisq,
+        beyond_df=int(beyond_df),
+        beyond_p=beyond_p,
+        joint_lrt_stat=joint_lrt_stat,
+        joint_lrt_df=joint_lrt_df,
+        joint_lrt_p=joint_lrt_p,
+        beyond_lrt_stat=beyond_lrt_stat,
+        beyond_lrt_df=beyond_lrt_df,
+        beyond_lrt_p=beyond_lrt_p,
     )
 
 
@@ -276,6 +353,10 @@ def run_genome(
     condition_snp: int | None = None,
     condition_auto_topsnp: bool = False,
     snp_ids: np.ndarray | None = None,
+    apply_fdr: bool = True,
+    lowo_basis: WindowBasis | None = None,
+    lowo_flank: int = 0,
+    n_snps: int | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Returns (block_level_table, allele_level_table)."""
     block_rows = []
@@ -314,12 +395,39 @@ def run_genome(
             "ridge_stat": res.ridge_stat,
             "ridge_df": res.ridge_df,
             "ridge_p": res.ridge_p,
-            "sacj_chisq": res.sacj_chisq,
-            "sacj_df": res.sacj_df,
-            "sacj_p": res.sacj_p,
-            "sacj_ngroups": res.sacj_ngroups,
-            "sacj_k": res.sacj_k,
+            "allele_min_p": res.allele_min_p,
+            "allele_bonf_p": res.allele_bonf_p,
+            "allele_acat_p": res.allele_acat_p,
+            "snp_min_p": res.snp_min_p,
+            "snp_bonf_p": res.snp_bonf_p,
+            "snp_acat_p": res.snp_acat_p,
+            "omni_p": res.omni_p,
+            "tree_qstat": res.tree_qstat,
+            "tree_df": res.tree_df,
+            "tree_p": res.tree_p,
+            "beyond_chisq": res.beyond_chisq,
+            "beyond_df": res.beyond_df,
+            "beyond_p": res.beyond_p,
+            "joint_lrt_stat": res.joint_lrt_stat,
+            "joint_lrt_df": res.joint_lrt_df,
+            "joint_lrt_p": res.joint_lrt_p,
+            "beyond_lrt_stat": res.beyond_lrt_stat,
+            "beyond_lrt_df": res.beyond_lrt_df,
+            "beyond_lrt_p": res.beyond_lrt_p,
         }
+        if lowo_basis is not None:
+            h1 = hap1[:, b.snp_start : b.snp_end]
+            h2 = hap2[:, b.snp_start : b.snp_end]
+            pairs = haplotypes_from_phased_snps(h1, h2)
+            hap = build_dosage(pairs, min_freq=min_freq, min_count=min_count, collapse_mode=collapse_mode, drop_ref=True)
+            cols = region_columns(
+                lowo_basis, b.snp_start, b.snp_end, lowo_flank, n_snps if n_snps is not None else hap1.shape[1]
+            )
+            stat, df, p = lowo_joint_lrt(lowo_basis, hap.dosage, cols)
+            row["joint_lowo_stat"] = stat
+            row["joint_lowo_df"] = df
+            row["joint_lowo_p"] = p
+            row["lowo_nsnps"] = int(cols.size)
         if res.cond_snp_index is not None:
             row.update(
                 {
@@ -336,19 +444,30 @@ def run_genome(
 
     block_df = pd.DataFrame(block_rows)
     allele_df = pd.DataFrame(allele_rows)
+    if apply_fdr:
+        block_df, allele_df = apply_block_fdr(block_df, allele_df)
+    return block_df, allele_df
+
+
+def apply_block_fdr(block_df: pd.DataFrame, allele_df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """BH on raw block and allele p-values. Safe to call once after concatenating chromosomes."""
     if len(block_df):
-        block_df = _add_bh(block_df, "joint_p", "joint_q")
-        if "acj_p" in block_df.columns:
-            block_df = _add_bh(block_df, "acj_p", "acj_q")
-        if "pca_p" in block_df.columns:
-            block_df = _add_bh(block_df, "pca_p", "pca_q")
-        if "ridge_p" in block_df.columns:
-            block_df = _add_bh(block_df, "ridge_p", "ridge_q")
-        if "sacj_p" in block_df.columns:
-            block_df = _add_bh(block_df, "sacj_p", "sacj_q")
-        if "cond_joint_p" in block_df.columns:
-            block_df = _add_bh(block_df, "cond_joint_p", "cond_joint_q")
-    if len(allele_df):
+        for src, dst in (
+            ("joint_p", "joint_q"),
+            ("acj_p", "acj_q"),
+            ("pca_p", "pca_q"),
+            ("ridge_p", "ridge_q"),
+            ("omni_p", "omni_q"),
+            ("tree_p", "tree_q"),
+            ("beyond_p", "beyond_q"),
+            ("joint_lrt_p", "joint_lrt_q"),
+            ("joint_lowo_p", "joint_lowo_q"),
+            ("beyond_lrt_p", "beyond_lrt_q"),
+            ("cond_joint_p", "cond_joint_q"),
+        ):
+            if src in block_df.columns:
+                block_df = _add_bh(block_df, src, dst)
+    if len(allele_df) and "marg_p" in allele_df.columns:
         allele_df = _add_bh(allele_df, "marg_p", "marg_q")
     return block_df, allele_df
 

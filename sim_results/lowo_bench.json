@@ -1,0 +1,85 @@
+{
+  "n": 360,
+  "background_snps": 200,
+  "flank_snps": 36,
+  "h2_background": 0.35,
+  "note": "random effect from background SNPs only; full GRM also contains the window and its flank",
+  "null": {
+    "beta": 0.0,
+    "n": 400,
+    "excluded_mean": 40.0,
+    "lowo_p": {
+      "n_finite": 400,
+      "median_neglog10": 0.31094090055327506,
+      "a0.05": 0.0425,
+      "a0.01": 0.0125,
+      "a0.001": 0.0
+    },
+    "full_lrt_p": {
+      "n_finite": 400,
+      "median_neglog10": 0.0528825561479165,
+      "a0.05": 0.0025,
+      "a0.01": 0.0,
+      "a0.001": 0.0
+    },
+    "full_score_p": {
+      "n_finite": 400,
+      "median_neglog10": 0.051774324599994176,
+      "a0.05": 0.0025,
+      "a0.01": 0.0,
+      "a0.001": 0.0
+    }
+  },
+  "hap_moderate": {
+    "beta": 0.45,
+    "n": 300,
+    "excluded_mean": 40.0,
+    "lowo_p": {
+      "n_finite": 300,
+      "median_neglog10": 4.014182989420203,
+      "a0.05": 0.9633333333333334,
+      "a0.01": 0.9033333333333333,
+      "a0.001": 0.72
+    },
+    "full_lrt_p": {
+      "n_finite": 300,
+      "median_neglog10": 1.531881029861075,
+      "a0.05": 0.5866666666666667,
+      "a0.01": 0.32666666666666666,
+      "a0.001": 0.11
+    },
+    "full_score_p": {
+      "n_finite": 300,
+      "median_neglog10": 1.4836450458075428,
+      "a0.05": 0.5666666666666667,
+      "a0.01": 0.3,
+      "a0.001": 0.08666666666666667
+    }
+  },
+  "hap_large": {
+    "beta": 0.8,
+    "n": 250,
+    "excluded_mean": 40.0,
+    "lowo_p": {
+      "n_finite": 250,
+      "median_neglog10": 12.906540573267653,
+      "a0.05": 1.0,
+      "a0.01": 1.0,
+      "a0.001": 1.0
+    },
+    "full_lrt_p": {
+      "n_finite": 250,
+      "median_neglog10": 5.703283662312517,
+      "a0.05": 0.996,
+      "a0.01": 0.984,
+      "a0.001": 0.928
+    },
+    "full_score_p": {
+      "n_finite": 250,
+      "median_neglog10": 5.346603223111986,
+      "a0.05": 0.996,
+      "a0.01": 0.98,
+      "a0.001": 0.908
+    }
+  }
+}

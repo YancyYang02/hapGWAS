@@ -1,0 +1,70 @@
+{
+  "saddlepoint_chi2": {
+    "target": [
+      0.5,
+      0.1,
+      0.05,
+      0.01,
+      0.001
+    ],
+    "kuonen": [
+      0.5004825080754998,
+      0.10028334628729951,
+      0.0501737233851064,
+      0.010047327467687196,
+      0.001006163127946456
+    ]
+  },
+  "iid": {
+    "n": 500,
+    "reps": 800,
+    "alpha": 0.05,
+    "beta_clade": 0.1,
+    "beta_single": 0.32,
+    "null": {
+      "tree_p": 0.05375,
+      "joint_p": 0.055,
+      "acj_p": 0.055,
+      "allele_bonf_p": 0.0525,
+      "snp_bonf_p": 0.025,
+      "omni_p": 0.065
+    },
+    "single_common_allele": {
+      "tree_p": 0.5725,
+      "joint_p": 0.75375,
+      "acj_p": 0.75375,
+      "allele_bonf_p": 0.8175,
+      "snp_bonf_p": 0.2425,
+      "omni_p": 0.77
+    },
+    "clade_distance2": {
+      "tree_p": 0.2725,
+      "joint_p": 0.17125,
+      "acj_p": 0.17125,
+      "allele_bonf_p": 0.1075,
+      "snp_bonf_p": 0.13625,
+      "omni_p": 0.20125
+    },
+    "single_snp": {
+      "tree_p": 0.52875,
+      "joint_p": 0.75375,
+      "acj_p": 0.75375,
+      "allele_bonf_p": 0.525,
+      "snp_bonf_p": 0.79125,
+      "omni_p": 0.78875
+    }
+  },
+  "lmm_null": {
+    "n": 400,
+    "reps": 400,
+    "alpha": 0.05,
+    "rates": {
+      "tree_p": 0.0325,
+      "joint_p": 0.0475,
+      "acj_p": 0.0475,
+      "allele_bonf_p": 0.0475,
+      "snp_bonf_p": 0.0275,
+      "omni_p": 0.045
+    }
+  }
+}

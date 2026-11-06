@@ -1,6 +1,8 @@
-# SACJ 相对 ACJ 的新意（v0.4）
+# SACJ 相对 ACJ 的新意（v0.4，历史说明）
 
-> **App Note 口径（2026-11-05）**：SACJ 保留在软件与本说明中，但 **Application Note 主表不报 SACJ**；主宣称列为 joint / ACJ / allele（正式 GHap）/ SNP。详见 `appnote_hardening/HARDENING_STATUS_zh.md`。
+> **0.7.1：** 当前包不再计算 SACJ，CLI 也没有 `run-multi`。默认排序是 `omni_p`。本文件只保留 v0.4 的补充记录，不是 0.7.1 的主结果。
+>
+> **App Note 口径（2026-11-05）**：SACJ 保留在当时的软件与本说明中，但 **Application Note 主表不报 SACJ**；主宣称列为 joint / ACJ / allele（正式 GHap）/ SNP。详见 `appnote_hardening/HARDENING_STATUS_zh.md`。
 
 
 ## 一句话
