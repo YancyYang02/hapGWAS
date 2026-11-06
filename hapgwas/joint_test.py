@@ -21,6 +21,7 @@ from hapgwas.lmm import NullFit, project_features
 from hapgwas.adaptive_score import _qr_joint_score, multi_allelic_scores
 from hapgwas.exact_lrt import block_exact_lrts
 from hapgwas.omnibus import acat, bonf_min
+from hapgwas.pair import pair_indicator_score, trans_compound_indicator
 from hapgwas.tree_kernel import tree_kernel_score
 
 
@@ -75,6 +76,12 @@ class BlockResult:
     beyond_lrt_stat: float | None = None
     beyond_lrt_df: int | None = None
     beyond_lrt_p: float | None = None
+    pair_chisq: float | None = None
+    pair_df: int | None = None
+    pair_p: float | None = None
+    pair_n: int | None = None
+    pair_snp_i: int | None = None
+    pair_snp_j: int | None = None
 
 
 def _safe_p_chi2(chisq: float, df: int) -> float:
@@ -215,6 +222,7 @@ def test_block(
     condition_snp: int | None = None,
     condition_auto_topsnp: bool = False,
     snp_ids: np.ndarray | None = None,
+    compute_pair: bool = False,
 ) -> BlockResult:
     """Run unified tests for one block, optionally with SNP conditioning."""
     h1 = hap1[:, block.snp_start : block.snp_end]
@@ -245,6 +253,19 @@ def test_block(
     tree_qstat, tree_df, tree_p = tree_kernel_score(Z_hap, null.y_tilde, hap.alleles)
     snp_dosage = h1.astype(float) + h2.astype(float)
     beyond_chisq, beyond_df, beyond_p = beyond_snp_score(null, hap.dosage, snp_dosage)
+    pair_chisq = pair_p = None
+    pair_df = pair_n = pair_snp_i = pair_snp_j = None
+    if compute_pair:
+        pair_chisq = float("nan")
+        pair_df = 0
+        pair_p = float("nan")
+        pair_n = 0
+        if h1.shape[1] >= 2:
+            indicator = trans_compound_indicator(h1, h2)
+            pair_n = int(np.sum(indicator))
+            pair_snp_i = int(block.snp_start)
+            pair_snp_j = int(block.snp_start + 1)
+            pair_chisq, pair_df, pair_p = pair_indicator_score(null, hap.dosage, indicator)
     (
         joint_lrt_stat,
         joint_lrt_df,
@@ -339,6 +360,12 @@ def test_block(
         beyond_lrt_stat=beyond_lrt_stat,
         beyond_lrt_df=beyond_lrt_df,
         beyond_lrt_p=beyond_lrt_p,
+        pair_chisq=None if pair_chisq is None else float(pair_chisq),
+        pair_df=None if pair_df is None else int(pair_df),
+        pair_p=None if pair_p is None else float(pair_p),
+        pair_n=None if pair_n is None else int(pair_n),
+        pair_snp_i=pair_snp_i,
+        pair_snp_j=pair_snp_j,
     )
 
 
@@ -357,6 +384,7 @@ def run_genome(
     lowo_basis: WindowBasis | None = None,
     lowo_flank: int = 0,
     n_snps: int | None = None,
+    compute_pair: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Returns (block_level_table, allele_level_table)."""
     block_rows = []
@@ -370,6 +398,7 @@ def run_genome(
             condition_snp=condition_snp,
             condition_auto_topsnp=condition_auto_topsnp,
             snp_ids=snp_ids,
+            compute_pair=compute_pair,
         )
         row = {
             "block_id": res.block_id,
@@ -415,6 +444,17 @@ def run_genome(
             "beyond_lrt_df": res.beyond_lrt_df,
             "beyond_lrt_p": res.beyond_lrt_p,
         }
+        if compute_pair:
+            row.update(
+                {
+                    "pair_chisq": res.pair_chisq,
+                    "pair_df": res.pair_df,
+                    "pair_p": res.pair_p,
+                    "pair_n": res.pair_n,
+                    "pair_snp_i": res.pair_snp_i,
+                    "pair_snp_j": res.pair_snp_j,
+                }
+            )
         if lowo_basis is not None:
             h1 = hap1[:, b.snp_start : b.snp_end]
             h2 = hap2[:, b.snp_start : b.snp_end]
@@ -463,6 +503,7 @@ def apply_block_fdr(block_df: pd.DataFrame, allele_df: pd.DataFrame) -> tuple[pd
             ("joint_lrt_p", "joint_lrt_q"),
             ("joint_lowo_p", "joint_lowo_q"),
             ("beyond_lrt_p", "beyond_lrt_q"),
+            ("pair_p", "pair_q"),
             ("cond_joint_p", "cond_joint_q"),
         ):
             if src in block_df.columns:

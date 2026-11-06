@@ -2,6 +2,16 @@
 
 All notable changes to hapGWAS are documented in this file.
 
+## [0.7.2] — 2026-11-06
+
+### Added
+- Optional `--pair` on `hapgwas run`. It writes `pair_p` (and `pair_chisq`, `pair_df`, `pair_n`, `pair_snp_i`, `pair_snp_j`, `pair_q`) on the block and locus tables. The statistic is a 1-df score for the trans compound heterozygote at the first two SNPs of the block, after residualizing that indicator on the block's additive haplotype dosages. The score uses the same whitened phenotype as `joint_p` and `beyond_p`. It is not part of `omni_p`. SACJ stays out of the CLI.
+- `tests/test_pair.py`: the indicator rejects more often when the phenotype is that phase configuration than under a null or an additive haplotype effect, under OLS and under an LMM.
+
+### Notes
+- Experimental. The flag follows a broiler463 BW6 spectral-LMM scan of the first 20,000 phased SNPs (4-SNP windows, step 2, 9,999 windows, GCTA GRM h² ≈ 0.19). The indicator had 10 Bonferroni hits (threshold 5.0×10⁻⁶) and 15 windows below 1×10⁻⁴, and all 15 of those had a two-SNP score above 1×10⁻². λ_GC was 0.45. Window `40:w600` was 1.40×10⁻⁶ on both the 5,000-SNP and the 20,000-SNP LMM scans. Joint and beyond companions of the same indicator were not kept (210 and 184 Bonferroni windows). This release does not claim a new leave-one-chromosome-out method.
+- **DOI.** `CITATION.cff` version is 0.7.2. The `doi` and `identifiers` fields are unchanged. They still point at the Zenodo deposit for **v0.4.1** (version DOI `10.5281/zenodo.23984394`, concept DOI `10.5281/zenodo.23984393`, record https://zenodo.org/records/23984394).
+
 ## [0.7.1] — 2026-11-06
 
 ### Added
