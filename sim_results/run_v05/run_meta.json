@@ -1,0 +1,42 @@
+{
+  "version": "0.5.0",
+  "n": 400,
+  "n_snps": 60,
+  "n_blocks": 20,
+  "n_loci": 20,
+  "bonferroni": 0.0025,
+  "kinship": [
+    "vanraden-same-file"
+  ],
+  "null": [
+    {
+      "kinship": "vanraden-same-file",
+      "method": "lmm-spectral",
+      "vg": 0.04093059129162159,
+      "ve": 1.1273220937998742,
+      "h2": 0.03503573483198626
+    }
+  ],
+  "lambda_gc_raw_p": {
+    "joint": 0.4610470998833389,
+    "acj": 0.4370268594933532,
+    "omni": 0.3883490172207352,
+    "snp": 0.8745950264939546
+  },
+  "hits_blocks": {
+    "omni_p": 1,
+    "joint_p": 1,
+    "acj_p": 1,
+    "allele_bonf_p": 0,
+    "snp_bonf_p": 0
+  },
+  "hits_loci": {
+    "omni_p": 1,
+    "joint_p": 1,
+    "acj_p": 1,
+    "allele_bonf_p": 0,
+    "snp_bonf_p": 0
+  },
+  "snp_hits": 0,
+  "snp_bonferroni": 0.0008333333333333334
+}

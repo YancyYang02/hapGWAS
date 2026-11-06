@@ -1,5 +1,7 @@
 # hapGWAS: Adaptive Collapsed Joint haplotype association under a shared LMM projection
 
+**0.7.1 note.** This file is the v0.4.1 Application Note draft (ACJ, joint, allele, SNP). The current package ranks blocks with an ACAT omnibus (`omni_p`) and can report exact block likelihood ratios, a nested beyond-SNP score, and an optional leave-one-window-out kinship downdate. Those kinship options follow existing mixed-model practice (proximal contamination / LOCO). Method text for 0.7.1 is `README.md`. The Zenodo DOIs in this draft still record the v0.4.1 deposit.
+
 **Bioinformatics Application Note (near-submission draft)** · software v0.4.1 · https://github.com/YancyYang02/hapGWAS · https://doi.org/10.5281/zenodo.23984394 · MIT License
 
 ## Abstract

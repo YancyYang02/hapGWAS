@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""chr4 claw/BW: SACJ vs ACJ/joint/GHap-like/SNP on HPC."""
+"""chr4 claw/BW: SACJ vs ACJ/joint/GHap-like/SNP on HPC.
+
+Historical v0.4 script. The 0.7.1 CLI does not write `sacj_p`.
+"""
 from __future__ import annotations
 import json, os, sys, time
 from pathlib import Path

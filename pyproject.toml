@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hapgwas"
-version = "0.4.1"
-description = "Unified haplotype GWAS: LD-block joint multi-df tests + per-allele dosage tests under one LMM projection"
+version = "0.7.1"
+description = "Haplotype GWAS under one LMM: Cauchy omnibus, exact nested block likelihood ratio, and a SNP scan"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

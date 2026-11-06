@@ -1,5 +1,9 @@
 # Bioinformatics Application Note 差距清单（相对 BIB App Note）
 
+**0.7.1：** 包版本已到 0.7.1。默认排序是 `omni_p`；`beyond_p` / `beyond_lrt_p` 与 `tree_p` 是次要列；CLI 有 `--lowo`、`--kin-geno`、`--gcta-grm` 和精确 LRT 列。方法口径以 `README.md` 为准，不把 LOCO / RHM 写成新方法，也不把 SACJ 当主结果。下面 Availability 里的 DOI 数字仍是 **v0.4.1** 的 Zenodo 记录，重新存档之前不要改。
+
+
+
 对照典型 *Bioinformatics* Application Note：短文、软件可用、1–2 真实数据集、与现有工具比较、清晰 novelty。
 
 | 要件 | 状态 | 证据 / 缺口 |

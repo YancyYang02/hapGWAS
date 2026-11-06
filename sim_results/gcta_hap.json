@@ -1,0 +1,2042 @@
+[
+  {
+    "panel": "chr4_1500",
+    "trait": "BW6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "n_loci_lrt": 322,
+    "h2": 0.2402530733520421,
+    "vg": 31676.213309240073,
+    "ve": 100168.9817065382,
+    "threshold": 6.675567423230975e-05,
+    "seconds": 59.6,
+    "omni_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 1.456789478160303e-06,
+      "lambda_gc": 1.157774941957997
+    },
+    "joint_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 2.821560136670593e-06,
+      "lambda_gc": 1.1212774881352867
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 1.3534809245794854e-06,
+      "lambda_gc": 1.1766984100253821
+    },
+    "beyond_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 3.083179211832052e-05,
+      "lambda_gc": 0.3751873604586707
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 3,
+      "hits_loci": 2,
+      "min_p": 9.007226634181296e-06,
+      "lambda_gc": 0.4025071000915651
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.007838549305340418,
+      "lambda_gc": 4.019270672778938
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 5.865420678941172e-07,
+      "lambda_gc": 2.1281980533974467
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w543",
+        "chrom": "40",
+        "start_bp": 625414,
+        "end_bp": 627113,
+        "snp_start": 1086,
+        "snp_end": 1090,
+        "joint_lrt_p": 1.3534809245794854e-06,
+        "joint_p": 2.821560136670593e-06,
+        "omni_p": 1.456789478160303e-06,
+        "beyond_lrt_p": 3.9438776502875926e-05,
+        "snp_bonf_p": 0.6584785993326061,
+        "allele_bonf_p": 5.865420678941172e-07
+      },
+      {
+        "block_id": "40:w152",
+        "chrom": "40",
+        "start_bp": 399107,
+        "end_bp": 399378,
+        "snp_start": 304,
+        "snp_end": 308,
+        "joint_lrt_p": 0.0002325593359154438,
+        "joint_p": 0.000320755972165089,
+        "omni_p": 0.0009084239954729179,
+        "beyond_lrt_p": 0.017477049152267228,
+        "snp_bonf_p": 0.03351533868447969,
+        "allele_bonf_p": 0.014263403276832023
+      },
+      {
+        "block_id": "40:w555",
+        "chrom": "40",
+        "start_bp": 639885,
+        "end_bp": 640451,
+        "snp_start": 1110,
+        "snp_end": 1114,
+        "joint_lrt_p": 0.000465680815808007,
+        "joint_p": 0.0007177671400579128,
+        "omni_p": 0.0005475483454987495,
+        "beyond_lrt_p": 0.0020046912865943002,
+        "snp_bonf_p": 0.5978902312281759,
+        "allele_bonf_p": 0.0002450310888399417
+      },
+      {
+        "block_id": "40:w206",
+        "chrom": "40",
+        "start_bp": 420680,
+        "end_bp": 421666,
+        "snp_start": 412,
+        "snp_end": 416,
+        "joint_lrt_p": 0.0009168393480060345,
+        "joint_p": 0.0013762719912849325,
+        "omni_p": 0.00023731679464322752,
+        "beyond_lrt_p": 0.03179372830713814,
+        "snp_bonf_p": 0.21854771267128,
+        "allele_bonf_p": 8.394183828270012e-05
+      },
+      {
+        "block_id": "40:w111",
+        "chrom": "40",
+        "start_bp": 383963,
+        "end_bp": 384739,
+        "snp_start": 222,
+        "snp_end": 226,
+        "joint_lrt_p": 0.0012705174445748887,
+        "joint_p": 0.0016133773010382907,
+        "omni_p": 0.004433562031773863,
+        "beyond_lrt_p": 0.5496299126471592,
+        "snp_bonf_p": 0.030949909488708353,
+        "allele_bonf_p": 0.05240309076523499
+      },
+      {
+        "block_id": "40:w550",
+        "chrom": "40",
+        "start_bp": 629713,
+        "end_bp": 630318,
+        "snp_start": 1100,
+        "snp_end": 1104,
+        "joint_lrt_p": 0.0032725466269939493,
+        "joint_p": 0.004512826026945946,
+        "omni_p": 0.0011202132602167736,
+        "beyond_lrt_p": 0.03780647076606478,
+        "snp_bonf_p": 0.5996218103587144,
+        "allele_bonf_p": 0.0004061257804817109
+      },
+      {
+        "block_id": "40:w165",
+        "chrom": "40",
+        "start_bp": 403452,
+        "end_bp": 404325,
+        "snp_start": 330,
+        "snp_end": 334,
+        "joint_lrt_p": 0.0038373410065949383,
+        "joint_p": 0.005192418464558956,
+        "omni_p": 0.009629731046809364,
+        "beyond_lrt_p": 0.0048922095948585155,
+        "snp_bonf_p": 0.03509507089832951,
+        "allele_bonf_p": 0.018176095738541613
+      },
+      {
+        "block_id": "40:w508",
+        "chrom": "40",
+        "start_bp": 611307,
+        "end_bp": 611792,
+        "snp_start": 1016,
+        "snp_end": 1020,
+        "joint_lrt_p": 0.004341646913009754,
+        "joint_p": 0.005403365902916732,
+        "omni_p": 0.002914148478183165,
+        "beyond_lrt_p": 0.09010801789805023,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.001180375197192446
+      }
+    ]
+  },
+  {
+    "panel": "chr4_1500",
+    "trait": "AFWR",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "n_loci_lrt": 320,
+    "h2": 0.08011834302901932,
+    "vg": 0.013951915483232002,
+    "ve": 0.16018942288891255,
+    "threshold": 6.675567423230975e-05,
+    "seconds": 96.9,
+    "omni_p": {
+      "hits_blocks": 66,
+      "hits_loci": 45,
+      "min_p": 0.0,
+      "lambda_gc": 0.029928095928126328
+    },
+    "joint_p": {
+      "hits_blocks": 42,
+      "hits_loci": 33,
+      "min_p": 4.421650027359427e-16,
+      "lambda_gc": 0.005628545838797385
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 49,
+      "hits_loci": 36,
+      "min_p": 9.825537365120448e-18,
+      "lambda_gc": 0.0059125099402442295
+    },
+    "beyond_p": {
+      "hits_blocks": 29,
+      "hits_loci": 15,
+      "min_p": 2.1727522483625338e-16,
+      "lambda_gc": 0.0005638810163875426
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 37,
+      "hits_loci": 21,
+      "min_p": 1.8936918716260108e-21,
+      "lambda_gc": 0.0005793513406181579
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 7.65159012560709e-05,
+      "lambda_gc": 5.0217303485975755
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 73,
+      "hits_loci": 48,
+      "min_p": 6.390450863189553e-18,
+      "lambda_gc": 21.66404788158447
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w743",
+        "chrom": "40",
+        "start_bp": 699040,
+        "end_bp": 699111,
+        "snp_start": 1486,
+        "snp_end": 1490,
+        "joint_lrt_p": 9.825537365120448e-18,
+        "joint_p": 4.421650027359427e-16,
+        "omni_p": 0.0,
+        "beyond_lrt_p": 5.3536391615018316e-17,
+        "snp_bonf_p": 0.047025734475788464,
+        "allele_bonf_p": 6.390450863189553e-18
+      },
+      {
+        "block_id": "40:w716",
+        "chrom": "40",
+        "start_bp": 692152,
+        "end_bp": 692335,
+        "snp_start": 1432,
+        "snp_end": 1436,
+        "joint_lrt_p": 1.4632064152622725e-14,
+        "joint_p": 1.925345848929521e-13,
+        "omni_p": 7.827072323607354e-15,
+        "beyond_lrt_p": 0.9425038086296893,
+        "snp_bonf_p": 0.09371803115875758,
+        "allele_bonf_p": 2.6849795618798076e-15
+      },
+      {
+        "block_id": "40:w349",
+        "chrom": "40",
+        "start_bp": 482203,
+        "end_bp": 482389,
+        "snp_start": 698,
+        "snp_end": 702,
+        "joint_lrt_p": 1.7318311213572463e-10,
+        "joint_p": 6.124063291650643e-10,
+        "omni_p": 1.2705808627444526e-10,
+        "beyond_lrt_p": 2.0065300010257152e-11,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 4.549930439146397e-11
+      },
+      {
+        "block_id": "40:w503",
+        "chrom": "40",
+        "start_bp": 609834,
+        "end_bp": 610658,
+        "snp_start": 1006,
+        "snp_end": 1010,
+        "joint_lrt_p": 2.157132282061345e-09,
+        "joint_p": 7.3584504116812635e-09,
+        "omni_p": 2.809593668828825e-10,
+        "beyond_lrt_p": 2.5766730256229066e-05,
+        "snp_bonf_p": 0.0497944768581095,
+        "allele_bonf_p": 9.486051123319991e-11
+      },
+      {
+        "block_id": "40:w560",
+        "chrom": "40",
+        "start_bp": 641373,
+        "end_bp": 642763,
+        "snp_start": 1120,
+        "snp_end": 1124,
+        "joint_lrt_p": 2.1935484955894445e-09,
+        "joint_p": 1.1476560916821548e-08,
+        "omni_p": 3.347509341944388e-08,
+        "beyond_lrt_p": 1.0190808663686268e-06,
+        "snp_bonf_p": 0.10138048201156347,
+        "allele_bonf_p": 4.814953669793802e-07
+      },
+      {
+        "block_id": "40:w479",
+        "chrom": "40",
+        "start_bp": 593553,
+        "end_bp": 593831,
+        "snp_start": 958,
+        "snp_end": 962,
+        "joint_lrt_p": 2.882782771082293e-09,
+        "joint_p": 9.584049030524775e-09,
+        "omni_p": 2.9413516067222645e-10,
+        "beyond_lrt_p": 5.3857370562331894e-05,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 9.905849960997292e-11
+      },
+      {
+        "block_id": "40:w245",
+        "chrom": "40",
+        "start_bp": 435098,
+        "end_bp": 435265,
+        "snp_start": 490,
+        "snp_end": 494,
+        "joint_lrt_p": 5.337348950188535e-09,
+        "joint_p": 1.8342442066412804e-08,
+        "omni_p": 5.4537861171599644e-08,
+        "beyond_lrt_p": 1.8936918716260108e-21,
+        "snp_bonf_p": 0.19377209913411664,
+        "allele_bonf_p": 2.2547608855626292e-06
+      },
+      {
+        "block_id": "40:w102",
+        "chrom": "40",
+        "start_bp": 378307,
+        "end_bp": 379299,
+        "snp_start": 204,
+        "snp_end": 208,
+        "joint_lrt_p": 6.0379627154433964e-09,
+        "joint_p": 4.4777892609105155e-08,
+        "omni_p": 1.1416143030906767e-09,
+        "beyond_lrt_p": 0.00021022906805044991,
+        "snp_bonf_p": 0.4852058331775197,
+        "allele_bonf_p": 3.837997939433137e-10
+      }
+    ]
+  },
+  {
+    "panel": "chr4_1500",
+    "trait": "BW3_6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "n_loci_lrt": 324,
+    "h2": 0.2402530733520421,
+    "vg": 21181.50550642608,
+    "ve": 66981.80167170473,
+    "threshold": 6.675567423230975e-05,
+    "seconds": 96.4,
+    "omni_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 5.13831239875584e-05,
+      "lambda_gc": 1.181087232911805
+    },
+    "joint_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00011302706335038455,
+      "lambda_gc": 1.0269303765767122
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 7.471434441025721e-05,
+      "lambda_gc": 1.0582239441578414
+    },
+    "beyond_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00027396264992875355,
+      "lambda_gc": 0.45464265809065807
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00015112783537881588,
+      "lambda_gc": 0.48241339573620096
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0063898767842909,
+      "lambda_gc": 1.9805633436223111
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 2.0187365261766937e-05,
+      "lambda_gc": 1.5214003952072828
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w543",
+        "chrom": "40",
+        "start_bp": 625414,
+        "end_bp": 627113,
+        "snp_start": 1086,
+        "snp_end": 1090,
+        "joint_lrt_p": 7.471434441025721e-05,
+        "joint_p": 0.00011302706335038455,
+        "omni_p": 5.13831239875584e-05,
+        "beyond_lrt_p": 0.0006412703451451343,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 2.0187365261766937e-05
+      },
+      {
+        "block_id": "40:w152",
+        "chrom": "40",
+        "start_bp": 399107,
+        "end_bp": 399378,
+        "snp_start": 304,
+        "snp_end": 308,
+        "joint_lrt_p": 0.000608269152816012,
+        "joint_p": 0.0007975193815222776,
+        "omni_p": 0.002161480734465482,
+        "beyond_lrt_p": 0.016284841282548097,
+        "snp_bonf_p": 0.0831619357863634,
+        "allele_bonf_p": 0.012795939167647478
+      },
+      {
+        "block_id": "40:w555",
+        "chrom": "40",
+        "start_bp": 639885,
+        "end_bp": 640451,
+        "snp_start": 1110,
+        "snp_end": 1114,
+        "joint_lrt_p": 0.000723830863529803,
+        "joint_p": 0.0010028133285874918,
+        "omni_p": 0.00047494999639963176,
+        "beyond_lrt_p": 0.0028669294288144373,
+        "snp_bonf_p": 0.5017743048417566,
+        "allele_bonf_p": 0.0001881404462781816
+      },
+      {
+        "block_id": "40:w111",
+        "chrom": "40",
+        "start_bp": 383963,
+        "end_bp": 384739,
+        "snp_start": 222,
+        "snp_end": 226,
+        "joint_lrt_p": 0.003342272904835435,
+        "joint_p": 0.004360797333722444,
+        "omni_p": 0.011720173362464337,
+        "beyond_lrt_p": 0.5250633580039247,
+        "snp_bonf_p": 0.09311526903778568,
+        "allele_bonf_p": 0.13620609439304399
+      },
+      {
+        "block_id": "40:w79",
+        "chrom": "40",
+        "start_bp": 365062,
+        "end_bp": 368158,
+        "snp_start": 158,
+        "snp_end": 162,
+        "joint_lrt_p": 0.00398420083280251,
+        "joint_p": 0.004937041819653075,
+        "omni_p": 0.008164233265687604,
+        "beyond_lrt_p": 0.5329407673903085,
+        "snp_bonf_p": 0.012211783010875837,
+        "allele_bonf_p": 0.01372443774108683
+      },
+      {
+        "block_id": "40:w72",
+        "chrom": "40",
+        "start_bp": 361130,
+        "end_bp": 362132,
+        "snp_start": 144,
+        "snp_end": 148,
+        "joint_lrt_p": 0.004476998357850943,
+        "joint_p": 0.006288964581772155,
+        "omni_p": 0.008021408905068417,
+        "beyond_lrt_p": 0.001224729864958535,
+        "snp_bonf_p": 0.02561022622595848,
+        "allele_bonf_p": 0.006726279018638875
+      },
+      {
+        "block_id": "40:w508",
+        "chrom": "40",
+        "start_bp": 611307,
+        "end_bp": 611792,
+        "snp_start": 1016,
+        "snp_end": 1020,
+        "joint_lrt_p": 0.005532462445473383,
+        "joint_p": 0.0065638695195693025,
+        "omni_p": 0.0040764246830006234,
+        "beyond_lrt_p": 0.12630411968867833,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.0017046323773140363
+      },
+      {
+        "block_id": "40:w83",
+        "chrom": "40",
+        "start_bp": 369537,
+        "end_bp": 369983,
+        "snp_start": 166,
+        "snp_end": 170,
+        "joint_lrt_p": 0.006414637211505612,
+        "joint_p": 0.007863417971426484,
+        "omni_p": 0.012809161464413077,
+        "beyond_lrt_p": 0.044472438681272604,
+        "snp_bonf_p": 0.02389131391079581,
+        "allele_bonf_p": 0.03928923293404886
+      }
+    ]
+  },
+  {
+    "panel": "chr4_1500",
+    "trait": "EBW6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "n_loci_lrt": 326,
+    "h2": 0.9999974881198781,
+    "vg": 3065.5628079863777,
+    "ve": 0.0077003456223213975,
+    "threshold": 6.675567423230975e-05,
+    "seconds": 111.9,
+    "omni_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0016151908780024926,
+      "lambda_gc": 1.4832935445371513
+    },
+    "joint_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0028859562897808606,
+      "lambda_gc": 1.1243216086524779
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0025033209421936806,
+      "lambda_gc": 1.1507467392095025
+    },
+    "beyond_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0021020803536405215,
+      "lambda_gc": 0.6677415388701546
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0015609711206128053,
+      "lambda_gc": 0.6982957348837975
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0074562374672047385,
+      "lambda_gc": 1.4671926139862914
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0005853564805724833,
+      "lambda_gc": 1.4181250851245537
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w507",
+        "chrom": "40",
+        "start_bp": 611160,
+        "end_bp": 611392,
+        "snp_start": 1014,
+        "snp_end": 1018,
+        "joint_lrt_p": 0.0025033209421936806,
+        "joint_p": 0.0028859562897808606,
+        "omni_p": 0.0029791363238221846,
+        "beyond_lrt_p": 0.0776743836628692,
+        "snp_bonf_p": 0.49755433585595377,
+        "allele_bonf_p": 0.0014980483436155402
+      },
+      {
+        "block_id": "40:w295",
+        "chrom": "40",
+        "start_bp": 456524,
+        "end_bp": 457035,
+        "snp_start": 590,
+        "snp_end": 594,
+        "joint_lrt_p": 0.0032929176407005645,
+        "joint_p": 0.00394945416524437,
+        "omni_p": 0.00597433794930996,
+        "beyond_lrt_p": 0.10030044689462381,
+        "snp_bonf_p": 0.2646906241117603,
+        "allele_bonf_p": 0.004206308641352503
+      },
+      {
+        "block_id": "40:w124",
+        "chrom": "40",
+        "start_bp": 387060,
+        "end_bp": 387334,
+        "snp_start": 248,
+        "snp_end": 252,
+        "joint_lrt_p": 0.004881012747698241,
+        "joint_p": 0.005746739960274142,
+        "omni_p": 0.00968378435114764,
+        "beyond_lrt_p": 0.11755611115925649,
+        "snp_bonf_p": 0.04663074373974899,
+        "allele_bonf_p": 0.012377343398854388
+      },
+      {
+        "block_id": "40:w152",
+        "chrom": "40",
+        "start_bp": 399107,
+        "end_bp": 399378,
+        "snp_start": 304,
+        "snp_end": 308,
+        "joint_lrt_p": 0.012937320874010385,
+        "joint_p": 0.01460215574035906,
+        "omni_p": 0.025564169172942075,
+        "beyond_lrt_p": 0.06820510711645285,
+        "snp_bonf_p": 0.09786178972863356,
+        "allele_bonf_p": 0.04869294719826594
+      },
+      {
+        "block_id": "40:w300",
+        "chrom": "40",
+        "start_bp": 458545,
+        "end_bp": 459023,
+        "snp_start": 600,
+        "snp_end": 604,
+        "joint_lrt_p": 0.0205925642014882,
+        "joint_p": 0.022813427141617697,
+        "omni_p": 0.011901660808908254,
+        "beyond_lrt_p": 0.15813908730553217,
+        "snp_bonf_p": 0.033059855489015806,
+        "allele_bonf_p": 0.007581707180817042
+      },
+      {
+        "block_id": "40:w244",
+        "chrom": "40",
+        "start_bp": 434817,
+        "end_bp": 435199,
+        "snp_start": 488,
+        "snp_end": 492,
+        "joint_lrt_p": 0.022107459789543555,
+        "joint_p": 0.02522809712699529,
+        "omni_p": 0.04628038505908316,
+        "beyond_lrt_p": 0.2731885519803071,
+        "snp_bonf_p": 0.4495432173890766,
+        "allele_bonf_p": 0.05673914625786891
+      },
+      {
+        "block_id": "40:w96",
+        "chrom": "40",
+        "start_bp": 375825,
+        "end_bp": 376488,
+        "snp_start": 192,
+        "snp_end": 196,
+        "joint_lrt_p": 0.03100013529514199,
+        "joint_p": 0.03382191832187332,
+        "omni_p": 0.02986564542228559,
+        "beyond_lrt_p": 0.30959025025876585,
+        "snp_bonf_p": 0.0670961108282824,
+        "allele_bonf_p": 0.022421915353797797
+      },
+      {
+        "block_id": "40:w543",
+        "chrom": "40",
+        "start_bp": 625414,
+        "end_bp": 627113,
+        "snp_start": 1086,
+        "snp_end": 1090,
+        "joint_lrt_p": 0.031172415904724582,
+        "joint_p": 0.034007059150870815,
+        "omni_p": 0.056461306483080065,
+        "beyond_lrt_p": 0.3752792043869837,
+        "snp_bonf_p": 0.586520920827853,
+        "allele_bonf_p": 0.047812439292603134
+      }
+    ]
+  },
+  {
+    "panel": "chr4_1500",
+    "trait": "GBW6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "n_loci_lrt": 322,
+    "h2": 0.9999974881198781,
+    "vg": 2409.574760282133,
+    "ve": 0.006052578146060644,
+    "threshold": 6.675567423230975e-05,
+    "seconds": 107.7,
+    "omni_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.02186288138421244,
+      "lambda_gc": 0.14834683116249764
+    },
+    "joint_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.02688258880818268,
+      "lambda_gc": 0.24055528550209074
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.024000863733250905,
+      "lambda_gc": 0.24470273384212463
+    },
+    "beyond_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.005304682658815602,
+      "lambda_gc": 0.4282039094206886
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.004177686333120249,
+      "lambda_gc": 0.4431928592883192
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.15897842676765747,
+      "lambda_gc": 0.6564881576035148
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00828716561194237,
+      "lambda_gc": 0.7886732892974236
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w288",
+        "chrom": "40",
+        "start_bp": 452396,
+        "end_bp": 454244,
+        "snp_start": 576,
+        "snp_end": 580,
+        "joint_lrt_p": 0.024000863733250905,
+        "joint_p": 0.02688258880818268,
+        "omni_p": 0.04292124575574413,
+        "beyond_lrt_p": 0.0463963603511137,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.028513634234687828
+      },
+      {
+        "block_id": "40:w553",
+        "chrom": "40",
+        "start_bp": 631163,
+        "end_bp": 639167,
+        "snp_start": 1106,
+        "snp_end": 1110,
+        "joint_lrt_p": 0.03987464800503576,
+        "joint_p": 0.04317047292450006,
+        "omni_p": 0.06882623200853127,
+        "beyond_lrt_p": 0.46927295340826636,
+        "snp_bonf_p": 0.2564471444441243,
+        "allele_bonf_p": 0.2544637607999274
+      },
+      {
+        "block_id": "40:w419",
+        "chrom": "40",
+        "start_bp": 515167,
+        "end_bp": 516435,
+        "snp_start": 838,
+        "snp_end": 842,
+        "joint_lrt_p": 0.047208665801788285,
+        "joint_p": 0.05020345650175054,
+        "omni_p": 0.02186288138421244,
+        "beyond_lrt_p": 0.09947701208159974,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.00828716561194237
+      },
+      {
+        "block_id": "40:w351",
+        "chrom": "40",
+        "start_bp": 482426,
+        "end_bp": 482788,
+        "snp_start": 702,
+        "snp_end": 706,
+        "joint_lrt_p": 0.06404450070931664,
+        "joint_p": 0.06751172116109784,
+        "omni_p": 0.17846122874304393,
+        "beyond_lrt_p": 0.03486251313311961,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.36845851661855666
+      },
+      {
+        "block_id": "40:w143",
+        "chrom": "40",
+        "start_bp": 393322,
+        "end_bp": 396230,
+        "snp_start": 286,
+        "snp_end": 290,
+        "joint_lrt_p": 0.06486704249922579,
+        "joint_p": 0.06909072347615887,
+        "omni_p": 0.10293578028114408,
+        "beyond_lrt_p": 0.051502544155722266,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.09313097961417681
+      },
+      {
+        "block_id": "40:w349",
+        "chrom": "40",
+        "start_bp": 482203,
+        "end_bp": 482389,
+        "snp_start": 698,
+        "snp_end": 702,
+        "joint_lrt_p": 0.06637468955354464,
+        "joint_p": 0.06849220398301624,
+        "omni_p": 0.06401079061156278,
+        "beyond_lrt_p": 0.05969606834833699,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.027639613648796118
+      },
+      {
+        "block_id": "40:w234",
+        "chrom": "40",
+        "start_bp": 429619,
+        "end_bp": 430633,
+        "snp_start": 468,
+        "snp_end": 472,
+        "joint_lrt_p": 0.0706681691629686,
+        "joint_p": 0.0758663916141196,
+        "omni_p": 0.23899565773455955,
+        "beyond_lrt_p": 0.4673628466789832,
+        "snp_bonf_p": 0.8219271069105939,
+        "allele_bonf_p": 0.16433035299306656
+      },
+      {
+        "block_id": "40:w148",
+        "chrom": "40",
+        "start_bp": 398351,
+        "end_bp": 398737,
+        "snp_start": 296,
+        "snp_end": 300,
+        "joint_lrt_p": 0.07589599884846099,
+        "joint_p": 0.08043990493538812,
+        "omni_p": 0.5219043347928527,
+        "beyond_lrt_p": 0.3383934649063454,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.15345084345939888
+      }
+    ]
+  },
+  {
+    "panel": "chr4_1500",
+    "trait": "ERFI",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 1500,
+    "n_blocks": 749,
+    "n_loci_lrt": 326,
+    "h2": 0.999997488119878,
+    "vg": 2.5200460334973096,
+    "ve": 6.330069438321435e-06,
+    "threshold": 6.675567423230975e-05,
+    "seconds": 118.6,
+    "omni_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0004356249744735252,
+      "lambda_gc": 0.22441742717194813
+    },
+    "joint_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0027479875756697024,
+      "lambda_gc": 0.3295475785647486
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.002182777530668542,
+      "lambda_gc": 0.3361740445126778
+    },
+    "beyond_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 9.896549752584962e-05,
+      "lambda_gc": 0.34096530205532577
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 1,
+      "hits_loci": 0,
+      "min_p": 4.96900003020376e-05,
+      "lambda_gc": 0.35148796107952834
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.012783952968176655,
+      "lambda_gc": 1.1620252903359214
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00015334033081275554,
+      "lambda_gc": 1.174842545182293
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w294",
+        "chrom": "40",
+        "start_bp": 456233,
+        "end_bp": 456688,
+        "snp_start": 588,
+        "snp_end": 592,
+        "joint_lrt_p": 0.002182777530668542,
+        "joint_p": 0.0027479875756697024,
+        "omni_p": 0.0004356249744735252,
+        "beyond_lrt_p": 0.024576446481245396,
+        "snp_bonf_p": 0.5664230478025855,
+        "allele_bonf_p": 0.00015334033081275554
+      },
+      {
+        "block_id": "40:w141",
+        "chrom": "40",
+        "start_bp": 392175,
+        "end_bp": 393296,
+        "snp_start": 282,
+        "snp_end": 286,
+        "joint_lrt_p": 0.006798042121430461,
+        "joint_p": 0.007894796528801337,
+        "omni_p": 0.003687473418756748,
+        "beyond_lrt_p": 0.07381319675936326,
+        "snp_bonf_p": 0.38296436640767784,
+        "allele_bonf_p": 0.001468233738757575
+      },
+      {
+        "block_id": "40:w168",
+        "chrom": "40",
+        "start_bp": 405200,
+        "end_bp": 405402,
+        "snp_start": 336,
+        "snp_end": 340,
+        "joint_lrt_p": 0.010341389191825137,
+        "joint_p": 0.011349644776140939,
+        "omni_p": 0.04958181170187487,
+        "beyond_lrt_p": 0.00514028689735951,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.13209946861962876
+      },
+      {
+        "block_id": "40:w23",
+        "chrom": "40",
+        "start_bp": 113934,
+        "end_bp": 129609,
+        "snp_start": 46,
+        "snp_end": 50,
+        "joint_lrt_p": 0.012805152320669165,
+        "joint_p": 0.01421286152724909,
+        "omni_p": 0.016297866453328647,
+        "beyond_lrt_p": 0.42838132460630574,
+        "snp_bonf_p": 0.012783952968176655,
+        "allele_bonf_p": 0.035095741234870435
+      },
+      {
+        "block_id": "40:w550",
+        "chrom": "40",
+        "start_bp": 629713,
+        "end_bp": 630318,
+        "snp_start": 1100,
+        "snp_end": 1104,
+        "joint_lrt_p": 0.014162454053462722,
+        "joint_p": 0.01594337299342744,
+        "omni_p": 0.00564120330366874,
+        "beyond_lrt_p": 0.019635876566868965,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.002082097481045678
+      },
+      {
+        "block_id": "40:w647",
+        "chrom": "40",
+        "start_bp": 670004,
+        "end_bp": 671364,
+        "snp_start": 1294,
+        "snp_end": 1298,
+        "joint_lrt_p": 0.01714403764252737,
+        "joint_p": 0.019483040637038467,
+        "omni_p": 0.0021442783173239444,
+        "beyond_lrt_p": 0.05299963912694066,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.0007379000150483815
+      },
+      {
+        "block_id": "40:w543",
+        "chrom": "40",
+        "start_bp": 625414,
+        "end_bp": 627113,
+        "snp_start": 1086,
+        "snp_end": 1090,
+        "joint_lrt_p": 0.018620410862515487,
+        "joint_p": 0.020734908699287194,
+        "omni_p": 0.024765226803673046,
+        "beyond_lrt_p": 0.02997397230172568,
+        "snp_bonf_p": 0.5631009696054948,
+        "allele_bonf_p": 0.014534413404237157
+      },
+      {
+        "block_id": "40:w157",
+        "chrom": "40",
+        "start_bp": 401926,
+        "end_bp": 402146,
+        "snp_start": 314,
+        "snp_end": 318,
+        "joint_lrt_p": 0.025203465925941224,
+        "joint_p": 0.028170010429366853,
+        "omni_p": 0.024887642494352658,
+        "beyond_lrt_p": 0.296731810852448,
+        "snp_bonf_p": 0.09032463342782909,
+        "allele_bonf_p": 0.015336350169119363
+      }
+    ]
+  },
+  {
+    "panel": "first5000",
+    "trait": "BW6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 5000,
+    "n_blocks": 2499,
+    "n_loci_lrt": 1077,
+    "h2": 0.2402530733520421,
+    "vg": 31676.213309240073,
+    "ve": 100168.9817065382,
+    "threshold": 2.0008003201280514e-05,
+    "seconds": 309.9,
+    "omni_p": {
+      "hits_blocks": 4,
+      "hits_loci": 4,
+      "min_p": 0.0,
+      "lambda_gc": 1.579289412671481
+    },
+    "joint_p": {
+      "hits_blocks": 2,
+      "hits_loci": 2,
+      "min_p": 1.3131937345758515e-18,
+      "lambda_gc": 1.5111339712841652
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 4,
+      "hits_loci": 4,
+      "min_p": 5.8021103614091806e-21,
+      "lambda_gc": 1.5435208533940112
+    },
+    "beyond_p": {
+      "hits_blocks": 28,
+      "hits_loci": 12,
+      "min_p": 6.190793620891909e-17,
+      "lambda_gc": 0.4665136109042451
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 32,
+      "hits_loci": 14,
+      "min_p": 2.976130297427216e-19,
+      "lambda_gc": 0.48944924085500574
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 6.080468767381035e-05,
+      "lambda_gc": 2.093524804662379
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 4,
+      "hits_loci": 4,
+      "min_p": 1.1191619338702715e-20,
+      "lambda_gc": 2.2393344282983674
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w972",
+        "chrom": "40",
+        "start_bp": 801457,
+        "end_bp": 801545,
+        "snp_start": 1944,
+        "snp_end": 1948,
+        "joint_lrt_p": 5.8021103614091806e-21,
+        "joint_p": 1.3131937345758515e-18,
+        "omni_p": 0.0,
+        "beyond_lrt_p": 2.976130297427216e-19,
+        "snp_bonf_p": 0.0005637024862215941,
+        "allele_bonf_p": 1.1191619338702715e-20
+      },
+      {
+        "block_id": "40:w543",
+        "chrom": "40",
+        "start_bp": 625414,
+        "end_bp": 627113,
+        "snp_start": 1086,
+        "snp_end": 1090,
+        "joint_lrt_p": 1.3534809245794854e-06,
+        "joint_p": 2.821560136670593e-06,
+        "omni_p": 1.456789478160303e-06,
+        "beyond_lrt_p": 3.9438776502875926e-05,
+        "snp_bonf_p": 0.6584785993326061,
+        "allele_bonf_p": 5.865420678941172e-07
+      },
+      {
+        "block_id": "40:w2414",
+        "chrom": "40",
+        "start_bp": 1220763,
+        "end_bp": 1221282,
+        "snp_start": 4828,
+        "snp_end": 4832,
+        "joint_lrt_p": 1.530908032110206e-05,
+        "joint_p": 2.5336477027676494e-05,
+        "omni_p": 1.9913434752827364e-05,
+        "beyond_lrt_p": 0.006252732811686993,
+        "snp_bonf_p": 0.2632063942994366,
+        "allele_bonf_p": 8.995599300396884e-06
+      },
+      {
+        "block_id": "40:w898",
+        "chrom": "40",
+        "start_bp": 783683,
+        "end_bp": 783848,
+        "snp_start": 1796,
+        "snp_end": 1800,
+        "joint_lrt_p": 1.9297749042047204e-05,
+        "joint_p": 2.6662297370952915e-05,
+        "omni_p": 3.4909806884309e-05,
+        "beyond_lrt_p": 7.34345887748896e-10,
+        "snp_bonf_p": 0.001780817587539475,
+        "allele_bonf_p": 2.1081779601343602e-05
+      },
+      {
+        "block_id": "40:w1460",
+        "chrom": "40",
+        "start_bp": 971933,
+        "end_bp": 972550,
+        "snp_start": 2920,
+        "snp_end": 2924,
+        "joint_lrt_p": 5.051735078325489e-05,
+        "joint_p": 9.165696972688152e-05,
+        "omni_p": 8.915450336322017e-07,
+        "beyond_lrt_p": 1.0129378568836947e-08,
+        "snp_bonf_p": 0.4108997204191799,
+        "allele_bonf_p": 2.981484066264717e-07
+      },
+      {
+        "block_id": "40:w1096",
+        "chrom": "40",
+        "start_bp": 850291,
+        "end_bp": 851205,
+        "snp_start": 2192,
+        "snp_end": 2196,
+        "joint_lrt_p": 0.00010750144982774966,
+        "joint_p": 0.00015530488781995432,
+        "omni_p": 9.740464135921112e-05,
+        "beyond_lrt_p": 0.0482550618968748,
+        "snp_bonf_p": 0.2643189736540569,
+        "allele_bonf_p": 4.10708802298017e-05
+      },
+      {
+        "block_id": "40:w1681",
+        "chrom": "40",
+        "start_bp": 1032989,
+        "end_bp": 1033152,
+        "snp_start": 3362,
+        "snp_end": 3366,
+        "joint_lrt_p": 0.00012744726842640446,
+        "joint_p": 0.00022335272161014695,
+        "omni_p": 0.0002091493991419613,
+        "beyond_lrt_p": 7.420253647092091e-06,
+        "snp_bonf_p": 0.444710859989312,
+        "allele_bonf_p": 0.00010138773764817224
+      },
+      {
+        "block_id": "40:w1634",
+        "chrom": "40",
+        "start_bp": 1021403,
+        "end_bp": 1021493,
+        "snp_start": 3268,
+        "snp_end": 3272,
+        "joint_lrt_p": 0.00018218441928050742,
+        "joint_p": 0.00026208869087522145,
+        "omni_p": 9.613537185959586e-05,
+        "beyond_lrt_p": 4.5154018271570084e-11,
+        "snp_bonf_p": 0.3248796954581617,
+        "allele_bonf_p": 3.6514229731547014e-05
+      }
+    ]
+  },
+  {
+    "panel": "first5000",
+    "trait": "AFWR",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 5000,
+    "n_blocks": 2499,
+    "n_loci_lrt": 1078,
+    "h2": 0.08011834302901932,
+    "vg": 0.013951915483232002,
+    "ve": 0.16018942288891255,
+    "threshold": 2.0008003201280514e-05,
+    "seconds": 258.6,
+    "omni_p": {
+      "hits_blocks": 84,
+      "hits_loci": 60,
+      "min_p": 0.0,
+      "lambda_gc": 0.04511473520438635
+    },
+    "joint_p": {
+      "hits_blocks": 58,
+      "hits_loci": 45,
+      "min_p": 1.4504245104210442e-16,
+      "lambda_gc": 0.009852162894732414
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 63,
+      "hits_loci": 49,
+      "min_p": 1.9667593853796702e-18,
+      "lambda_gc": 0.010956054722014497
+    },
+    "beyond_p": {
+      "hits_blocks": 47,
+      "hits_loci": 24,
+      "min_p": 1.724808616262736e-78,
+      "lambda_gc": 2.119788915215862e-05
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 53,
+      "hits_loci": 28,
+      "min_p": 0.0,
+      "lambda_gc": 1.969520035559941e-05
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 7.65159012560709e-05,
+      "lambda_gc": 0.5815844493440957
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 95,
+      "hits_loci": 67,
+      "min_p": 6.390450863189553e-18,
+      "lambda_gc": 0.9235460884709619
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w1466",
+        "chrom": "40",
+        "start_bp": 973499,
+        "end_bp": 973644,
+        "snp_start": 2932,
+        "snp_end": 2936,
+        "joint_lrt_p": 1.9667593853796702e-18,
+        "joint_p": 1.4504245104210442e-16,
+        "omni_p": 0.0,
+        "beyond_lrt_p": 0.0,
+        "snp_bonf_p": 0.001193587867217533,
+        "allele_bonf_p": 1.3138769054505122e-17
+      },
+      {
+        "block_id": "40:w743",
+        "chrom": "40",
+        "start_bp": 699040,
+        "end_bp": 699111,
+        "snp_start": 1486,
+        "snp_end": 1490,
+        "joint_lrt_p": 9.825537365120448e-18,
+        "joint_p": 4.421650027359427e-16,
+        "omni_p": 0.0,
+        "beyond_lrt_p": 5.3536391615018316e-17,
+        "snp_bonf_p": 0.047025734475788464,
+        "allele_bonf_p": 6.390450863189553e-18
+      },
+      {
+        "block_id": "40:w1310",
+        "chrom": "40",
+        "start_bp": 937432,
+        "end_bp": 937495,
+        "snp_start": 2620,
+        "snp_end": 2624,
+        "joint_lrt_p": 1.7237657876571475e-16,
+        "joint_p": 7.164735435047156e-15,
+        "omni_p": 0.0,
+        "beyond_lrt_p": 7.212569759063347e-34,
+        "snp_bonf_p": 0.06451905337698016,
+        "allele_bonf_p": 1.2683448458750226e-17
+      },
+      {
+        "block_id": "40:w716",
+        "chrom": "40",
+        "start_bp": 692152,
+        "end_bp": 692335,
+        "snp_start": 1432,
+        "snp_end": 1436,
+        "joint_lrt_p": 1.4632064152622725e-14,
+        "joint_p": 1.925345848929521e-13,
+        "omni_p": 7.827072323607354e-15,
+        "beyond_lrt_p": 0.9425038086296893,
+        "snp_bonf_p": 0.09371803115875758,
+        "allele_bonf_p": 2.6849795618798076e-15
+      },
+      {
+        "block_id": "40:w349",
+        "chrom": "40",
+        "start_bp": 482203,
+        "end_bp": 482389,
+        "snp_start": 698,
+        "snp_end": 702,
+        "joint_lrt_p": 1.7318311213572463e-10,
+        "joint_p": 6.124063291650643e-10,
+        "omni_p": 1.2705808627444526e-10,
+        "beyond_lrt_p": 2.0065300010257152e-11,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 4.549930439146397e-11
+      },
+      {
+        "block_id": "40:w1234",
+        "chrom": "40",
+        "start_bp": 907461,
+        "end_bp": 907853,
+        "snp_start": 2468,
+        "snp_end": 2472,
+        "joint_lrt_p": 6.727503890713122e-10,
+        "joint_p": 2.6335607946560667e-09,
+        "omni_p": 3.2614688727505836e-10,
+        "beyond_lrt_p": 2.2444353077154645e-05,
+        "snp_bonf_p": 0.050599326831091675,
+        "allele_bonf_p": 1.133967917328232e-10
+      },
+      {
+        "block_id": "40:w1236",
+        "chrom": "40",
+        "start_bp": 907918,
+        "end_bp": 908100,
+        "snp_start": 2472,
+        "snp_end": 2476,
+        "joint_lrt_p": 7.976053949356507e-10,
+        "joint_p": 2.8524083292339913e-09,
+        "omni_p": 2.7247204492653054e-10,
+        "beyond_lrt_p": 2.2238853181419025e-06,
+        "snp_bonf_p": 0.042725166454656856,
+        "allele_bonf_p": 9.381114787627654e-11
+      },
+      {
+        "block_id": "40:w1346",
+        "chrom": "40",
+        "start_bp": 946970,
+        "end_bp": 947245,
+        "snp_start": 2692,
+        "snp_end": 2696,
+        "joint_lrt_p": 9.56280385529193e-10,
+        "joint_p": 3.1946529210225083e-09,
+        "omni_p": 1.99672556266961e-10,
+        "beyond_lrt_p": 0.0003349810436518449,
+        "snp_bonf_p": 0.07536060079744519,
+        "allele_bonf_p": 6.797366933962244e-11
+      }
+    ]
+  },
+  {
+    "panel": "first5000",
+    "trait": "BW3_6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 5000,
+    "n_blocks": 2499,
+    "n_loci_lrt": 1080,
+    "h2": 0.2402530733520421,
+    "vg": 21181.50550642608,
+    "ve": 66981.80167170473,
+    "threshold": 2.0008003201280514e-05,
+    "seconds": 58.0,
+    "omni_p": {
+      "hits_blocks": 2,
+      "hits_loci": 2,
+      "min_p": 4.996003610813204e-16,
+      "lambda_gc": 1.6547148188748653
+    },
+    "joint_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 4.838768295660761e-15,
+      "lambda_gc": 1.4675269124879438
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 1.391763770432423e-16,
+      "lambda_gc": 1.6062440107909504
+    },
+    "beyond_p": {
+      "hits_blocks": 23,
+      "hits_loci": 13,
+      "min_p": 3.578455279455154e-14,
+      "lambda_gc": 0.538435330569603
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 24,
+      "hits_loci": 13,
+      "min_p": 1.0644735392722146e-15,
+      "lambda_gc": 0.5626535401528224
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0011840123700399988,
+      "lambda_gc": 1.6625615660376971
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 2,
+      "hits_loci": 2,
+      "min_p": 1.3942342748426945e-16,
+      "lambda_gc": 1.7365555776079835
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w972",
+        "chrom": "40",
+        "start_bp": 801457,
+        "end_bp": 801545,
+        "snp_start": 1944,
+        "snp_end": 1948,
+        "joint_lrt_p": 1.391763770432423e-16,
+        "joint_p": 4.838768295660761e-15,
+        "omni_p": 4.996003610813204e-16,
+        "beyond_lrt_p": 1.0644735392722146e-15,
+        "snp_bonf_p": 0.008685821826903575,
+        "allele_bonf_p": 1.3942342748426945e-16
+      },
+      {
+        "block_id": "40:w543",
+        "chrom": "40",
+        "start_bp": 625414,
+        "end_bp": 627113,
+        "snp_start": 1086,
+        "snp_end": 1090,
+        "joint_lrt_p": 7.471434441025721e-05,
+        "joint_p": 0.00011302706335038455,
+        "omni_p": 5.13831239875584e-05,
+        "beyond_lrt_p": 0.0006412703451451343,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 2.0187365261766937e-05
+      },
+      {
+        "block_id": "40:w2414",
+        "chrom": "40",
+        "start_bp": 1220763,
+        "end_bp": 1221282,
+        "snp_start": 4828,
+        "snp_end": 4832,
+        "joint_lrt_p": 9.499152028192186e-05,
+        "joint_p": 0.00013941520756205188,
+        "omni_p": 0.00011257303212358627,
+        "beyond_lrt_p": 0.011167503598855488,
+        "snp_bonf_p": 0.24986835852591568,
+        "allele_bonf_p": 5.130723040687472e-05
+      },
+      {
+        "block_id": "40:w1681",
+        "chrom": "40",
+        "start_bp": 1032989,
+        "end_bp": 1033152,
+        "snp_start": 3362,
+        "snp_end": 3366,
+        "joint_lrt_p": 0.00012619793216553314,
+        "joint_p": 0.00022948697716998836,
+        "omni_p": 0.00046733214323219086,
+        "beyond_lrt_p": 2.8213419846442052e-05,
+        "snp_bonf_p": 0.16738824584998171,
+        "allele_bonf_p": 0.00048759905756865836
+      },
+      {
+        "block_id": "40:w1156",
+        "chrom": "40",
+        "start_bp": 873654,
+        "end_bp": 873791,
+        "snp_start": 2312,
+        "snp_end": 2316,
+        "joint_lrt_p": 0.0002192018277829452,
+        "joint_p": 0.0003000683033347379,
+        "omni_p": 7.497906861902992e-05,
+        "beyond_lrt_p": 0.00022343679847313305,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 2.7241698633354905e-05
+      },
+      {
+        "block_id": "40:w898",
+        "chrom": "40",
+        "start_bp": 783683,
+        "end_bp": 783848,
+        "snp_start": 1796,
+        "snp_end": 1800,
+        "joint_lrt_p": 0.00022240248341299257,
+        "joint_p": 0.00026984047554222537,
+        "omni_p": 0.00028622923036258907,
+        "beyond_lrt_p": 1.4949288302538764e-08,
+        "snp_bonf_p": 0.014719921513009144,
+        "allele_bonf_p": 0.00015019742424618332
+      },
+      {
+        "block_id": "40:w2385",
+        "chrom": "40",
+        "start_bp": 1212414,
+        "end_bp": 1212748,
+        "snp_start": 4770,
+        "snp_end": 4774,
+        "joint_lrt_p": 0.0002473092604957693,
+        "joint_p": 0.0003672413887433511,
+        "omni_p": 0.00010865883434169055,
+        "beyond_lrt_p": 0.03884025050324859,
+        "snp_bonf_p": 0.8731443099821355,
+        "allele_bonf_p": 4.0190217535499806e-05
+      },
+      {
+        "block_id": "40:w1219",
+        "chrom": "40",
+        "start_bp": 900159,
+        "end_bp": 901304,
+        "snp_start": 2438,
+        "snp_end": 2442,
+        "joint_lrt_p": 0.0002594992714348193,
+        "joint_p": 0.000378719429125367,
+        "omni_p": 0.0006399601378467845,
+        "beyond_lrt_p": 0.10317855327742086,
+        "snp_bonf_p": 0.1274399780206372,
+        "allele_bonf_p": 0.0004934534813939859
+      }
+    ]
+  },
+  {
+    "panel": "first5000",
+    "trait": "EBW6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 5000,
+    "n_blocks": 2499,
+    "n_loci_lrt": 1087,
+    "h2": 0.9999974881198781,
+    "vg": 3065.5628079863777,
+    "ve": 0.0077003456223213975,
+    "threshold": 2.0008003201280514e-05,
+    "seconds": 66.8,
+    "omni_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0016151908780024926,
+      "lambda_gc": 1.3146888428816224
+    },
+    "joint_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0016421662476305075,
+      "lambda_gc": 1.287372576525581
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0013069838186380738,
+      "lambda_gc": 1.3140813584361004
+    },
+    "beyond_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00022115559992830555,
+      "lambda_gc": 0.7782903693948245
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.00013340229175880347,
+      "lambda_gc": 0.818595072502798
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.006937930238059551,
+      "lambda_gc": 1.8266482642967992
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.0005853564805724833,
+      "lambda_gc": 1.785250186805909
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w1220",
+        "chrom": "40",
+        "start_bp": 900991,
+        "end_bp": 901583,
+        "snp_start": 2440,
+        "snp_end": 2444,
+        "joint_lrt_p": 0.0013069838186380738,
+        "joint_p": 0.0016421662476305075,
+        "omni_p": 0.003000475843053352,
+        "beyond_lrt_p": 0.004345753041182852,
+        "snp_bonf_p": 0.769168425183994,
+        "allele_bonf_p": 0.002614763579013292
+      },
+      {
+        "block_id": "40:w972",
+        "chrom": "40",
+        "start_bp": 801457,
+        "end_bp": 801545,
+        "snp_start": 1944,
+        "snp_end": 1948,
+        "joint_lrt_p": 0.0016874310458862125,
+        "joint_p": 0.002033555763459074,
+        "omni_p": 0.003144731568014869,
+        "beyond_lrt_p": 0.01702773414216431,
+        "snp_bonf_p": 0.009453122626246679,
+        "allele_bonf_p": 0.0028305716628538933
+      },
+      {
+        "block_id": "40:w1685",
+        "chrom": "40",
+        "start_bp": 1034024,
+        "end_bp": 1034172,
+        "snp_start": 3370,
+        "snp_end": 3374,
+        "joint_lrt_p": 0.0017877261883629777,
+        "joint_p": 0.00227326773640484,
+        "omni_p": 0.005995905676058955,
+        "beyond_lrt_p": 0.0013252668423426282,
+        "snp_bonf_p": 0.9997669909595588,
+        "allele_bonf_p": 0.02093219488630988
+      },
+      {
+        "block_id": "40:w1171",
+        "chrom": "40",
+        "start_bp": 880570,
+        "end_bp": 881053,
+        "snp_start": 2342,
+        "snp_end": 2346,
+        "joint_lrt_p": 0.001827385576080255,
+        "joint_p": 0.0022565406501209593,
+        "omni_p": 0.005320762870544893,
+        "beyond_lrt_p": 0.0012102117533903287,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.007900795753558424
+      },
+      {
+        "block_id": "40:w2447",
+        "chrom": "40",
+        "start_bp": 1229015,
+        "end_bp": 1229185,
+        "snp_start": 4894,
+        "snp_end": 4898,
+        "joint_lrt_p": 0.0023028850672295945,
+        "joint_p": 0.002811018051743212,
+        "omni_p": 0.0030386942050104615,
+        "beyond_lrt_p": 0.003423538891297563,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.0015842000365240197
+      },
+      {
+        "block_id": "40:w507",
+        "chrom": "40",
+        "start_bp": 611160,
+        "end_bp": 611392,
+        "snp_start": 1014,
+        "snp_end": 1018,
+        "joint_lrt_p": 0.0025033209421936806,
+        "joint_p": 0.0028859562897808606,
+        "omni_p": 0.0029791363238221846,
+        "beyond_lrt_p": 0.0776743836628692,
+        "snp_bonf_p": 0.49755433585595377,
+        "allele_bonf_p": 0.0014980483436155402
+      },
+      {
+        "block_id": "40:w992",
+        "chrom": "40",
+        "start_bp": 808425,
+        "end_bp": 808825,
+        "snp_start": 1984,
+        "snp_end": 1988,
+        "joint_lrt_p": 0.003137333025208376,
+        "joint_p": 0.003586145447667236,
+        "omni_p": 0.005869465829089371,
+        "beyond_lrt_p": 0.11533048910744084,
+        "snp_bonf_p": 0.1439163963034392,
+        "allele_bonf_p": 0.004667223342348152
+      },
+      {
+        "block_id": "40:w295",
+        "chrom": "40",
+        "start_bp": 456524,
+        "end_bp": 457035,
+        "snp_start": 590,
+        "snp_end": 594,
+        "joint_lrt_p": 0.0032929176407005645,
+        "joint_p": 0.00394945416524437,
+        "omni_p": 0.00597433794930996,
+        "beyond_lrt_p": 0.10030044689462381,
+        "snp_bonf_p": 0.2646906241117603,
+        "allele_bonf_p": 0.004206308641352503
+      }
+    ]
+  },
+  {
+    "panel": "first5000",
+    "trait": "GBW6",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 5000,
+    "n_blocks": 2499,
+    "n_loci_lrt": 1085,
+    "h2": 0.9999974881198781,
+    "vg": 2409.574760282133,
+    "ve": 0.006052578146060644,
+    "threshold": 2.0008003201280514e-05,
+    "seconds": 67.3,
+    "omni_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.010737257859905536,
+      "lambda_gc": 0.5525151522740305
+    },
+    "joint_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.006764778275456476,
+      "lambda_gc": 0.7554410111603718
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.005972684641778603,
+      "lambda_gc": 0.7697546106814233
+    },
+    "beyond_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.005189749476641656,
+      "lambda_gc": 0.4791894780890065
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.004177686333120249,
+      "lambda_gc": 0.4976166774930011
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.005711142114702354,
+      "lambda_gc": 2.531630522736954
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.006405942489184569,
+      "lambda_gc": 1.8168760173756922
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w1640",
+        "chrom": "40",
+        "start_bp": 1022880,
+        "end_bp": 1023016,
+        "snp_start": 3280,
+        "snp_end": 3284,
+        "joint_lrt_p": 0.005972684641778603,
+        "joint_p": 0.006824836518365804,
+        "omni_p": 0.016791725447032557,
+        "beyond_lrt_p": 0.08863468102526971,
+        "snp_bonf_p": 0.07503633027795728,
+        "allele_bonf_p": 0.06156559772168526
+      },
+      {
+        "block_id": "40:w1579",
+        "chrom": "40",
+        "start_bp": 1006253,
+        "end_bp": 1006678,
+        "snp_start": 3158,
+        "snp_end": 3162,
+        "joint_lrt_p": 0.00633470110982684,
+        "joint_p": 0.006764778275456476,
+        "omni_p": 0.01211240146168413,
+        "beyond_lrt_p": NaN,
+        "snp_bonf_p": 0.03606895319631989,
+        "allele_bonf_p": 0.018034476598159932
+      },
+      {
+        "block_id": "40:w1643",
+        "chrom": "40",
+        "start_bp": 1023519,
+        "end_bp": 1023686,
+        "snp_start": 3286,
+        "snp_end": 3290,
+        "joint_lrt_p": 0.006412687538876105,
+        "joint_p": 0.007151299759083724,
+        "omni_p": 0.010737257859905536,
+        "beyond_lrt_p": 0.02232341577574057,
+        "snp_bonf_p": 0.06029177972161961,
+        "allele_bonf_p": 0.008648430137561152
+      },
+      {
+        "block_id": "40:w1936",
+        "chrom": "40",
+        "start_bp": 1099318,
+        "end_bp": 1099557,
+        "snp_start": 3872,
+        "snp_end": 3876,
+        "joint_lrt_p": 0.00973459187429837,
+        "joint_p": 0.010704879157015942,
+        "omni_p": 0.011970752232852433,
+        "beyond_lrt_p": 0.2686785909028419,
+        "snp_bonf_p": 0.05055415021793763,
+        "allele_bonf_p": 0.008402696587823064
+      },
+      {
+        "block_id": "40:w1117",
+        "chrom": "40",
+        "start_bp": 858075,
+        "end_bp": 858433,
+        "snp_start": 2234,
+        "snp_end": 2238,
+        "joint_lrt_p": 0.011874235675688245,
+        "joint_p": 0.013984291984967109,
+        "omni_p": 0.03160991878222791,
+        "beyond_lrt_p": 0.05108179066495382,
+        "snp_bonf_p": 0.056115005084601356,
+        "allele_bonf_p": 0.11223001016920249
+      },
+      {
+        "block_id": "40:w1895",
+        "chrom": "40",
+        "start_bp": 1090024,
+        "end_bp": 1090419,
+        "snp_start": 3790,
+        "snp_end": 3794,
+        "joint_lrt_p": 0.011882288373534288,
+        "joint_p": 0.012983822376917262,
+        "omni_p": 0.022517005467441287,
+        "beyond_lrt_p": 0.010615356825304649,
+        "snp_bonf_p": 0.39518876138097825,
+        "allele_bonf_p": 0.020990781708144977
+      },
+      {
+        "block_id": "40:w1982",
+        "chrom": "40",
+        "start_bp": 1108342,
+        "end_bp": 1108764,
+        "snp_start": 3964,
+        "snp_end": 3968,
+        "joint_lrt_p": 0.013991022661232238,
+        "joint_p": 0.0157586304077598,
+        "omni_p": 0.01804837508469176,
+        "beyond_lrt_p": 0.2169079536634577,
+        "snp_bonf_p": 0.014339284728480828,
+        "allele_bonf_p": 0.04639285379184923
+      },
+      {
+        "block_id": "40:w1080",
+        "chrom": "40",
+        "start_bp": 844330,
+        "end_bp": 844971,
+        "snp_start": 2160,
+        "snp_end": 2164,
+        "joint_lrt_p": 0.01442694220110194,
+        "joint_p": 0.014852275779029174,
+        "omni_p": 0.015254178041804345,
+        "beyond_lrt_p": 0.7157372837793081,
+        "snp_bonf_p": 0.025506487274098426,
+        "allele_bonf_p": 0.014852275779029282
+      }
+    ]
+  },
+  {
+    "panel": "first5000",
+    "trait": "ERFI",
+    "kinship": "gcta_grm_8251083",
+    "n": 463,
+    "n_snps": 5000,
+    "n_blocks": 2499,
+    "n_loci_lrt": 1089,
+    "h2": 0.999997488119878,
+    "vg": 2.5200460334973096,
+    "ve": 6.330069438321435e-06,
+    "threshold": 2.0008003201280514e-05,
+    "seconds": 67.3,
+    "omni_p": {
+      "hits_blocks": 3,
+      "hits_loci": 3,
+      "min_p": 0.0,
+      "lambda_gc": 0.3794319562666109
+    },
+    "joint_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 3.094843968196257e-16,
+      "lambda_gc": 0.49030181636222736
+    },
+    "joint_lrt_p": {
+      "hits_blocks": 1,
+      "hits_loci": 1,
+      "min_p": 5.143710224389575e-18,
+      "lambda_gc": 0.49795492471347746
+    },
+    "beyond_p": {
+      "hits_blocks": 26,
+      "hits_loci": 10,
+      "min_p": 2.77419607580724e-16,
+      "lambda_gc": 0.42720686339259367
+    },
+    "beyond_lrt_p": {
+      "hits_blocks": 26,
+      "hits_loci": 10,
+      "min_p": 4.286242426705305e-18,
+      "lambda_gc": 0.44605987167257094
+    },
+    "snp_bonf_p": {
+      "hits_blocks": 0,
+      "hits_loci": 0,
+      "min_p": 0.000415895679715037,
+      "lambda_gc": 0.7438816245000418
+    },
+    "allele_bonf_p": {
+      "hits_blocks": 5,
+      "hits_loci": 5,
+      "min_p": 8.052080728618788e-19,
+      "lambda_gc": 1.3129402863510298
+    },
+    "top_loci": [
+      {
+        "block_id": "40:w972",
+        "chrom": "40",
+        "start_bp": 801457,
+        "end_bp": 801545,
+        "snp_start": 1944,
+        "snp_end": 1948,
+        "joint_lrt_p": 5.143710224389575e-18,
+        "joint_p": 3.094843968196257e-16,
+        "omni_p": 0.0,
+        "beyond_lrt_p": 4.286242426705305e-18,
+        "snp_bonf_p": 0.013889058961412053,
+        "allele_bonf_p": 8.052080728618788e-19
+      },
+      {
+        "block_id": "40:w1460",
+        "chrom": "40",
+        "start_bp": 971933,
+        "end_bp": 972550,
+        "snp_start": 2920,
+        "snp_end": 2924,
+        "joint_lrt_p": 3.429303381745176e-05,
+        "joint_p": 6.234292221287125e-05,
+        "omni_p": 2.544430376394402e-06,
+        "beyond_lrt_p": 6.889901616361279e-10,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 8.598335875154344e-07
+      },
+      {
+        "block_id": "40:w1634",
+        "chrom": "40",
+        "start_bp": 1021403,
+        "end_bp": 1021493,
+        "snp_start": 3268,
+        "snp_end": 3272,
+        "joint_lrt_p": 4.0478034740505185e-05,
+        "joint_p": 5.9935900526682406e-05,
+        "omni_p": 5.734151476866067e-06,
+        "beyond_lrt_p": 9.3617425175325e-11,
+        "snp_bonf_p": 0.9562281217233367,
+        "allele_bonf_p": 1.9743360592827683e-06
+      },
+      {
+        "block_id": "40:w821",
+        "chrom": "40",
+        "start_bp": 733777,
+        "end_bp": 734894,
+        "snp_start": 1642,
+        "snp_end": 1646,
+        "joint_lrt_p": 5.395032620853829e-05,
+        "joint_p": 8.221075080272658e-05,
+        "omni_p": 0.00013032208118918254,
+        "beyond_lrt_p": 9.691047854512686e-05,
+        "snp_bonf_p": 0.2633156666864459,
+        "allele_bonf_p": 9.232590649260523e-05
+      },
+      {
+        "block_id": "40:w1174",
+        "chrom": "40",
+        "start_bp": 881878,
+        "end_bp": 882100,
+        "snp_start": 2348,
+        "snp_end": 2352,
+        "joint_lrt_p": 8.462695600034871e-05,
+        "joint_p": 0.00012514743114044394,
+        "omni_p": 2.03848342727464e-05,
+        "beyond_lrt_p": 0.0012421480494841373,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 7.185137103009302e-06
+      },
+      {
+        "block_id": "40:w906",
+        "chrom": "40",
+        "start_bp": 784595,
+        "end_bp": 785085,
+        "snp_start": 1812,
+        "snp_end": 1816,
+        "joint_lrt_p": 8.638683191741432e-05,
+        "joint_p": 0.00011146502459144419,
+        "omni_p": 0.00011179964142316035,
+        "beyond_lrt_p": 1.67778333411578e-06,
+        "snp_bonf_p": 0.004602844231766032,
+        "allele_bonf_p": 5.670958073183674e-05
+      },
+      {
+        "block_id": "40:w2414",
+        "chrom": "40",
+        "start_bp": 1220763,
+        "end_bp": 1221282,
+        "snp_start": 4828,
+        "snp_end": 4832,
+        "joint_lrt_p": 0.000223483647829178,
+        "joint_p": 0.00031079177738296674,
+        "omni_p": 2.2420547868218232e-05,
+        "beyond_lrt_p": 0.007614427687234194,
+        "snp_bonf_p": 0.7462590947009284,
+        "allele_bonf_p": 7.657447943065788e-06
+      },
+      {
+        "block_id": "40:w1705",
+        "chrom": "40",
+        "start_bp": 1037890,
+        "end_bp": 1037993,
+        "snp_start": 3410,
+        "snp_end": 3414,
+        "joint_lrt_p": 0.0004783981505974563,
+        "joint_p": 0.0006359835626661747,
+        "omni_p": 0.00027376753265512255,
+        "beyond_lrt_p": 3.1784269729652337e-09,
+        "snp_bonf_p": 1.0,
+        "allele_bonf_p": 0.00010654156498888785
+      }
+    ]
+  }
+]

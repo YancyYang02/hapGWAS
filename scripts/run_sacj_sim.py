@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Type I + power for SACJ vs ACJ / joint / allele-Bonf / SNP-Bonf."""
+"""Type I + power for SACJ vs ACJ / joint / allele-Bonf / SNP-Bonf.
+
+Historical v0.4 script. hapGWAS 0.7.1 does not compute SACJ; `multi_allelic_scores` no longer returns `sacj`.
+"""
 from __future__ import annotations
 import json
 from pathlib import Path

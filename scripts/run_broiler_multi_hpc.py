@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""On HPC (broiler): pure physical/production multi-trait panel (NO metabolites)."""
+"""On HPC (broiler): pure physical/production multi-trait panel (NO metabolites).
+
+Historical v0.4 script. `hapgwas run-multi` and `--methods` are not in the 0.7.1 CLI.
+"""
 from __future__ import annotations
 import os, sys, time, shutil
 from pathlib import Path

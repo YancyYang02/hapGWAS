@@ -1,14 +1,12 @@
 """
-Sparse multi-allelic block scores — hapGWAS v0.4 methods core.
+Sparse multi-allelic block scores — hapGWAS v0.3 methods core.
 
 (a) Full multi-df joint score
-(b) ACJ: Adaptive Collapsed Joint via Hamming≤h hard neighborhood merge
-(c) SACJ (NEW): Spectral Adaptive Collapsed Joint — phenotype-blind
-    Hamming-affinity graph → normalized Laplacian → eigengap k →
-    hard cluster allele dosages → joint χ² (calibrated)
-(d) PCA joint + Ridge (Satterthwaite)
+(b) ACJ: Adaptive Collapsed Joint via Hamming-neighborhood allele merge
+    (genotype-driven; χ² calibrated) + optional corr cleanup / df cap
+(c) PCA joint + Ridge (Satterthwaite)
 
-Optional ACJ+: phenotype-informed same-sign corr merge with permutation p.
+Optional ACJ+ : phenotype-informed same-sign corr merge with permutation p.
 """
 
 from __future__ import annotations
@@ -16,7 +14,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-from scipy import stats
+from scipy import linalg, stats
 
 from hapgwas.lmm import NullFit, project_features
 
@@ -35,8 +33,11 @@ def _qr_joint_score(Z: np.ndarray, y: np.ndarray, col_tol: float = 1e-8) -> tupl
     if not np.any(keep):
         return 0.0, 0, float("nan")
     Zk = Z[:, keep]
-    Q, R = np.linalg.qr(Zk, mode="reduced")
-    diag = np.abs(np.diag(R)) if R.ndim == 2 else np.array([abs(float(R))])
+    # Pivoting keeps the nonzero directions in the leading columns.
+    # Without it, a zero in the middle makes Q[:, :r] include an arbitrary
+    # direction outside the column space.
+    Q, R, _piv = linalg.qr(Zk, mode="economic", pivoting=True)
+    diag = np.abs(np.diag(R)) if np.ndim(R) == 2 else np.array([abs(float(R))])
     r = int(np.sum(diag > col_tol))
     if r == 0:
         return 0.0, 0, float("nan")
@@ -111,22 +112,20 @@ def adaptive_collapsed_joint(
     *,
     allele_labels: list[str] | None = None,
     hamming_max: int = 1,
-    corr_thresh: float = 0.9,
+    corr_thresh: float = 1.01,
     max_df: int | None = None,
+    frequencies: np.ndarray | None = None,
+    common_freq: float = 0.10,
 ) -> ACJResult:
     """
-    ACJ (calibrated): Hamming-neighborhood collapse of HapAlleles, then joint χ².
+    ACJ (calibrated): collapse only uncommon HapAlleles, then joint χ².
 
-    Formula:
-      1. For allele strings s_i, s_j (excluding OTHER), if Hamming(s_i,s_j) ≤ h,
-         put them in the same group (union-find).
-      2. Dosage of a group G: z_G = Σ_{j∈G} z_j.
-      3. Optional: further merge groups with dosage corr ≥ corr_thresh.
-      4. Optional: if #groups > max_df, greedily merge highest-corr groups.
-      5. T_ACJ = ||P_{Z*} y||² ~ χ²_rank(Z*).
+    A 4-SNP window is a hypercube. Union-find on every Hamming-1 pair connects
+    almost every haplotype, and the test collapses to a single burden. v0.5
+    therefore merges two alleles only when both have frequency < common_freq
+    (default 0.10) and Hamming distance ≤ h. Common haplotypes stay separate.
 
-    Uses only genotype/design info (not y) ⇒ χ² null calibration holds under
-    the LMM projection model.
+    Uses only genotype/design info (not y), so the χ² null still applies.
     """
     Z = np.asarray(Z, dtype=float)
     y = np.asarray(y, dtype=float).reshape(-1)
@@ -138,9 +137,19 @@ def adaptive_collapsed_joint(
     if len(labels) != k:
         labels = [f"a{j}" for j in range(k)]
 
-    # Step 1: Hamming union-find
+    if frequencies is None:
+        rare = np.ones(k, dtype=bool)
+    else:
+        freq = np.asarray(frequencies, dtype=float).reshape(-1)
+        if freq.shape[0] != k:
+            freq = np.zeros(k)
+        rare = freq < common_freq
+    # Only uncommon alleles may merge. Common haplotypes are never chained together.
     roots = _union_find_merge(
-        k, lambda i, j: _hamming(str(labels[i]), str(labels[j])) <= hamming_max
+        k,
+        lambda i, j: bool(
+            rare[i] and rare[j] and _hamming(str(labels[i]), str(labels[j])) <= hamming_max
+        ),
     )
     groups: dict[int, list[int]] = {}
     for i, r in enumerate(roots):
@@ -220,7 +229,10 @@ def adaptive_collapsed_joint(
 
     Zstar, glabels = corr_force_merge(Zg, glabels, corr_thresh, max_df)
     chisq, df, p = _qr_joint_score(Zstar, y)
-    rule = f"acj_hamming(h<={hamming_max},corr>={corr_thresh},max_df={max_df})"
+    rule = (
+        f"acj_rare_hamming(h<={hamming_max},common_freq<{common_freq},"
+        f"corr>={corr_thresh},max_df={max_df})"
+    )
     return ACJResult(
         chisq=chisq,
         df=df,
@@ -434,216 +446,12 @@ def ridge_score(Z: np.ndarray, y: np.ndarray, *, lam: float | None = None) -> Ri
     return RidgeResult(stat, df, _safe_chi2_sf(stat / scale, df), lam, f"ridge(lam={lam:.4g})")
 
 
-
-
-@dataclass
-class SACJResult:
-    chisq: float
-    df: int
-    p: float
-    n_alleles_in: int
-    n_groups: int
-    k_spectral: int
-    eigengap: float
-    tau: float
-    rule: str
-    group_labels: list[str]
-    p_method: str = "chi2"
-
-
-def _hamming_matrix(labels: list[str]) -> np.ndarray:
-    k = len(labels)
-    H = np.zeros((k, k), dtype=float)
-    for i in range(k):
-        for j in range(i + 1, k):
-            d = float(_hamming(str(labels[i]), str(labels[j])))
-            H[i, j] = H[j, i] = d
-    return H
-
-
-def _kmeans(X: np.ndarray, k: int, rng: np.random.Generator, n_iter: int = 40) -> np.ndarray:
-    """Simple k-means; returns cluster id per row."""
-    n, d = X.shape
-    if k <= 1 or n <= 1:
-        return np.zeros(n, dtype=int)
-    k = min(k, n)
-    # init: farthest-point + random
-    centers = np.empty((k, d), dtype=float)
-    centers[0] = X[int(rng.integers(0, n))]
-    for c in range(1, k):
-        dist = np.min(((X[:, None, :] - centers[None, :c, :]) ** 2).sum(-1), axis=1)
-        dist = np.maximum(dist, 0)
-        s = dist.sum()
-        if s <= 1e-18:
-            centers[c] = X[int(rng.integers(0, n))]
-        else:
-            centers[c] = X[int(rng.choice(n, p=dist / s))]
-    labels = np.zeros(n, dtype=int)
-    for _ in range(n_iter):
-        dist = ((X[:, None, :] - centers[None, :, :]) ** 2).sum(-1)
-        new = np.argmin(dist, axis=1).astype(int)
-        if np.array_equal(new, labels):
-            break
-        labels = new
-        for c in range(k):
-            m = labels == c
-            if np.any(m):
-                centers[c] = X[m].mean(axis=0)
-            else:
-                centers[c] = X[int(rng.integers(0, n))]
-    return labels
-
-
-def spectral_adaptive_collapsed_joint(
-    Z: np.ndarray,
-    y: np.ndarray,
-    *,
-    allele_labels: list[str] | None = None,
-    tau: float = 1.0,
-    h_cap: int = 2,
-    k_max: int | None = None,
-    min_k: int | None = None,
-    rng: np.random.Generator | None = None,
-) -> SACJResult:
-    """
-    SACJ — Spectral Adaptive Collapsed Joint (phenotype-blind, χ²-calibrated).
-
-    Design-only (no y):
-      1. Hamming matrix H on HapAllele strings.
-      2. Sparsified affinity: A_ij = exp(-H_ij/τ) if 0 < H_ij ≤ h_cap (default 2),
-         else 0. OTHER alleles are isolated.
-         (ACJ uses only the hard Hamming≤1 graph; SACJ uses soft weights up to h_cap.)
-      3. Normalized Laplacian L = I - D^{-1/2} A D^{-1/2}.
-      4. Eigengap chooses k ∈ [min_k, k_max] (default min_k=2 when ≥3 alleles).
-      5. Embed with first k eigenvectors (row-normalized); k-means → clusters.
-      6. If clustering yields a single group while ≥3 alleles exist, fall back to a
-         soft spectral basis Z* = Z V_{:,1:m} (drop trivial eigenvector), m=min(k_max,k-1).
-      7. Group/basis dosages → joint χ² on projected ỹ.
-
-    Calibration: steps 1–6 are genotype/design only ⇒ T ~ χ²_rank under the null projection.
-    """
-    Z = np.asarray(Z, dtype=float)
-    y = np.asarray(y, dtype=float).reshape(-1)
-    rng = rng or np.random.default_rng(0)
-    n, k = Z.shape
-    if k == 0:
-        return SACJResult(0.0, 0, float("nan"), 0, 0, 0, 0.0, tau, "sacj", [], "chi2")
-
-    labels = list(allele_labels) if allele_labels is not None else [f"a{j}" for j in range(k)]
-    if len(labels) != k:
-        labels = [f"a{j}" for j in range(k)]
-
-    if k == 1:
-        chisq, df, p = _qr_joint_score(Z, y)
-        return SACJResult(chisq, df, p, 1, 1 if df else 0, 1, 0.0, tau, "sacj_k1", labels[:], "chi2")
-
-    H = _hamming_matrix(labels)
-    other = np.array([str(lb) == "OTHER" for lb in labels], dtype=bool)
-    A = np.exp(-H / max(tau, 1e-6))
-    np.fill_diagonal(A, 0.0)
-    A[H > float(h_cap)] = 0.0
-    A[H <= 0] = 0.0
-    if other.any():
-        A[other, :] = 0.0
-        A[:, other] = 0.0
-
-    deg = A.sum(axis=1)
-    deg_safe = np.where(deg > 1e-12, deg, 1.0)
-    Dmh = 1.0 / np.sqrt(deg_safe)
-    L = np.eye(k) - (Dmh[:, None] * A * Dmh[None, :])
-    L = 0.5 * (L + L.T)
-    try:
-        evals, evecs = np.linalg.eigh(L)
-    except np.linalg.LinAlgError:
-        chisq, df, p = _qr_joint_score(Z, y)
-        return SACJResult(chisq, df, p, k, df, k, 0.0, tau, "sacj_eigh_fail", labels[:], "chi2")
-
-    evals = np.clip(evals, 0.0, None)
-    k_cap = k_max if k_max is not None else min(6, k)
-    k_cap = max(1, min(k_cap, k))
-    mk = min_k if min_k is not None else (2 if k >= 3 else 1)
-    mk = max(1, min(mk, k_cap))
-
-    # eigengap among first k_cap eigenvalues; prefer k>=mk
-    gaps = np.diff(evals[: min(k_cap + 1, k)])
-    k_star = mk
-    gap = 0.0
-    if gaps.size:
-        # candidates: gap after index i ⇒ k=i+1
-        best = None
-        for i, g in enumerate(gaps):
-            kk = i + 1
-            if mk <= kk <= k_cap:
-                if best is None or g > best[0]:
-                    best = (float(g), kk)
-        if best is None:
-            # fall back: largest gap overall, clamped
-            i = int(np.argmax(gaps))
-            k_star = max(mk, min(i + 1, k_cap))
-            gap = float(gaps[i])
-        else:
-            gap, k_star = best
-
-    def soft_basis(m: int):
-        # drop trivial (first) eigenvector when possible
-        m = max(1, min(m, k - 1 if k > 1 else 1))
-        start = 1 if k > 1 and m <= k - 1 else 0
-        V = evecs[:, start : start + m]
-        return Z @ V
-
-    X = evecs[:, :k_star].copy()
-    rn = np.linalg.norm(X, axis=1, keepdims=True)
-    rn = np.where(rn > 1e-12, rn, 1.0)
-    X = X / rn
-    cl = _kmeans(X, k_star, rng)
-
-    if other.any():
-        next_id = int(cl.max()) + 1
-        for i in np.where(other)[0]:
-            cl[i] = next_id
-            next_id += 1
-
-    groups: dict[int, list[int]] = {}
-    for i, c in enumerate(cl):
-        groups.setdefault(int(c), []).append(i)
-
-    mode = "hard"
-    if len(groups) <= 1 and k >= 3:
-        # soft spectral fallback — still phenotype-blind
-        Zstar = soft_basis(min(k_cap, max(mk, 2)))
-        glabels = [f"spec{j}" for j in range(Zstar.shape[1])]
-        mode = "soft"
-        k_star = Zstar.shape[1]
-    else:
-        cols = [np.sum(Z[:, idxs], axis=1) for idxs in groups.values()]
-        glabels = ["+".join(labels[i] for i in idxs) for idxs in groups.values()]
-        Zstar = np.column_stack(cols) if cols else np.zeros((n, 0))
-
-    chisq, df, p = _qr_joint_score(Zstar, y)
-    rule = f"sacj({mode},tau={tau},h_cap={h_cap},k={k_star},eigengap={gap:.4g})"
-    return SACJResult(
-        chisq=chisq,
-        df=df,
-        p=p,
-        n_alleles_in=k,
-        n_groups=Zstar.shape[1] if Zstar.ndim == 2 else 0,
-        k_spectral=int(k_star),
-        eigengap=float(gap),
-        tau=float(tau),
-        rule=rule,
-        group_labels=glabels,
-        p_method="chi2",
-    )
-
-
-
 @dataclass
 class MultiScoreResult:
     full_chisq: float
     full_df: int
     full_p: float
     acj: ACJResult
-    sacj: SACJResult
     pca: PCAResult
     ridge: RidgeResult
     acj_pheno: ACJResult | None = None
@@ -654,28 +462,27 @@ def multi_allelic_scores(
     dosage: np.ndarray,
     *,
     allele_labels: list[str] | None = None,
+    frequencies: np.ndarray | None = None,
+    common_freq: float = 0.10,
     hamming_max: int = 1,
-    acj_corr: float = 0.9,
+    acj_corr: float = 1.01,
     acj_max_df: int | None = None,
     pca_var_frac: float = 0.9,
     ridge_lam: float | None = None,
     with_acj_pheno: bool = False,
     acj_pheno_perms: int = 49,
-    sacj_tau: float = 1.0,
-    sacj_k_max: int | None = None,
 ) -> MultiScoreResult:
     Z = project_features(null, np.asarray(dosage, dtype=float))
     y = null.y_tilde
     full_chisq, full_df, full_p = full_joint_score(Z, y)
-    k = Z.shape[1]
-    md = acj_max_df
-    if md is None and k >= 10:
-        md = 6
     acj = adaptive_collapsed_joint(
-        Z, y, allele_labels=allele_labels, hamming_max=hamming_max, corr_thresh=acj_corr, max_df=md
-    )
-    sacj = spectral_adaptive_collapsed_joint(
-        Z, y, allele_labels=allele_labels, tau=sacj_tau, k_max=sacj_k_max
+        Z, y,
+        allele_labels=allele_labels,
+        hamming_max=hamming_max,
+        corr_thresh=acj_corr,
+        max_df=acj_max_df,
+        frequencies=frequencies,
+        common_freq=common_freq,
     )
     pca = pca_joint_score(Z, y, var_frac=pca_var_frac)
     ridge = ridge_score(Z, y, lam=ridge_lam)
@@ -689,7 +496,6 @@ def multi_allelic_scores(
         full_df=full_df,
         full_p=full_p,
         acj=acj,
-        sacj=sacj,
         pca=pca,
         ridge=ridge,
         acj_pheno=acj_pheno,

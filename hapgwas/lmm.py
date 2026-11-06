@@ -78,45 +78,51 @@ def fit_null_ols(y: np.ndarray, X: np.ndarray | None = None) -> NullFit:
 
 def _reml_vg_ve(y_rot: np.ndarray, X_rot: np.ndarray, evals: np.ndarray) -> tuple[float, float]:
     """
-    Simple 1-D line search REML for y ~ N(X b, vg * S + ve I) after rotating
-    by eigenvectors of K, where S = diag(evals).
+    Profile REML on delta = ve/vg after rotating by the eigenvectors of K.
+
+    V = vg * (K + delta I). The profiled criterion (constants dropped) is
+
+        (n-c) log(RSS) + log|K + delta I| + log|X' (K+delta I)^{-1} X|
+
+    with RSS = (y-Xβ)' (K+delta I)^{-1} (y-Xβ) and vg = RSS/(n-c).
+    This is the FaST-LMM / EMMA profile. An earlier draft added an extra
+    n*log(sigma^2) term, which biases the heritability grid.
     """
     n, c = X_rot.shape
-    # grid over delta = ve/vg (FaST-LMM parameterization), vg = s2/(delta scale)
-    # Use grid on h2 = vg/(vg+ve) in (1e-5, 1-1e-5)
-    h2_grid = np.linspace(1e-5, 1 - 1e-5, 40)
-    best = None
-    for h2 in h2_grid:
-        vg = h2
-        ve = 1.0 - h2
-        w = 1.0 / (vg * evals + ve)
-        # weighted least squares
-        Xw = X_rot * w[:, None]
-        # solve (X' W X) b = X' W y
-        try:
-            XtWX = X_rot.T @ Xw
-            XtWy = X_rot.T @ (w * y_rot)
-            beta = linalg.solve(XtWX, XtWy, assume_a="pos")
-        except linalg.LinAlgError:
-            continue
-        r = y_rot - X_rot @ beta
-        # REML-ish objective: -0.5 ( log|V| + log|X'WX| + n log(rss) )
-        # with V = vg K + ve I on rotated scale -> diag(vg*evals+ve)
-        rss = float(np.sum(w * r * r))  # r' W r under ve+vg scale if vg+ve=1
-        # rescale: actual variance sigma2 * (h2 K + (1-h2)I); estimate sigma2 = rss / (n-c)
-        sigma2 = rss / max(n - c, 1)
-        logdet_V = np.sum(np.log(vg * evals + ve)) + n * np.log(sigma2 + 1e-300)
-        sign, logdet_XtWX = np.linalg.slogdet(XtWX)
-        if sign <= 0:
-            continue
-        # profiled REML criterion to minimize
-        crit = logdet_V + logdet_XtWX + (n - c) * np.log(sigma2 + 1e-300)
-        if best is None or crit < best[0]:
-            best = (crit, float(sigma2 * vg), float(sigma2 * ve), float(ve / max(vg, 1e-12)))
+    evals = np.maximum(np.asarray(evals, dtype=float), 0.0)
+
+    def search(deltas: np.ndarray):
+        best = None
+        for delta in deltas:
+            d = evals + float(delta)
+            w = 1.0 / d
+            xtwx = X_rot.T @ (X_rot * w[:, None])
+            xtwy = X_rot.T @ (w * y_rot)
+            try:
+                beta = linalg.solve(xtwx, xtwy, assume_a="pos")
+            except linalg.LinAlgError:
+                continue
+            resid = y_rot - X_rot @ beta
+            rss = float(np.sum(w * resid * resid))
+            if not np.isfinite(rss) or rss <= 1e-12:
+                continue
+            sign, logdet_x = np.linalg.slogdet(xtwx)
+            if sign <= 0 or not np.isfinite(logdet_x):
+                continue
+            crit = (n - c) * np.log(rss) + float(np.sum(np.log(d))) + logdet_x
+            if best is None or crit < best[0]:
+                vg = rss / max(n - c, 1)
+                best = (crit, float(vg), float(vg * delta), float(delta))
+        return best
+
+    best = search(np.logspace(-5, 5, 41))
+    if best is not None:
+        refined = search(np.logspace(np.log10(best[3]) - 0.6, np.log10(best[3]) + 0.6, 21))
+        if refined is not None:
+            best = refined
     if best is None:
-        # fallback OLS-like
-        r = y_rot - X_rot @ linalg.lstsq(X_rot, y_rot)[0]
-        ve = float(np.dot(r, r) / max(n - c, 1))
+        resid = y_rot - X_rot @ linalg.lstsq(X_rot, y_rot)[0]
+        ve = float(np.dot(resid, resid) / max(n - c, 1))
         return 0.0, ve
     return best[1], best[2]
 
@@ -150,7 +156,7 @@ def fit_null_lmm(
     # Symmetrize
     K = 0.5 * (K + K.T)
     evals, evecs = linalg.eigh(K)
-    evals = np.clip(evals, 1e-8, None)  # numerical floor
+    evals = np.clip(evals, 0.0, None)
     y_rot = evecs.T @ y
     X_rot = evecs.T @ X
     vg, ve = _reml_vg_ve(y_rot, X_rot, evals)
