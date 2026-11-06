@@ -314,7 +314,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     print(f"Wrote {out / 'assoc_alleles.tsv'}")
     show = [
         "block_id", "omni_p", "joint_p", "joint_lrt_p", "joint_lowo_p", "beyond_p", "beyond_lrt_p",
-        "pair_p", "tree_p", "allele_bonf_p", "snp_bonf_p",
+        "pair_p", "pair_minp", "tree_p", "allele_bonf_p", "snp_bonf_p",
     ]
     if len(block_df) and "omni_p" in block_df.columns:
         top = block_df.sort_values("omni_p").head(5)
@@ -386,8 +386,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--pair",
         action="store_true",
         help=(
-            "experimental: add pair_p, the trans compound-het indicator at the first two SNPs "
-            "of each block, scored after additive haplotype dosages"
+            "experimental: pair_p is an ACAT of trans compound-het indicators for every "
+            "consecutive SNP pair in the block, each scored after additive haplotype dosages"
         ),
     )
     r.add_argument(

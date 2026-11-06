@@ -2,10 +2,21 @@
 
 All notable changes to hapGWAS are documented in this file.
 
+## [0.7.3] — 2026-11-06
+
+### Changed
+- `--pair` now scores every consecutive SNP pair in the block. Each trans compound-het indicator is residualized on the block's additive haplotype dosages in the same whitened space as `joint_p` and `beyond_p`. `pair_p` is the ACAT of those 1-df p-values. A two-SNP block still has one pair, so the ACAT is that pair. The first-pair-only p-value is no longer the primary column.
+- Debug columns are `pair_n` (how many pairs entered the ACAT), `pair_minp` (smallest pair p-value, not Bonferroni-adjusted), and `pair_snp_i` / `pair_snp_j` (that pair). The single-pair `pair_chisq` and `pair_df` columns are not written.
+- Package version is **0.7.3**. `CITATION.cff` version is 0.7.3. The `doi` and `identifiers` fields are unchanged and still point at the Zenodo deposit for **v0.4.1**.
+
+### Notes
+- Experimental. A simulation with the phase effect on a pair other than the first SNP pair gained 55–59 percentage points of rejection rate over the first pair alone. Null and additive-only stayed near the nominal level in that check.
+- One broiler463 BW6 spectral LMM (GCTA GRM, h² ≈ 0.19, n = 463, first 20,000 phased SNPs, 9,999 windows of 4 SNPs with step 2, Bonferroni 5.0×10⁻⁶) compared the two scores on the same run. First pair only: 18 windows below 1×10⁻⁴, 16 Bonferroni hits, λ_GC 0.76. Consecutive-pair ACAT: 61 and 45, λ_GC 0.67. The in-window SNP joint score was 25 and 16, λ_GC 0.96. Window `40:w600` still passes (ACAT 6.68×10⁻⁹, first pair 3.34×10⁻⁹, SNP score 0.071). A Bonferroni minimum of the pair p-values matched the 61 / 45 counts with λ_GC 0.36 and is not the shipped column. This panel is not a genome-wide scan. The flag does not claim a new leave-one-chromosome-out method.
+
 ## [0.7.2] — 2026-11-06
 
 ### Added
-- Optional `--pair` on `hapgwas run`. It writes `pair_p` (and `pair_chisq`, `pair_df`, `pair_n`, `pair_snp_i`, `pair_snp_j`, `pair_q`) on the block and locus tables. The statistic is a 1-df score for the trans compound heterozygote at the first two SNPs of the block, after residualizing that indicator on the block's additive haplotype dosages. The score uses the same whitened phenotype as `joint_p` and `beyond_p`. It is not part of `omni_p`. SACJ stays out of the CLI.
+- Optional `--pair` on `hapgwas run`. The first cut of this flag scored only the first two SNPs. **0.7.3 replaces that primary column** with an ACAT over every consecutive pair; the notes below describe the scan that motivated adding the flag, not the 0.7.3 statistic. The score uses the same whitened phenotype as `joint_p` and `beyond_p`. It is not part of `omni_p`. SACJ stays out of the CLI.
 - `tests/test_pair.py`: the indicator rejects more often when the phenotype is that phase configuration than under a null or an additive haplotype effect, under OLS and under an LMM.
 
 ### Notes

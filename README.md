@@ -1,4 +1,4 @@
-# hapGWAS 0.7.2
+# hapGWAS 0.7.3
 
 One command for a phased haplotype scan under a relatedness model, in the role GEMMA plays for SNP GWAS: a kinship null, a default test that does not require you to guess the allelic architecture, and a SNP scan in the same projection so the comparison is fair.
 
@@ -34,7 +34,7 @@ Block ranking and `assoc_loci.tsv` use `omni_p`. `beyond_p` and `beyond_lrt_p` a
 | `acj_p` | Joint score after merging only haplotypes below frequency 0.10 at Hamming distance ≤ 1. Common haplotypes are not chained together |
 | `allele_bonf_p` | Smallest allele p × number of alleles. This is the GHap-like baseline, not the R package GHap |
 | `snp_bonf_p` | Smallest SNP p in the window × number of SNPs in the window |
-| `pair_p` | Optional (`--pair`). 1-df score of the trans compound heterozygote at the first two SNPs, after residualizing on the block's additive haplotype dosages. Experimental. Not part of `omni_p` |
+| `pair_p` | Optional (`--pair`). ACAT of the trans compound-het indicators for every consecutive SNP pair in the block, each residualized on the block's additive haplotype dosages. Experimental. Not part of `omni_p` |
 | `assoc_snps.tsv` | Ordinary 1-df SNP scan. Genome-wide threshold is 0.05 / n_SNPs |
 | `assoc_loci.tsv` | Overlapping windows collapsed to one row per locus |
 
@@ -87,12 +87,22 @@ Family structure that is only partly captured by the GRM is still badly inflated
 
 ## Optional phase-pair column
 
-`--pair` writes `pair_p`, `pair_chisq`, `pair_df`, `pair_n`, `pair_snp_i`, and `pair_snp_j` on `assoc_blocks.tsv` and on the locus table. The indicator is 1 when the first two SNPs of the block are a trans compound heterozygote: one haplotype is alternate/reference and the other is reference/alternate (alleles coded 0/1). It is residualized on the additive haplotype dosages from that block in the same whitened space as `joint_p` and `beyond_p`, including when the null is an LMM. `--lowo` does not change this score; the kinship downdate stays on `joint_lowo_p`. Blocks shorter than two SNPs, and indicators with no residual variation, are left blank. A window of 2 SNPs is this test on that pair. A longer window still scores only its first two SNPs and residualizes on every haplotype in the window, which is how the scan below was run (4-SNP windows, step 2).
+`--pair` writes `pair_p` on `assoc_blocks.tsv` and on the locus table. For each consecutive SNP pair in the block, the indicator is 1 when one haplotype is alternate/reference and the other is reference/alternate (alleles coded 0/1). Each indicator is residualized on the additive haplotype dosages from that block in the same whitened space as `joint_p` and `beyond_p`, including when the null is an LMM. `pair_p` is the ACAT of those 1-df p-values (Liu & Xie, *JASA* 2020). A window of two SNPs has one pair, so the ACAT is that pair's p-value. `pair_n` is the number of pairs that entered the ACAT. `pair_minp` is the smallest of those p-values, and `pair_snp_i` / `pair_snp_j` name that pair. `pair_minp` is not a Bonferroni adjustment and is not the ranking column. `--lowo` does not change this score; the kinship downdate stays on `joint_lowo_p`. Blocks shorter than two SNPs are left blank. This is not part of `omni_p`.
 
-This column is experimental. The evidence for shipping it is one broiler463 BW6 spectral-LMM scan (GCTA GRM, h² ≈ 0.19) of the first 20,000 phased SNPs: 9,999 windows of 4 SNPs, step 2. On that scan the indicator had 15 windows below 1×10⁻⁴ and 10 below the Bonferroni line 5.0×10⁻⁶ (λ_GC = 0.45). All 15 of those 1×10⁻⁴ windows had a two-SNP score above 1×10⁻². Window `40:w600` was 1.40×10⁻⁶ on both the 5,000-SNP and the 20,000-SNP LMM scans. The joint and beyond companions of that indicator had 210 and 184 Bonferroni windows; those columns are not written. `--pair` does not change the kinship and is not a leave-one-chromosome-out method.
+The first-pair-only score is not the default. A phase effect on a later pair in the window is what the consecutive-pair ACAT is for. In the simulation that kept this version, that misaligned phase setting gained 55–59 percentage points of rejection rate over the first pair alone. Null and additive-only draws stayed near the nominal level in that check.
+
+On one broiler463 BW6 spectral LMM (GCTA GRM, h² ≈ 0.19, n = 463) of the first 20,000 phased SNPs — 9,999 windows of 4 SNPs, step 2, Bonferroni 5.0×10⁻⁶ — the same run gave:
+
+| Score | Windows below 1×10⁻⁴ | Bonferroni hits | λ_GC |
+|---|---:|---:|---:|
+| First pair only | 18 | 16 | 0.76 |
+| Consecutive-pair ACAT | 61 | 45 | 0.67 |
+| SNP joint in the window | 25 | 16 | 0.96 |
+
+Window `40:w600` still passes on that run (ACAT 6.68×10⁻⁹; the first pair 3.34×10⁻⁹; the window SNP score 0.071). A Bonferroni minimum of the pair p-values had the same 61 / 45 hit counts and a more conservative λ_GC of 0.36; that adjustment is not `pair_p`. These counts are this 20,000-SNP panel, not a genome-wide scan. `--pair` does not change the kinship and is not a leave-one-chromosome-out method.
 
 ```bash
-hapgwas run --geno phased.vcf.gz --pheno pheno.tsv --window 2 --step 2 --pair --out pair_out
+hapgwas run --geno phased.vcf.gz --pheno pheno.tsv --window 4 --step 2 --pair --out pair_out
 ```
 
 ## Real broiler data
@@ -149,4 +159,4 @@ Author metadata: `CITATION.cff` (Yancong Yang, China Agricultural University). L
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23984394.svg)](https://doi.org/10.5281/zenodo.23984394)
 
-This tree is package version **0.7.2**. The Zenodo version DOI [10.5281/zenodo.23984394](https://doi.org/10.5281/zenodo.23984394) ([record](https://zenodo.org/records/23984394)) and the concept DOI [10.5281/zenodo.23984393](https://doi.org/10.5281/zenodo.23984393) are unchanged and still record the **v0.4.1** deposit. They will be refreshed when a new Zenodo version is minted. Cite the software version you ran, and do not describe the current DOI as a 0.7.2 deposit.
+This tree is package version **0.7.3**. The Zenodo version DOI [10.5281/zenodo.23984394](https://doi.org/10.5281/zenodo.23984394) ([record](https://zenodo.org/records/23984394)) and the concept DOI [10.5281/zenodo.23984393](https://doi.org/10.5281/zenodo.23984393) are unchanged and still record the **v0.4.1** deposit. They will be refreshed when a new Zenodo version is minted. Cite the software version you ran, and do not describe the current DOI as a 0.7.3 deposit.

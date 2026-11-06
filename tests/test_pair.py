@@ -12,7 +12,7 @@ from hapgwas.dosage import build_dosage, haplotypes_from_phased_snps
 from hapgwas.genotype import PhasedGeno, save_npz
 from hapgwas.joint_test import run_genome
 from hapgwas.lmm import fit_null_lmm
-from hapgwas.pair import pair_indicator_score, trans_compound_indicator
+from hapgwas.pair import pair_indicator_score, score_consecutive_pairs, trans_compound_indicator
 
 
 def _two_site(mode: str, rng: np.random.Generator, n: int = 500, beta: float = 0.7):
@@ -46,19 +46,42 @@ def _two_site(mode: str, rng: np.random.Generator, n: int = 500, beta: float = 0
     return hap1, hap2, y, pair
 
 
-def _pair_p(hap1, hap2, y, K=None) -> float:
-    method = "lmm" if K is not None else "ols"
-    null = fit_null_lmm(y, K=K, method=method)
-    dosage = build_dosage(
+def _dosage(hap1, hap2):
+    return build_dosage(
         haplotypes_from_phased_snps(hap1, hap2),
-        min_freq=0.01,
-        min_count=5,
-        collapse_mode="freq",
+        min_freq=0.0,
+        min_count=1,
+        collapse_mode="none",
         drop_ref=True,
     )
-    indicator = trans_compound_indicator(hap1, hap2)
-    _chisq, _df, p = pair_indicator_score(null, dosage.dosage, indicator)
+
+
+def _pair_summary(hap1, hap2, y, K=None):
+    method = "lmm" if K is not None else "ols"
+    null = fit_null_lmm(y, K=K, method=method)
+    dosage = _dosage(hap1, hap2)
+    return null, dosage.dosage, score_consecutive_pairs(null, dosage.dosage, hap1, hap2)
+
+
+def _pair_p(hap1, hap2, y, K=None) -> float:
+    _null, _dosage, scored = _pair_summary(hap1, hap2, y, K=K)
+    return float(scored.pair_p)
+
+
+def _first_pair_p(hap1, hap2, y) -> float:
+    null = fit_null_lmm(y, method="ols")
+    dosage = _dosage(hap1, hap2)
+    _chisq, _df, p = pair_indicator_score(null, dosage.dosage, trans_compound_indicator(hap1, hap2, 0, 1))
     return float(p)
+
+
+def _four_site(mode: str, rng: np.random.Generator, n: int = 420, beta: float = 0.9):
+    """4 SNPs. The phase configuration sits on the last consecutive pair, not the first."""
+    front1, front2, _y, _pair = _two_site("null", rng, n=n, beta=0.0)
+    back1, back2, y, pair = _two_site(mode, rng, n=n, beta=beta)
+    hap1 = np.column_stack([front1, back1])
+    hap2 = np.column_stack([front2, back2])
+    return hap1, hap2, y, pair
 
 
 def _reject_rate(mode: str, rng: np.random.Generator, reps: int, n: int, beta: float, lmm: bool) -> float:
@@ -112,43 +135,90 @@ def test_pair_lmm_keeps_the_same_ordering():
     assert rates["null"] < 0.20, rates
 
 
-def test_run_genome_records_first_two_sites_and_omits_column_by_default():
+def test_two_snp_window_matches_the_single_pair():
+    rng = np.random.default_rng(4)
+    hap1, hap2, y, _pair = _two_site("phase_het", rng, n=180, beta=0.8)
+    null, dosage, scored = _pair_summary(hap1, hap2, y)
+    _chisq, _df, single = pair_indicator_score(null, dosage, trans_compound_indicator(hap1, hap2, 0, 1))
+    assert scored.pair_n == 1
+    assert np.isfinite(scored.pair_p) and np.isfinite(single)
+    assert abs(scored.pair_p - single) < 1e-8
+    assert scored.pair_snp_i == 0 and scored.pair_snp_j == 1
+
+
+def test_later_pair_is_recovered_by_acat_and_missed_by_the_first_pair():
+    rng = np.random.default_rng(21)
+    n, beta, reps = 400, 0.95, 40
+    rates = {mode: {"v2": 0, "v1": 0, "finite_v2": 0, "finite_v1": 0} for mode in ("null", "additive", "phase_het")}
+    for mode in rates:
+        for _ in range(reps):
+            hap1, hap2, y, _pair = _four_site(mode, rng, n=n, beta=beta)
+            p_v2 = _pair_p(hap1, hap2, y)
+            p_v1 = _first_pair_p(hap1, hap2, y)
+            if np.isfinite(p_v2):
+                rates[mode]["finite_v2"] += 1
+                rates[mode]["v2"] += int(p_v2 < 0.05)
+            if np.isfinite(p_v1):
+                rates[mode]["finite_v1"] += 1
+                rates[mode]["v1"] += int(p_v1 < 0.05)
+    for mode in rates:
+        assert rates[mode]["finite_v2"] == reps, rates
+        assert rates[mode]["finite_v1"] > reps * 0.8, rates
+        rates[mode]["v2"] /= reps
+        rates[mode]["v1"] /= rates[mode]["finite_v1"]
+    phase = rates["phase_het"]
+    assert phase["v2"] > 0.45, rates
+    assert phase["v2"] > phase["v1"] + 0.35, rates
+    assert phase["v1"] < 0.20, rates
+    assert rates["null"]["v2"] < 0.15, rates
+    assert rates["additive"]["v2"] < 0.20, rates
+
+    hap1, hap2, y, _pair = _four_site("phase_het", rng, n=360, beta=1.25)
+    _null, _dosage, scored = _pair_summary(hap1, hap2, y)
+    first = _first_pair_p(hap1, hap2, y)
+    assert np.isfinite(scored.pair_p) and scored.pair_p < 1e-4
+    assert scored.pair_n == 3
+    assert np.isfinite(first) and first > scored.pair_p * 50
+    assert (scored.pair_snp_i, scored.pair_snp_j) != (0, 1)
+
+
+def test_run_genome_uses_every_consecutive_pair_and_omits_column_by_default():
     rng = np.random.default_rng(3)
-    hap1, hap2, y, pair = _two_site("phase_het", rng, n=240, beta=1.1)
-    extra_h1 = rng.integers(0, 2, size=(240, 2), dtype=np.int8)
-    extra_h2 = rng.integers(0, 2, size=(240, 2), dtype=np.int8)
-    hap1 = np.column_stack([hap1, extra_h1])
-    hap2 = np.column_stack([hap2, extra_h2])
+    hap1, hap2, y, _pair = _four_site("phase_het", rng, n=280, beta=1.2)
     null = fit_null_lmm(y, method="ols")
     blocks = fixed_windows(4, window=4, chrom="1")
-    plain, _alleles = run_genome(null, blocks, hap1, hap2, apply_fdr=False)
+    plain, _alleles = run_genome(null, blocks, hap1, hap2, apply_fdr=False, min_freq=0.0, min_count=1, collapse_mode="none")
     assert "pair_p" not in plain.columns
-    scored, _alleles = run_genome(null, blocks, hap1, hap2, apply_fdr=True, compute_pair=True)
+    scored, _alleles = run_genome(
+        null, blocks, hap1, hap2, apply_fdr=True, compute_pair=True, min_freq=0.0, min_count=1, collapse_mode="none"
+    )
     row = scored.iloc[0]
-    assert int(row["pair_snp_i"]) == 0
-    assert int(row["pair_snp_j"]) == 1
-    assert int(row["pair_n"]) == int(pair.sum())
-    assert np.isfinite(row["pair_p"])
-    assert row["pair_p"] < 1e-4
+    assert int(row["pair_n"]) == 3
+    assert (int(row["pair_snp_i"]), int(row["pair_snp_j"])) != (0, 1)
+    assert np.isfinite(row["pair_p"]) and row["pair_p"] < 1e-4
+    assert np.isfinite(row["pair_minp"]) and row["pair_minp"] <= row["pair_p"] + 1e-8
     assert "pair_q" in scored.columns
     assert np.isfinite(row["pair_q"])
+    assert "pair_chisq" not in scored.columns
 
 
 def test_run_help_lists_pair(capsys):
     with pytest.raises(SystemExit) as exc:
         main(["run", "--help"])
     assert exc.value.code == 0
-    assert "--pair" in capsys.readouterr().out
+    text = capsys.readouterr().out
+    assert "--pair" in text
+    assert "ACAT" in text
+    assert "consecutive" in text
 
 
 def test_cli_fixture_writes_finite_pair_p(tmp_path):
     rng = np.random.default_rng(7)
     n = 240
-    hap1, hap2, y, _pair = _two_site("phase_het", rng, n=n, beta=1.15)
-    extra_h1 = rng.integers(0, 2, size=(n, 2), dtype=np.int8)
-    extra_h2 = rng.integers(0, 2, size=(n, 2), dtype=np.int8)
-    hap1 = np.column_stack([hap1, extra_h1])
-    hap2 = np.column_stack([hap2, extra_h2])
+    _front1, _front2, _noise, _pair = _two_site("null", rng, n=n, beta=0.0)
+    back1, back2, y, _causal = _two_site("phase_het", rng, n=n, beta=1.2)
+    hap1 = np.column_stack([_front1, back1])
+    hap2 = np.column_stack([_front2, back2])
     ids = [f"S{i:04d}" for i in range(n)]
     geno = PhasedGeno(
         hap1=hap1.astype(np.int8),
@@ -174,9 +244,15 @@ def test_cli_fixture_writes_finite_pair_p(tmp_path):
             "--ols",
             "--pair",
             "--window",
-            "2",
+            "4",
             "--step",
-            "2",
+            "4",
+            "--min-count",
+            "1",
+            "--min-freq",
+            "0",
+            "--collapse",
+            "none",
             "--chrom",
             "1",
             "--out",
@@ -189,6 +265,8 @@ def test_cli_fixture_writes_finite_pair_p(tmp_path):
     assert "pair_p" in blocks.columns
     assert np.isfinite(blocks.loc[0, "pair_p"])
     assert blocks.loc[0, "pair_p"] < 1e-3
+    assert int(blocks.loc[0, "pair_n"]) == 3
+    assert np.isfinite(blocks.loc[0, "pair_minp"])
     assert "pair_p" in loci.columns
     assert np.isfinite(loci["pair_p"]).any()
 
@@ -202,9 +280,9 @@ def test_cli_fixture_writes_finite_pair_p(tmp_path):
             str(pheno_path),
             "--ols",
             "--window",
-            "2",
-            "--step",
-            "2",
+            "4",
+            "--collapse",
+            "none",
             "--out",
             str(plain),
         ]
