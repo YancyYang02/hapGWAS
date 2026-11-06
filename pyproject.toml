@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hapgwas"
-version = "0.7.1"
+version = "0.7.3"
 description = "Haplotype GWAS under one LMM: Cauchy omnibus, exact nested block likelihood ratio, and a SNP scan"
 readme = "README.md"
 requires-python = ">=3.10"

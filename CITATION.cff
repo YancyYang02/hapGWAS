@@ -7,7 +7,7 @@ authors:
     given-names: Yancong
     affiliation: China Agricultural University
 license: MIT
-version: 0.7.1
+version: 0.7.3
 date-released: "2026-11-06"
 doi: 10.5281/zenodo.23984394
 identifiers:
@@ -27,7 +27,10 @@ abstract: >
   The default ranking column is an ACAT omnibus of joint, allele-marginal,
   and SNP scores. Exact block likelihood ratios, a nested beyond-SNP
   haplotype score, and an optional leave-one-window-out kinship downdate
-  are also reported. The recorded Zenodo version DOI still refers to the
+  are also reported. An optional --pair column is an ACAT of trans
+  compound-heterozygote indicators on consecutive SNP pairs, after
+  additive haplotype dosages.
+  The recorded Zenodo version DOI still refers to the
   0.4.1 deposit until a new version is minted.
 keywords:
   - haplotype GWAS

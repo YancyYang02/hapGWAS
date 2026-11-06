@@ -182,6 +182,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
         condition_auto_topsnp=args.condition_auto_topsnp,
         snp_ids=geno.snp_ids,
         apply_fdr=False,
+        compute_pair=bool(getattr(args, "pair", False)),
     )
     lowo_basis = None
     if getattr(args, "lowo", False) and not args.ols:
@@ -256,6 +257,12 @@ def _cmd_run(args: argparse.Namespace) -> int:
         "beyond_lrt": lambda_gc_from_p(block_df["beyond_lrt_p"]) if "beyond_lrt_p" in block_df else None,
         "snp": lambda_gc_from_p(snp_df["snp_p"]) if "snp_p" in snp_df else None,
     }
+    if "pair_p" in block_df.columns:
+        lambdas["pair"] = lambda_gc_from_p(block_df["pair_p"])
+
+    hit_cols = ["omni_p", "joint_p", "acj_p", "allele_bonf_p", "snp_bonf_p"]
+    if "pair_p" in getattr(block_df, "columns", []):
+        hit_cols.append("pair_p")
 
     def _hits(frame, col):
         if frame is None or len(frame) == 0 or col not in frame.columns:
@@ -276,8 +283,8 @@ def _cmd_run(args: argparse.Namespace) -> int:
             for name, n in nulls
         ],
         "lambda_gc_raw_p": lambdas,
-        "hits_blocks": {col: _hits(block_df, col) for col in ("omni_p", "joint_p", "acj_p", "allele_bonf_p", "snp_bonf_p")},
-        "hits_loci": {col: _hits(loci, col) for col in ("omni_p", "joint_p", "acj_p", "allele_bonf_p", "snp_bonf_p")},
+        "hits_blocks": {col: _hits(block_df, col) for col in hit_cols},
+        "hits_loci": {col: _hits(loci, col) for col in hit_cols},
         "snp_hits": _hits(snp_df.assign(snp_p=snp_df["snp_p"]) if len(snp_df) else snp_df, "snp_p") if len(snp_df) else 0,
     }
     # SNP genome-wide threshold is 0.05/n_snps, not the block threshold.
@@ -297,7 +304,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
         f"{k}={v:.3f}" if isinstance(v, float) and v == v else f"{k}=NA" for k, v in lambdas.items()
     ))
     print(f"block Bonferroni {thr:.3g}  hits (blocks / loci):")
-    for col in ("omni_p", "joint_p", "acj_p", "allele_bonf_p", "snp_bonf_p"):
+    for col in hit_cols:
         print(f"  {col:16s}  {meta['hits_blocks'][col]:4d} / {meta['hits_loci'][col]:4d}")
     if len(snp_df):
         print(f"SNP GWAS hits at 0.05/n_snps: {meta['snp_hits']}")
@@ -307,7 +314,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     print(f"Wrote {out / 'assoc_alleles.tsv'}")
     show = [
         "block_id", "omni_p", "joint_p", "joint_lrt_p", "joint_lowo_p", "beyond_p", "beyond_lrt_p",
-        "tree_p", "allele_bonf_p", "snp_bonf_p",
+        "pair_p", "pair_minp", "tree_p", "allele_bonf_p", "snp_bonf_p",
     ]
     if len(block_df) and "omni_p" in block_df.columns:
         top = block_df.sort_values("omni_p").head(5)
@@ -375,6 +382,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="per block, condition on the strongest 1-df SNP inside the block",
     )
     r.add_argument("--ols", action="store_true", help="force OLS null (ignore relatedness)")
+    r.add_argument(
+        "--pair",
+        action="store_true",
+        help=(
+            "experimental: pair_p is an ACAT of trans compound-het indicators for every "
+            "consecutive SNP pair in the block, each scored after additive haplotype dosages"
+        ),
+    )
     r.add_argument(
         "--lowo",
         action="store_true",
