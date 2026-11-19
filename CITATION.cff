@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use hapdc, please cite it as below."
+title: hapdc
+version: 0.6.2
+license: MIT
+type: software
+authors:
+  - family-names: Yang
+    given-names: Yancong
+repository-code: "https://github.com/YancyYang02/hapdc"

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hapdc"
+version = "0.6.2"
+description = "Multi-scale haplotype and diplotype scan for genome-wide association"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [{name = "Yancong Yang"}]
+keywords = ["GWAS", "haplotype", "diplotype", "mixed model", "livestock genetics"]
+dependencies = ["numpy>=1.21", "scipy>=1.7", "threadpoolctl>=3"]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.4"]
+
+[project.scripts]
+hapdc = "hapdc.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/YancyYang02/hapdc"
+
+[tool.setuptools]
+packages = ["hapdc"]
