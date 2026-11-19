@@ -1,0 +1,2 @@
+chrom	start_bp	end_bp	model	variance_explained
+1	290000	328000	recessive_haplotype	0.12
