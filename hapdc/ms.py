@@ -89,13 +89,18 @@ def wacat(plist, slist):
 
     plist : list of (B,) p-value arrays, one per unit; slist : scale label per unit.
     Every scale present gets total weight 1, split equally among its units.
-    p = 1 is replaced by 1 - 1/d (d = number of p-values combined), as in the
-    ACAT/STAAR software, so a single uninformative unit cannot veto the rest.
+    Callers pass testable units only (ms_scan drops units whose design admits
+    no test, using genotype-only validity flags). A p-value equal to 1 (to
+    within 1e-12) from a testable unit is replaced by 1 - 1/d (d = number of
+    p-values combined): the Cauchy transform of p = 1 is -infinity, so one such
+    unit would otherwise veto the rest. All other p-values enter the standard
+    Cauchy combination unchanged.
     Returns combined p (B,) and the per-scale contribution matrix (nscale, B).
     """
     P = np.vstack(plist)
     d = P.shape[0]
-    P = np.clip(P, 1e-300, 1.0 - 1.0 / max(d, 2))
+    P = np.where(P >= 1.0 - 1e-12, 1.0 - 1.0 / max(d, 2), P)
+    P = np.clip(P, 1e-300, 1.0)
     slist = np.asarray(slist)
     present = [s for s in SCALES if (slist == s).any()]
     w = np.zeros(d)
@@ -109,24 +114,30 @@ def wacat(plist, slist):
 
 
 def _snp_p(sc, idx):
-    """Single-marker LMM p-values (len(idx), B) under the scan's variance ratio."""
+    """Single-marker LMM p-values (len(idx), B) under the scan's variance ratio,
+    and a (len(idx),) flag: marker testable (non-constant after the fixed effects)."""
     YS = sc._design_matrix(None, 0)
     R0 = sc._p0(YS)
     rss0 = (R0 * R0).sum(0)
     n = sc.n
     df = n - sc.nfix - 1
     out = np.ones((len(idx), YS.shape[1]))
+    valid = np.zeros(len(idx), bool)
     for c0 in range(0, len(idx), 1000):
         jj = idx[c0:c0 + 1000]
-        X = sc._projG(None, None)[:, jj] * sc.w[:, None]
-        X = sc._p0(X)
+        # project only the marker range this chunk touches (not the whole
+        # chromosome)
+        j0, j1 = int(jj.min()), int(jj.max()) + 1
+        Xa = sc._p0(sc._projG(j0, j1) * sc.w[:, None])
+        ok = sc.testable(j0, j1, Xa)[jj - j0]
+        X = Xa[:, jj - j0]
         nr = (X * X).sum(0)
-        ok = nr > 1e-10
         if ok.any():
             b = (X[:, ok].T @ R0) / nr[ok][:, None]
             rss = np.clip(rss0[None, :] - b * b * nr[ok][:, None], 1e-300, None)
             out[c0 + np.where(ok)[0]] = t2p(b / np.sqrt(rss / df / nr[ok][:, None]), df)
-    return out
+        valid[c0:c0 + len(jj)] = ok
+    return out, valid
 
 
 def ms_scan(sc, anc, which=None, variants=("O", "D"), nadd=True, scales=False, nadds=True):
@@ -156,36 +167,34 @@ def ms_scan(sc, anc, which=None, variants=("O", "D"), nadd=True, scales=False, n
         need.add("NADD_FS")
     res = sc.run(blocks=ivals, verbose=False, need=need) if ivals else None
     snp_idx = np.concatenate([np.arange(anc[i][0], anc[i][1]) for i in which]) if which else np.zeros(0, int)
-    pS = _snp_p(sc, snp_idx)
+    pS, vS = _snp_p(sc, snp_idx)
     spos = {int(j): r for r, j in enumerate(snp_idx)}
     B = pS.shape[1]
     na = len(which)
     P = res["P"] if res is not None else {}
-    unitp = {}
+    V = res["V"] if res is not None else {}
+    # Components are selected with genotype-only validity flags V (never with
+    # the observed p-values), so a phenotype gets the same combined p whether it
+    # is scanned alone or in a batch with other phenotype columns.
+    unitp, unitv = {}, {}
     if "O" in variants:
-        unitp["O"] = P.get("OMNI")
+        unitp["O"] = P.get("OMNI"); unitv["O"] = V.get("OMNI")
     if "D" in variants and res is not None:
-        D = np.ones_like(P["OMNI"])
+        D = np.ones_like(P["OMNI"]); DV = np.zeros(D.shape[0], bool)
         for k in range(D.shape[0]):
-            parts = [P["A_joint"][k], P["CELL_F"][k], P["SACAT"][k], P["NADD_F"][k]]
-            parts = [q for q in parts if not np.all(q == 1.0)]
-            if not parts:
-                D[k] = P["SACAT"][k]
-            else:
+            parts = [P[q][k] for q in ("A_joint", "CELL_F", "SACAT", "NADD_F") if V[q][k]]
+            if parts:
                 D[k] = acat(np.clip(np.vstack(parts), 1e-300, 1 - 1e-12), np.ones(len(parts)))
-        unitp["D"] = D
+                DV[k] = True
+        unitp["D"] = D; unitv["D"] = DV
     if "S" in variants and res is not None:
-        S5 = np.ones_like(P["OMNI"])
+        S5 = np.ones_like(P["OMNI"]); SV = np.zeros(S5.shape[0], bool)
         for k in range(S5.shape[0]):
-            parts = [P["A_joint"][k], P["CELL_F"][k], P["SACAT"][k],
-                     P["P1_acat"][k], P["NADD_F"][k]]
-            parts = [q for q in parts if not np.all(q == 1.0)]
-            if not parts:
-                S5[k] = P["SACAT"][k]
-            else:
-                S5[k] = acat(np.clip(np.vstack(parts), 1e-300, 1 - 1e-12),
-                             np.ones(len(parts)))
-        unitp["S"] = S5
+            parts = [P[q][k] for q in ("A_joint", "CELL_F", "SACAT", "P1_acat", "NADD_F") if V[q][k]]
+            if parts:
+                S5[k] = acat(np.clip(np.vstack(parts), 1e-300, 1 - 1e-12), np.ones(len(parts)))
+                SV[k] = True
+        unitp["S"] = S5; unitv["S"] = SV
     PMS = {v: np.ones((na, B)) for v in variants}
     best = {v: np.empty(na, dtype=object) for v in variants}
     bunit = {v: np.zeros((na, 2), int) for v in variants}
@@ -199,35 +208,39 @@ def ms_scan(sc, anc, which=None, variants=("O", "D"), nadd=True, scales=False, n
         iv = [(j, j + 1) for j in range(a, e)] + [(s, t) for _, s, t in us]
         ks = [uniq[(s, t)] for _, s, t in us]
         snp = [pS[spos[j]] for j in range(a, e)]
+        snpv = [bool(vS[spos[j]]) for j in range(a, e)]
         for v in variants:
-            pl = snp + [unitp[v][k] for k in ks]
-            p, contrib, present = wacat(pl, sl)
+            pl_all = snp + [unitp[v][k] for k in ks]
+            ok_u = snpv + [bool(unitv[v][k]) for k in ks]
+            sel = [u for u, o in enumerate(ok_u) if o]
+            if not sel:
+                best[v][r] = "none"
+                bunit[v][r] = iv[0]
+                continue
+            pl = [pl_all[u] for u in sel]
+            slv = [sl[u] for u in sel]
+            p, contrib, present = wacat(pl, slv)
             PMS[v][r] = p
             best[v][r] = present[int(np.argmax(contrib[:, 0]))]
-            bunit[v][r] = iv[int(np.argmin([x[0] for x in pl]))]
+            bunit[v][r] = iv[sel[int(np.argmin([x[0] for x in pl]))]]
             if scales:
-                Pv = np.clip(np.vstack(pl), 1e-300, 1.0 - 1.0 / max(len(pl), 2))
-                sla = np.asarray(sl)
+                Pv = np.vstack(pl)
+                Pv = np.clip(np.where(Pv >= 1.0 - 1e-12, 1.0 - 1.0 / max(len(pl), 2), Pv), 1e-300, 1.0)
+                sla = np.asarray(slv)
                 for q in present:
                     kq = sla == q
                     PSC[v][q][r] = acat(Pv[kq], np.ones(int(kq.sum())))
         nunits[r] = len(sl)
         if nadd:
-            pn, sn = [], []
-            for (scl, _, _), k in zip(us, ks):
-                q = P["NADD_F"][k]
-                if not np.all(q == 1.0):
-                    pn.append(q); sn.append(scl)
-            if pn:
-                PNA[r] = wacat(pn, sn)[0]
-            if not nadds:
-                continue
-            pn, sn = [], []
-            for (scl, _, _), k in zip(us, ks):
-                q = P["NADD_FS"][k]
-                if not np.all(q == 1.0):
-                    pn.append(q); sn.append(scl)
-            if pn:
-                PNS[r] = wacat(pn, sn)[0]
+            for key, dst in (("NADD_F", PNA), ("NADD_FS", PNS)):
+                if key == "NADD_FS" and not nadds:
+                    continue
+                pn, sn = [], []
+                for (scl, _, _), k in zip(us, ks):
+                    if V[key][k]:
+                        pn.append(P[key][k]); sn.append(scl)
+                if pn:
+                    dst[r] = wacat(pn, sn)[0]
+
     return dict(which=which, P_MS=PMS, P_NADD=PNA, best_scale=best, best_unit=bunit,
                 nunits=nunits, n_unique=len(ivals), P_SC=PSC, P_NADDS=PNS)

@@ -31,7 +31,7 @@ def nadd_anchor(sc, anc_i, YS=None):
         YS = sc._design_matrix(None, 0)
     Ut = sc.U.T
     n = sc.n
-    Q0 = np.linalg.qr(sc.one if sc.one.ndim == 2 else sc.one[:, None])[0]
+    Q0 = sc.Q0
     Xg = (Ut @ sc.G[:, a:e].astype(np.float64)) * sc.w[:, None]
     Qg = _extend(Q0, Xg)
     pl, sl = [], []

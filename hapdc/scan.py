@@ -22,24 +22,30 @@ import time
 import numpy as np
 import scipy.linalg as _sla
 
-from .core import (acat, f2p, jitter_blocks, lambda_gc, ld_blocks,
-                   reml_delta, t2p, window_design, windows)
+from .core import (acat, check_fixed_effects, f2p, jitter_blocks, lambda_gc,
+                   ld_blocks, reml_delta, t2p, window_design, windows)
 
-__all__ = ["Scan", "combine_across_widths"]
+__all__ = ["Scan"]
 
 STATS = ("A_joint", "P1_sidak", "P1_acat", "D_acat", "HDCb", "HDCt",
          "CELL_F", "NADD_F", "NADD_FS", "SACAT", "OMNI")
-# Primary statistic: OMNI = equal-weight ACAT of A_joint (haplotype-additive
-# joint F), CELL_F (diplotype-cell joint F) and SACAT (ACAT of single-marker
-# additive tests in the unit). NADD_F tests the cells given the additive
-# haplotype model (non-additivity). Weights are fixed before any data are seen.
+# Per-unit statistics. The statistic used by `hapdc ms` is D (hapdc.ms):
+# equal-weight ACAT of A_joint (haplotype-additive joint F), CELL_F
+# (diplotype-cell joint F), SACAT (ACAT of single-marker additive tests in the
+# unit) and NADD_F. OMNI (ACAT of A_joint, CELL_F, SACAT) is kept for the
+# `scan` subcommand and for sensitivity analyses. NADD_F tests the cells given
+# the haplotype-additive model of the same unit, i.e. departure from additivity
+# *of the grouped haplotype classes*; NADD_FS additionally conditions on every
+# single-marker dosage of the unit. Weights are fixed before any data are seen.
 
 
 def _prep_scale(U, S, y, covar=None):
     """Rotate a phenotype onto the GRM eigenbasis and return (yr, w, one, delta).
 
     `covar` (n, c) adds fixed-effect covariates (e.g. principal components) to
-    the intercept; `one` is then the whitened (n, 1 + c) fixed-effect design."""
+    the intercept; `one` is then the whitened (n, 1 + c) fixed-effect design.
+    `covar` must already be of full column rank together with the intercept
+    (Scan checks it with core.check_fixed_effects before calling this)."""
     n = len(y)
     Ut = U.T
     yr = Ut @ y
@@ -81,35 +87,68 @@ class Scan:
     y : (n,) phenotype, already aligned to the individuals in H.
     minf, minc : haplotype frequency and diplotype cell-count floors.
     covar : optional (n, c) fixed-effect covariates (e.g. top GRM eigenvectors).
+        The intercept is always included and must not be passed in `covar`.
+    covar_names : optional names of the covariate columns (for messages).
+    covar_policy : "drop" (default) removes covariate columns that are constant
+        or linearly dependent on the intercept and earlier columns before REML
+        and records them in `self.covar_dropped`; "error" raises
+        core.FixedEffectRankError instead.
     """
 
-    def __init__(self, H, meta, U, S, y, minf=0.05, minc=5, seed=20261110, covar=None):
+    def __init__(self, H, meta, U, S, y, minf=0.05, minc=5, seed=20261110, covar=None,
+                 covar_names=None, covar_policy="drop"):
         self.H = H
         self.meta = meta
         self.U, self.S = U, S
         self.y = np.asarray(y, float)
-        self.covar = covar
-        self.minf, self.minc = minf, minc
-        self.seed = seed
         n = len(self.y)
         self.n = n
-        self.yr, self.w, self.one, self.delta = _prep_scale(U, S, self.y, covar)
-        if self.one.ndim == 1:
-            self.q0 = self.one / np.linalg.norm(self.one)
-            self.Q0 = self.q0[:, None]
-        else:
-            self.Q0 = np.linalg.qr(self.one)[0]
-            self.q0 = None
-        self.nfix = self.Q0.shape[1]
+        self.covar, self.covar_names, self.covar_dropped = check_fixed_effects(
+            covar, n, names=covar_names, policy=covar_policy)
+        self.minf, self.minc = minf, minc
+        self.seed = seed
+        self._set_fixed()
         self.G = (H[0::2, :].astype(np.float32) + H[1::2, :].astype(np.float32))
         self._perm = None
         self._UG = None
+        self.cache_blocks = 8
+
+    def _set_fixed(self):
+        """Phenotype-dependent state: REML fit, whitening and fixed-effect basis.
+
+        Q0 is always the orthonormal basis actually used by _p0, also when the
+        design has a single column. `o` is the whitened rotated intercept
+        (U'1) * w, the reference direction of `testable`."""
+        self.yr, self.w, self.one, self.delta = _prep_scale(self.U, self.S, self.y, self.covar)
+        o = self.one if self.one.ndim == 1 else self.one[:, 0]
+        self.o = o
+        self.Q0 = (o / np.linalg.norm(o))[:, None] if self.one.ndim == 1 else _colbasis(self.one)
+        self.nfix = self.Q0.shape[1]
+        self.q0 = self.Q0[:, 0] if self.nfix == 1 else None
 
     def _p0(self, X):
         """Residualise columns of X on the fixed effects (intercept [+ covariates])."""
-        if self.nfix == 1:
-            return X - np.outer(self.q0, self.q0 @ X)
         return X - self.Q0 @ (self.Q0.T @ X)
+
+    def testable(self, s, e, Xw):
+        """Markers s..e-1 that can be tested: polymorphic in the sample (exact,
+        genotype-only) and not explained by the fixed effects. `Xw` is the
+        whitened, fixed-effect-projected dosage block. Its squared column norms
+        are compared with those of the same whitened markers after projecting
+        out the intercept only, i.e. the whitened rotated intercept
+        o = (U'1) * w. Recoding a marker's alleles maps its dosage g to 2 - g,
+        which after removing o changes only the sign of the column, and flipping
+        the sign of an eigenvector changes the sign of one row of every rotated
+        column; the decision is therefore scale-free and invariant to allele
+        coding, to eigenvector signs and to the other markers."""
+        G = np.asarray(self.G[:, s:e])
+        poly = G.max(0) > G.min(0)
+        raw = self._projG(s, e) * self.w[:, None]
+        o = self.o
+        raw = raw - np.outer(o, (o @ raw) / (o @ o))
+        rn = (raw * raw).sum(0)
+        pn = (Xw * Xw).sum(0)
+        return poly & (pn > 1e-8 * np.maximum(rn, 1e-300))
 
     def _projG(self, s=None, e=None):
         """U.T @ G restricted to markers [s, e).
@@ -129,6 +168,15 @@ class Scan:
         for b in range(b0, b1 + 1):
             if b not in self._UG:
                 self._UG[b] = self.U.T @ np.asarray(self.G[:, b * bs:min(m, (b + 1) * bs)], dtype=np.float64)
+        # bounded cache: keep the requested blocks plus a few neighbours, so a
+        # chromosome-long scan holds O(cache_blocks * n * 2048) doubles, not n x m
+        keep = max(self.cache_blocks, b1 - b0 + 1)
+        if len(self._UG) > keep:
+            for kk in sorted(self._UG, key=lambda q: (b0 <= q <= b1, -abs(q - b0))):
+                if len(self._UG) <= keep:
+                    break
+                if not (b0 <= kk <= b1):
+                    del self._UG[kk]
         if b0 == b1:
             return self._UG[b0][:, s - b0 * bs:e - b0 * bs]
         return np.hstack([self._UG[b] for b in range(b0, b1 + 1)])[:, s - b0 * bs:e - b0 * bs]
@@ -143,14 +191,7 @@ class Scan:
         self.y = np.asarray(y, float)
         if len(self.y) != self.n:
             raise ValueError("phenotype length %d != %d" % (len(self.y), self.n))
-        self.yr, self.w, self.one, self.delta = _prep_scale(self.U, self.S, self.y, self.covar)
-        if self.one.ndim == 1:
-            self.q0 = self.one / np.linalg.norm(self.one)
-            self.Q0 = self.q0[:, None]
-        else:
-            self.Q0 = np.linalg.qr(self.one)[0]
-            self.q0 = None
-        self.nfix = self.Q0.shape[1]
+        self._set_fixed()
         return self
 
     def permute(self, nperm):
@@ -161,12 +202,22 @@ class Scan:
         return self
 
     def _design_matrix(self, rows, B):
-        """Raw rotated phenotypes for observed (col 0) and permuted columns."""
+        """Whitened phenotype (column 0) and, if permute() was called, null replicates.
+
+        After rotation by U' and scaling by w = 1/sqrt(S + delta) the phenotype
+        follows a linear model with i.i.d. errors under the null. Replicates are
+        built from those whitened residuals: fitted fixed effects plus permuted
+        residuals (residual permutation in the whitened model, with delta held at
+        its observed-data estimate). The rotated coordinates themselves are not
+        exchangeable -- their variances S + delta differ -- so they are never
+        permuted directly.
+        """
+        y0 = (self.yr * self.w)[:, None]
         if self._perm is None:
-            Y = self.yr[:, None]
-        else:
-            Y = np.column_stack([self.yr, self.yr[self._perm]])
-        return Y * self.w[:, None]
+            return y0
+        r = self._p0(y0)[:, 0]
+        fit = y0[:, 0] - r
+        return np.column_stack([y0[:, 0], fit[:, None] + r[self._perm]])
 
     def run(self, w_size=None, w_step=None, lo=None, hi=None, verbose=True,
             blocks=None, need=None, batch=256):
@@ -193,6 +244,11 @@ class Scan:
         rss0 = (R0 * R0).sum(0)
 
         P = {k: np.ones((len(idx), B)) for k in STATS}
+        # V[k][c]: statistic k is defined for unit c. Set from the genotype
+        # design only (never from the phenotype columns), so downstream filters
+        # that use V give the same answer for a phenotype scanned alone or in
+        # any batch of phenotypes.
+        V = {k: np.zeros(len(idx), bool) for k in STATS}
         nk_ = np.zeros(len(idx), int)
         nc_ = np.zeros(len(idx), int)
         t0 = time.time()
@@ -239,24 +295,31 @@ class Scan:
             Gw = self._projG(s, e) * self.w[:, None]
             Gw = self._p0(Gw)
             gn = (Gw * Gw).sum(0)
-            gok = gn > 1e-8 * max(float(gn.max()), 1e-30)
+            gok = self.testable(s, e, Gw)
             if gok.any():
                 bg = (Gw[:, gok].T @ R0) / gn[gok][:, None]
                 rg = np.clip(rss0[None, :] - bg * bg * gn[gok][:, None], 1e-300, None)
                 tg = bg / np.sqrt(rg / (n - nf - 1) / gn[gok][:, None])
                 pg = np.clip(t2p(tg, n - nf - 1), 1e-300, 1 - 1e-12)
                 P["SACAT"][c] = pg[0] if pg.shape[0] == 1 else acat(pg, np.ones(pg.shape[0]))
+                V["SACAT"][c] = True
             if nk < 2:
                 P["OMNI"][c] = P["SACAT"][c]
+                V["OMNI"][c] = V["SACAT"][c]
                 continue
             Ud = d["Ud"]
             Uc = d["Uc"]
             Xd = Ud * self.w[:, None]
 
             # --- joint haplotype test (A_joint): full model vs intercept only
-            Q, Rr = np.linalg.qr(np.column_stack([self.one, Xd]))
-            keepc = np.abs(np.diag(Rr)) > 1e-8 * np.abs(Rr[0, 0])
-            Q = Q[:, keepc]
+            # Column space of [fixed effects, haplotype dosages] from a
+            # column-pivoted QR (see _colbasis). The dosage columns are linearly
+            # dependent with the intercept (they sum to 2) and can be dependent
+            # among themselves (two haplotypes always carried together). An
+            # unpivoted QR followed by dropping small |R_jj| does not span
+            # col([1, Xd]) when the dependency is not in the last column, which
+            # made the F statistic depend on sample order.
+            Q = _colbasis(np.column_stack([self.one, Xd]))
             k = Q.shape[1]
             RY = YS - Q @ (Q.T @ YS)
             rss1 = (RY * RY).sum(0)
@@ -265,6 +328,7 @@ class Scan:
             if dfa > 0:
                 F = ((rss0 - rss1) / dfa) / (rss1 / df2)
                 P["A_joint"][c] = np.clip(f2p(F, dfa, df2), 1e-300, 1.0)
+                V["A_joint"][c] = True
 
             if do_p1:
                 # --- per-haplotype additive marginal, Sidak over the window (P1)
@@ -281,6 +345,7 @@ class Scan:
                 pmin = pa.min(0)
                 ps = -np.expm1(nk * np.log1p(-np.clip(pmin, 0, 1 - 1e-16)))
                 P["P1_sidak"][c] = np.clip(ps, 1e-300, 1.0)
+                V["P1_sidak"][c] = bool(ok.any())
                 # --- P1_acat: the same per-haplotype marginals, fused by ACAT
                 # instead of collapsed to the smallest one. Shares every
                 # intermediate with P1_sidak, so this adds no arithmetic.
@@ -288,6 +353,7 @@ class Scan:
                     pao = np.clip(pa[ok], 1e-300, 1 - 1e-12)
                     P["P1_acat"][c] = (pao[0] if pao.shape[0] == 1
                                        else acat(pao, np.ones(pao.shape[0])))
+                    V["P1_acat"][c] = True
             # --- diplotype test (D_acat): cells of the joint genotype, ACAT over cells
             if do_dac and d["ncell"] > 1:
                 Xc0 = Uc * self.w[:, None]
@@ -304,19 +370,19 @@ class Scan:
                     P["HDCb"][c] = acat(np.vstack([ps, dac]), np.array([1.0, 1.0]))
                     # weighted variant, kept only for sensitivity analysis
                     P["HDCt"][c] = acat(np.vstack([ps, dac]), np.array([0.85, 0.15]))
-            # --- CELL_F: joint F over diplotype cells vs intercept only
-            parts = [P["A_joint"][c], P["SACAT"][c]]
+                    V["D_acat"][c] = V["HDCb"][c] = V["HDCt"][c] = True
+            # --- CELL_F: joint F over diplotype cells vs the null model (intercept [+ covariates])
+            parts = [P[q][c] for q in ("A_joint", "SACAT") if V[q][c]]
             if d["ncell"] >= 2:
                 Xc_ = Uc * self.w[:, None]
-                Qc, Rc = np.linalg.qr(np.column_stack([self.one, Xc_]))
-                kc = np.abs(np.diag(Rc)) > 1e-8 * np.abs(Rc[0, 0])
-                Qc = Qc[:, kc]
+                Qc = _colbasis(np.column_stack([self.one, Xc_]))
                 kcell = Qc.shape[1]
                 if kcell > nf and n - kcell > 0:
                     RYc = YS - Qc @ (Qc.T @ YS)
                     rssc = (RYc * RYc).sum(0)
                     Fc = ((rss0 - rssc) / (kcell - nf)) / (rssc / (n - kcell))
                     P["CELL_F"][c] = np.clip(f2p(Fc, kcell - nf, n - kcell), 1e-300, 1.0)
+                    V["CELL_F"][c] = True
                     parts.append(P["CELL_F"][c])
                 # --- NADD_F: cells given the additive haplotype model
                 # Column space from a column-pivoted QR. [1, Xd, Xc] is rank
@@ -332,6 +398,7 @@ class Scan:
                     rssf = (RYf * RYf).sum(0)
                     Fn = ((rss1 - rssf) / (kfull - k)) / (rssf / (n - kfull))
                     P["NADD_F"][c] = np.clip(f2p(Fn, kfull - k, n - kfull), 1e-300, 1.0)
+                    V["NADD_F"][c] = True
                 if do_nfs:
                     # --- NADD_FS (addendum NF): cells given haplotype dosages AND all
                     # single-marker dosages of the unit (additive closure)
@@ -343,8 +410,11 @@ class Scan:
                         RYb = YS - Qb @ (Qb.T @ YS); rssb_ = (RYb * RYb).sum(0)
                         Fs = ((rssa_ - rssb_) / (kall - kadd)) / (rssb_ / (n - kall))
                         P["NADD_FS"][c] = np.clip(f2p(Fs, kall - kadd, n - kall), 1e-300, 1.0)
-            pp = np.clip(np.vstack(parts), 1e-300, 1 - 1e-12)
-            P["OMNI"][c] = acat(pp, np.ones(pp.shape[0]))
+                        V["NADD_FS"][c] = True
+            if parts:
+                pp = np.clip(np.vstack(parts), 1e-300, 1 - 1e-12)
+                P["OMNI"][c] = acat(pp, np.ones(pp.shape[0]))
+                V["OMNI"][c] = True
             if verbose and c % 500 == 0 and c:
                 print("  win %d/%d nk=%d ncell=%d %.0fs" % (c, len(idx), nk, d["ncell"], time.time() - t0),
                       flush=True)
@@ -352,7 +422,7 @@ class Scan:
         return dict(w_size=w_size, w_step=w_step, lo=lo, hi=ceil, nwin=len(idx),
                     design="blocks" if blocks is not None else "fixed",
                     starts=[starts[i] for i in idx],
-                    nk=nk_, ncell=nc_, P=P, B=B, delta=self.delta,
+                    nk=nk_, ncell=nc_, P=P, V=V, B=B, delta=self.delta,
                     elapsed=time.time() - t0, stats=list(STATS))
 
     def calibrate(self, res, stats=None):
@@ -372,20 +442,3 @@ class Scan:
                           n_below=int((M[:, 0] <= thr).sum()),
                           n_perm=int(nul.shape[1]))
         return out
-
-
-def combine_across_widths(results, weights=None):
-    """ACAT-combine one statistic across a window-width ladder, equal weights by default."""
-    stat_sets = [r for r in results if r is not None]
-    if not stat_sets:
-        return None
-    keys = [k for k in STATS if all(k in r["P"] for r in stat_sets)]
-    nup = min(r["P"][k].shape[0] for r in stat_sets for k in keys)
-    out = {}
-    for k in keys:
-        stack = np.stack([r["P"][k][:nup] for r in stat_sets], 0)  # (nwidth, nwin, B)
-        w = np.ones(len(stat_sets)) if weights is None else np.asarray(weights, float)
-        # ACAT over widths, vectorised over (window, column)
-        Pw = stack.reshape(len(stat_sets), -1)
-        out[k] = acat(Pw, w).reshape(nup, -1)
-    return out

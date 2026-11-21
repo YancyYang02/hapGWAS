@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / py${{ matrix.python }} / ${{ matrix.deps }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # minimum versions declared in pyproject.toml
+          - {os: ubuntu-22.04, python: "3.9",  deps: "min", pins: "numpy==1.21.6 scipy==1.7.3 threadpoolctl==3.0.0"}
+          # current releases
+          - {os: ubuntu-latest, python: "3.11", deps: "latest", pins: ""}
+          - {os: ubuntu-latest, python: "3.13", deps: "latest", pins: ""}
+          - {os: macos-latest,  python: "3.12", deps: "latest", pins: ""}
+          - {os: windows-latest, python: "3.12", deps: "latest", pins: ""}
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: install
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [ -n "${{ matrix.pins }}" ]; then pip install ${{ matrix.pins }}; fi
+          pip install .
+          pip install pytest
+          python -c "import hapdc, numpy, scipy; print(hapdc.__version__, numpy.__version__, scipy.__version__)"
+      - name: version metadata agrees
+        shell: bash
+        run: |
+          v_pkg=$(python -c "import hapdc; print(hapdc.__version__)")
+          v_cff=$(grep -E '^version:' CITATION.cff | awk '{print $2}' | tr -d '\r')
+          echo "package=$v_pkg citation=$v_cff"
+          test "$v_pkg" = "$v_cff"
+      - name: regression tests
+        run: python -m pytest -q tests
+      - name: selftest (main D pipeline)
+        run: hapdc selftest
+      - name: toy example
+        shell: bash
+        run: bash examples/run_example.sh

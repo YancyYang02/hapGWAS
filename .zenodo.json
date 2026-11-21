@@ -1,0 +1,28 @@
+{
+  "title": "hapdc: multi-scale haplotype and diplotype scan for genome-wide association",
+  "upload_type": "software",
+  "version": "0.6.6",
+  "publication_date": "2026-11-21",
+  "description": "hapdc tests haplotype and diplotype effects in genomic windows and LD-defined units at several scales, using a linear mixed model with a genomic relationship matrix. Includes a command-line interface, regression tests, a self-test and a toy example dataset.",
+  "creators": [
+    {
+      "name": "Yang, Yancong"
+    }
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "keywords": [
+    "GWAS",
+    "haplotype",
+    "diplotype",
+    "mixed model",
+    "livestock genetics"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/YancyYang02/hapdc",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

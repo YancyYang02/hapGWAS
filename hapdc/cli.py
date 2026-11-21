@@ -15,6 +15,66 @@ def _mkout(p):
     return p
 
 
+def _sha256(path, bs=1 << 22):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for b in iter(lambda: f.read(bs), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
+def _md5(path, bs=1 << 22):
+    import hashlib
+    h = hashlib.md5()
+    with open(path, "rb") as f:
+        for b in iter(lambda: f.read(bs), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
+def _input_key(path, md5):
+    """Unique provenance key of one input file: normalised absolute path + MD5."""
+    return "%s#md5=%s" % (os.path.normcase(os.path.realpath(os.path.abspath(path))), md5)
+
+
+def _input_record(path, role=None):
+    md5 = _md5(path)
+    rec = dict(path=os.path.realpath(os.path.abspath(path)), bytes=os.path.getsize(path),
+               md5=md5, sha256=_sha256(path))
+    if role:
+        rec["role"] = role
+    return _input_key(path, md5), rec
+
+
+def _provenance(a, files, roles=None):
+    """Software version, command line, environment and input hashes for summary.json.
+
+    `inputs` is keyed by the normalised absolute path plus the MD5 of the file,
+    so two inputs with the same file name in different directories (for
+    example per-chromosome tables of one trait) are both recorded. A file passed
+    twice is recorded once, with every role it was passed under."""
+    import platform
+    import scipy
+    from . import __version__
+    roles = list(roles) if roles is not None else [None] * len(files)
+    inputs = {}
+    for f, ro in zip(files, roles):
+        if not f or not os.path.exists(f):
+            continue
+        k, rec = _input_record(f, ro)
+        if k in inputs:
+            prev = inputs[k].get("role")
+            if ro and prev and ro not in prev.split(","):
+                inputs[k]["role"] = prev + "," + ro
+            continue
+        inputs[k] = rec
+    return dict(hapdc_version=__version__, argv=sys.argv, command=a.cmd,
+                options={k: v for k, v in vars(a).items() if k != "func"},
+                python=platform.python_version(), numpy=np.__version__, scipy=scipy.__version__,
+                inputs=inputs, n_inputs=len(inputs))
+
+
 # ---------------------------------------------------------------- prep
 def cmd_prep(a):
     _mkout(a.out)
@@ -45,10 +105,14 @@ def cmd_prep(a):
     Y = []
     names = []
     for p in a.pheno.split(","):
-        y = io.read_pheno(p, keep_ids, miss=miss_codes)
-        names.append(os.path.splitext(os.path.basename(p))[0])
-        Y.append(y)
+        # every trait column of every file; a two-column file keeps its file stem as the trait name
+        Yp, hn = io.read_pheno_table(p, keep_ids, miss=miss_codes)
+        names += [os.path.splitext(os.path.basename(p))[0]] if Yp.shape[1] == 1 else list(hn)
+        Y.append(Yp)
     Y = np.column_stack(Y)
+    if len(set(names)) < len(names):
+        raise SystemExit("duplicate trait names across phenotype files: %s" % names)
+    print("markers dropped while reading the VCF: %s" % dropped, flush=True)
     ok = np.isfinite(Y).any(1)
     np.save(os.path.join(a.out, "traits.npy"), Y[ok])
     np.save(os.path.join(a.out, "keep.npy"), np.where(ok)[0])
@@ -71,20 +135,22 @@ def cmd_scan(a):
     meta = [tuple(x) for x in meta]
     widths = [int(x) for x in str(a.wsize).split(",")]
     ti = a.trait
+    # traits.npy holds only the prep samples with at least one trait value
+    # (keep.npy indexes them in hap.npy / K_keep.npy); this trait further drops
+    # its own missing individuals. The GRM is re-decomposed whenever the sample
+    # set differs from the one eig.npz was computed for.
+    kp = os.path.join(a.data, "keep.npy")
+    keep_rows = np.load(kp) if os.path.exists(kp) else np.arange(K.shape[0])
     y = np.asarray(Y[:, ti], float)
     ok = np.isfinite(y)
-    if not ok.all():
-        # Missing individuals are dropped for this trait only. H holds two
-        # rows per individual, so the reduced GRM is re-decomposed rather
-        # than subsetting the stored eigenvectors.
+    rows = keep_rows[ok]
+    if len(rows) < K.shape[0]:
         m = H.shape[1]
-        H = np.ascontiguousarray(H.reshape(len(y), 2, m)[ok].reshape(-1, m))
-        Kr = K[np.ix_(ok, ok)].astype(float)
-        S, U = np.linalg.eigh(Kr)
+        H = np.ascontiguousarray(H.reshape(K.shape[0], 2, m)[rows].reshape(-1, m))
+        S, U = np.linalg.eigh(K[np.ix_(rows, rows)].astype(float))
         S = np.clip(S, 1e-6, None)
         y = y[ok]
-        print("trait %d: %d of %d kept after dropping missing"
-              % (ti, int(ok.sum()), len(ok)), flush=True)
+        print("trait %d: %d of %d samples used" % (ti, len(rows), K.shape[0]), flush=True)
     else:
         E = np.load(os.path.join(a.data, "eig.npz"))
         S, U = E["S"], E["U"]
@@ -156,6 +222,13 @@ def _read_covar(path, ids):
     return np.array([tab.get(i, [np.nan] * k) for i in ids], float), hdr[1:]
 
 
+# lambda_gc of `ms` anchor p-values is below 1 under the null (the Cauchy
+# combination is conservative away from the tail) by an amount that depends on
+# the reference panel, the marker density, the anchor count and the transform.
+# No generic null range is built in; a condition-matched range can be supplied
+# with --lambda-ref LO,HI (e.g. the central 95% of lambda_gc over null
+# phenotypes scanned with the same panel and options).
+
 _MS_CTX = {}
 _BLAS_LIMIT = None
 
@@ -184,14 +257,16 @@ def _ms_chrom(ch):
     blk = np.asarray(g["Hall"][:, cols[0]:cols[-1] + 1])
     H = np.ascontiguousarray(blk[g["hrow"]][:, cols - cols[0]])
     p = g["pos"][cols]
-    bl = core.ld_blocks(H, p, dmin=a.ld_dmin, max_span=a.ld_maxspan, min_mk=2)["blocks"]
+    bl = core.ld_blocks(H, p, dmin=a.ld_dmin, max_span=a.ld_maxspan, min_mk=2,
+                        hap_cover=a.ld_hapcover, minf=a.minf)["blocks"]
     cov = np.zeros(len(cols), bool); units = []
     for s_, e_ in bl:
         units.append((int(s_), int(e_))); cov[s_:e_] = True
     units += [(int(j), int(j) + 1) for j in np.where(~cov)[0]]; units.sort()
     anc = M.anchors(units, a.anchor_min)
     meta = [g["markers"][j] for j in cols]
-    sc = scan.Scan(H, meta, g["U"], g["S"], g["yt"], minf=a.minf, minc=a.minc, covar=g["C"])
+    sc = scan.Scan(H, meta, g["U"], g["S"], g["yt"], minf=a.minf, minc=a.minc, covar=g["C"],
+                   covar_policy="error")
     rows = []
     for lo in range(0, len(anc), a.chunk):
         r = M.ms_scan(sc, anc, which=range(lo, min(lo + a.chunk, len(anc))), variants=("D",), nadd=True, nadds=False)
@@ -217,11 +292,29 @@ def cmd_ms(a):
     markers = [tuple(x) for x in json.load(open(os.path.join(a.data, "markers.json")))[0]]
     y = np.asarray(Y[:, a.trait], float)
     C = None
+    cnames = []
     if a.covar:
         C, cnames = _read_covar(a.covar, ids)
         print("covariates:", cnames, flush=True)
     ok = np.isfinite(y) & (np.isfinite(C).all(1) if C is not None else True)
     idx = np.where(ok)[0]
+    covar_dropped = []
+    if C is not None:
+        # Rank check of [intercept, covariates] on the samples actually analysed,
+        # before any REML fit: a constant column (e.g. a level that became
+        # constant after removing missing phenotypes, or a user-supplied
+        # intercept) or a duplicated / linearly dependent column is dropped
+        # (--covar-rank drop, default) or rejected (--covar-rank error).
+        Ck, kn, covar_dropped = core.check_fixed_effects(C[idx], len(idx), names=cnames,
+                                                         policy=a.covar_rank)
+        for d_ in covar_dropped:
+            print("covariate %s dropped before REML: %s" % (d_["name"], d_["reason"]), flush=True)
+        if Ck is None:
+            print("covariates: none left after the rank check; intercept only", flush=True)
+            C = None
+        else:
+            C = np.full((len(ids), Ck.shape[1]), np.nan); C[idx] = Ck
+        cnames = kn
     K = K[np.ix_(keep_rows, keep_rows)][np.ix_(idx, idx)]
     S, U = np.linalg.eigh(K)
     S = np.clip(S, 1e-6, None)
@@ -278,27 +371,99 @@ def cmd_ms(a):
                 print("chr %s: %d markers, %d anchors, %.0fs" % (ch_, nm, na, time.time() - t0), flush=True)
         for ch in chroms:
             rows += res[ch]
-    NA = len(rows); thr = 0.05 / NA
+    NA = len(rows)
+    n_tests = int(a.n_tests) if a.n_tests else NA
+    if a.chrom is not None and not a.n_tests:
+        print("WARNING: --chrom scans a subset; the Bonferroni threshold below uses only its %d anchors. "
+              "For a genome-wide threshold pass --n-tests <genome-wide anchor count>, or combine the "
+              "per-chromosome tables with `hapdc merge`." % NA, flush=True)
+    thr = 0.05 / n_tests
     _lam = float(core.lambda_gc(np.array([r_[4] for r_ in rows])))
-    print("lambda_gc of anchor p-values = %.3f (null reference 0.61-0.68: the Cauchy combination is "
-          "conservative away from the tail)" % _lam, flush=True)
-    if _lam < 0.45:
-        print("WARNING: lambda_gc = %.3f is well below the null reference; the single-GRM null model may fit "
-              "poorly (kernel LRT = %.1f), as in samples made of discrete breeds or strata. Do not use the "
-              "Bonferroni threshold; take the threshold from a permutation that preserves that structure."
-              % (_lam, kp_lrt), flush=True)
+    lam_ref = None
+    if a.lambda_ref:
+        lam_ref = tuple(float(x) for x in a.lambda_ref.split(","))
+        if len(lam_ref) != 2 or not lam_ref[0] < lam_ref[1]:
+            raise SystemExit("--lambda-ref expects LO,HI with LO < HI")
+    print("lambda_gc of anchor p-values = %.3f. Under the null this is below 1 by an amount that depends "
+          "on the panel, marker density, anchor count and transform; it is descriptive, not a calibration "
+          "test (use a permutation threshold to check calibration)." % _lam, flush=True)
+    if lam_ref is not None:
+        print("lambda_gc %.3f is %s the user-supplied reference range %.3f-%.3f"
+              % (_lam, "inside" if lam_ref[0] <= _lam <= lam_ref[1] else "OUTSIDE", lam_ref[0], lam_ref[1]),
+              flush=True)
     path = os.path.join(out, "%s.anchors.tsv" % tname)
     with open(path, "w") as f:
         f.write("chrom\tstart_bp\tend_bp\tn_markers\tP\tlead_scale\tlead_unit_start\tlead_unit_end\tP_nonadditive\tsig_bonf\n")
         for rw in rows:
             f.write("%s\t%d\t%d\t%d\t%.4g\t%s\t%d\t%d\t%.4g\t%d\n" % (rw + (int(rw[4] < thr),)))
-    json.dump(dict(trait=tname, n=int(len(idx)), n_anchors=NA, threshold_bonf=thr, n_sig=int(sum(r_[4] < thr for r_ in rows)),
-                   lambda_gc=float(core.lambda_gc(np.array([r_[4] for r_ in rows]))), anchor_min=a.anchor_min,
+    json.dump(dict(trait=tname, n=int(len(idx)), n_anchors=NA, n_tests_bonf=n_tests, chrom=a.chrom, threshold_bonf=thr, n_sig=int(sum(r_[4] < thr for r_ in rows)),
+                   lambda_gc=_lam, lambda_ref=(list(lam_ref) if lam_ref is not None else None),
+                   anchor_min=a.anchor_min,
                    kernel_power=kp_g, kernel_power_lrt=kp_lrt, kernel_power_best=float(max(_tab, key=lambda t: t[1])[0]),
-                   ld_dmin=a.ld_dmin, ld_maxspan=a.ld_maxspan, minf=a.minf, minc=a.minc, covar=a.covar,
-                   elapsed_s=round(time.time() - t0, 1)),
+                   ld_dmin=a.ld_dmin, ld_maxspan=a.ld_maxspan, ld_hapcover=a.ld_hapcover, minf=a.minf, minc=a.minc,
+                   covar=a.covar, covariates_used=cnames, covariates_dropped=covar_dropped,
+                   covar_rank_policy=a.covar_rank, transform=("int" if (a.transform == "int" and len(np.unique(y[idx])) > 2) else "none"),
+                   kernel_power_option=a.kernel_power, n_tests_source=("--n-tests" if a.n_tests else "anchors scanned"),
+                   elapsed_s=round(time.time() - t0, 1),
+                   provenance=_provenance(a, [os.path.join(a.data, f) for f in
+                                              ("meta.json", "markers.json", "hap.npy", "traits.npy", "K_keep.npy", "keep.npy")]
+                                          + ([a.covar] if a.covar else []),
+                                          roles=["prep"] * 6 + (["covar"] if a.covar else []))),
               open(os.path.join(out, "%s.summary.json" % tname), "w"), indent=1)
     print("ms done: %d anchors, threshold %.3g, %d significant -> %s" % (NA, thr, sum(r_[4] < thr for r_ in rows), path))
+    return 0
+
+
+# ---------------------------------------------------------------- merge
+def cmd_merge(a):
+    """Combine per-chromosome `ms` anchor tables of one trait; genome-wide Bonferroni."""
+    hdr, rows = None, []
+    for p in a.tables:
+        with open(p) as f:
+            h = f.readline().rstrip("\n").split("\t")
+            if hdr is None:
+                hdr = h
+            elif h != hdr:
+                raise SystemExit("header of %s differs from %s" % (p, a.tables[0]))
+            rows += [ln.rstrip("\n").split("\t") for ln in f if ln.strip()]
+    key = [(r[0], int(r[1]), int(r[2])) for r in rows]
+    if len(set(key)) < len(key):
+        raise SystemExit("the same anchor appears in more than one table; pass each chromosome once")
+    ip, isg = hdr.index("P"), hdr.index("sig_bonf")
+    P = np.array([float(r[ip]) for r in rows])
+    thr = a.alpha / len(rows)
+    for r, pv in zip(rows, P):
+        r[isg] = str(int(pv < thr))
+    out = a.out if a.out.endswith(".tsv") else a.out + ".anchors.tsv"
+    with open(out, "w") as f:
+        f.write("\t".join(hdr) + "\n")
+        for r in rows:
+            f.write("\t".join(r) + "\n")
+    lam = float(core.lambda_gc(P))
+    # per-shard record: the shard's own summary.json (trait, n, transform,
+    # software version, key options), when it sits next to the table
+    shards, sfiles, sroles = [], [], []
+    keys = ("trait", "n", "n_anchors", "transform", "covar", "covariates_used", "covariates_dropped",
+            "anchor_min", "ld_dmin", "ld_maxspan", "ld_hapcover", "minf", "minc", "kernel_power", "chrom")
+    for p in a.tables:
+        sj = p[:-len(".anchors.tsv")] + ".summary.json" if p.endswith(".anchors.tsv") else None
+        rec = dict(table=os.path.realpath(os.path.abspath(p)), table_md5=_md5(p))
+        if sj and os.path.exists(sj):
+            m_ = json.load(open(sj))
+            rec.update({k: m_.get(k) for k in keys})
+            rec["hapdc_version"] = (m_.get("provenance") or {}).get("hapdc_version")
+            rec["summary"] = os.path.realpath(os.path.abspath(sj))
+            sfiles.append(sj); sroles.append("shard_summary")
+        shards.append(rec)
+    traits = sorted({str(r["trait"]) for r in shards if r.get("trait") is not None})
+    if len(traits) > 1:
+        print("WARNING: merging tables of different traits: %s" % traits, flush=True)
+    js = dict(tables=[os.path.realpath(os.path.abspath(p)) for p in a.tables], n_anchors=len(rows),
+              threshold_bonf=thr, n_sig=int((P < thr).sum()), lambda_gc=lam, alpha=a.alpha, shards=shards,
+              provenance=_provenance(a, list(a.tables) + sfiles, roles=["table"] * len(a.tables) + sroles))
+    json.dump(js, open(out[:-len(".anchors.tsv")] + ".summary.json", "w"), indent=1)
+    print("merge done: %d anchors, threshold %.3g, %d significant, lambda_gc %.3f -> %s"
+          % (len(rows), thr, js["n_sig"], lam, out))
     return 0
 
 
@@ -335,61 +500,106 @@ def cmd_report(a):
 
 # ---------------------------------------------------------------- selftest
 def cmd_selftest(a):
-    """Known-architecture check on founder-haplotype blocks.
+    """End-to-end check of the primary `ms` path (statistic D) and its invariances.
 
-    Random 0/1 haplotypes are useless here: a 6-marker window yields up to 64
-    patterns, none reaching MINF, so every window is skipped and all p-values
-    are 1. Haplotypes are therefore drawn from a small founder set, which is what
-    real phased data looks like inside a block.
+    Founder-haplotype blocks with known effects are scanned with the same
+    functions `hapdc ms` calls (ld_blocks -> anchors -> ms_scan, variant D).
+    Checks: (1) an additive and (2) a diplotype-specific (compound genotype)
+    signal are each detected at their causal anchor below the Bonferroni level;
+    (3) over 200 null phenotypes the family-wise rate at that level is <= 0.10; (4) the combined p of a
+    phenotype is identical scanned alone or in a batch with another phenotype;
+    (5) recoding the alleles of every marker and (6) reordering the samples
+    leave every anchor p-value unchanged. Exits non-zero on any failure.
     """
+    from . import ms as M
     rng = np.random.default_rng(7)
-    n, nblk, blk = 300, 3, 10
+    n, nblk, blk = 600, 12, 8
     m = nblk * blk
-    # founder haplotypes per block: 3 founders, distinguishable patterns
-    H = np.zeros((2 * n, m), np.int8)
+    H = np.zeros((2 * n, m), np.uint8)
     for b in range(nblk):
-        F = np.zeros((3, blk), np.int8)
-        F[1] = rng.integers(0, 2, blk)
-        F[2] = rng.integers(0, 2, blk)
-        draws = rng.integers(0, 3, size=(2 * n,))
-        sl = slice(b * blk, (b + 1) * blk)
-        H[:, sl] = F[draws]
-    S, U = np.linalg.eigh(np.eye(n))
-    meta = [("1", "m%d" % i, i + 1, "A", "C") for i in range(m)]
-    causal = slice(0, blk)
+        F = rng.integers(0, 2, (4, blk)).astype(np.uint8)
+        F[0] = 0
+        H[:, b * blk:(b + 1) * blk] = F[rng.choice(4, 2 * n, p=[.4, .3, .2, .1])]
+    meta = [("1", "m%d" % j, 1000 * (j + 1), "A", "C") for j in range(m)]
+    pos = np.array([x[2] for x in meta])
+    S, U = np.ones(n), np.eye(n)
 
-    def run_case(y, tag):
+    class _Batch(scan.Scan):
+        """Several phenotype columns scanned together (variance ratio of column 0)."""
+        def __init__(self, Hh, Y):
+            super().__init__(Hh, meta, U, S, Y[:, 0])
+            self._Y = (U.T @ Y) * self.w[:, None]
+
+        def _design_matrix(self, rows, B):
+            return self._Y
+
+    def scan_all(Hh, Y):
+        bl = core.ld_blocks(Hh, pos, dmin=0.8, max_span=200000, min_mk=2)["blocks"]
+        anc = M.anchors([(int(s), int(e)) for s, e in bl], 16)
+        sc = _Batch(Hh, Y)
+        r = M.ms_scan(sc, anc, variants=("D",), nadd=True, nadds=False)
+        return anc, r["P_MS"]["D"]
+
+    c0 = slice(2 * blk, 3 * blk)                         # causal block 2
+    def hap_of(Hh, sl):
+        F0 = (Hh[:, sl] == 0).all(1)
+        return F0[0::2].astype(float), F0[1::2].astype(float)
+    h1, h2 = hap_of(H, c0)
+    fails = []
+    tests = {"additive": h1 + h2, "diplotype": h1 * h2 * 1.0}
+    for tag, g in tests.items():
+        y = (0.45 if tag == "additive" else 1.2) * g + rng.normal(0, 1.0, n)
         y = (y - y.mean()) / y.std()
-        sc = scan.Scan(H, meta, U, S, y)
-        sc.permute(200)
-        r = sc.run(4, 2, verbose=False)
-        p1 = {k: float(r["P"][k][0, 0]) for k in ("A_joint", "P1_sidak", "D_acat", "HDCb")}
-        print(tag, {k: float("%.3g" % v) for k, v in p1.items()})
-        return p1
-
-    # additive: dosage of founder-1 haplotype in the causal block
-    dos = (H[:, causal] == 0).sum(1).astype(float)
-    yadd = dos[0::2] + dos[1::2] + rng.normal(0, 1.0, n)
-    print("=== window 0 sits on the causal block ===")
-    run_case(yadd, "ADDITIVE   ")
-
-    # overdominance: heterozygosity at the causal block
-    h1, h2 = H[0::2, causal], H[1::2, causal]
-    het = (np.abs(h1.astype(int) - h2.astype(int)).sum(1) > 0).astype(float)
-    yhet = het + rng.normal(0, 1.0, n)
-    run_case(yhet, "OVERDOM    ")
-
-    # pure noise: both should be null
-    run_case(rng.normal(0, 1.0, n), "NULL       ")
-    return 0
-
+        anc, P = scan_all(H, y[:, None])
+        thr = 0.05 / len(anc)
+        hit = [k for k, (s, e, _) in enumerate(anc) if s <= c0.start and e >= c0.stop]
+        lead = int(np.argmin(P[:, 0]))
+        ok = bool(P[lead, 0] < thr and lead in hit)
+        print("%-10s lead anchor %d (causal %s) p=%.3g  threshold %.3g  %s"
+              % (tag, lead, hit, P[lead, 0], thr, "PASS" if ok else "FAIL"))
+        if not ok:
+            fails.append(tag)
+    # (3) 200 null phenotypes scanned as one batch: family-wise rate at the
+    # Bonferroni level (expected <= 0.05; fail above 0.10, i.e. > 3 binomial SE)
+    Y0 = rng.normal(0, 1.0, (n, 200))
+    anc, PN = scan_all(H, Y0)
+    fw = float((PN.min(0) < 0.05 / len(anc)).mean())
+    ok = fw <= 0.10
+    print("null       family-wise rate %.3f over 200 null phenotypes (Bonferroni 0.05)  %s"
+          % (fw, "PASS" if ok else "FAIL"))
+    if not ok:
+        fails.append("null")
+    y0 = Y0[:, 0]
+    P0 = PN[:, :1]
+    # (4) batch invariance: same phenotype alone and next to a pure-noise column
+    yb = np.column_stack([y0, rng.normal(0, 1.0, n) * 1e-3 + (H[0::2, 0] == H[1::2, 0])])
+    _, Pb = scan_all(H, yb)
+    d = float(np.max(np.abs(np.log(Pb[:, 0]) - np.log(P0[:, 0]))))
+    ok = d < 1e-9
+    print("batched    max |log p - log p0| = %.2e  %s" % (d, "PASS" if ok else "FAIL"))
+    if not ok:
+        fails.append("batch")
+    # (5) allele recoding of every marker, (6) sample reordering
+    perm = rng.permutation(n)
+    Hf = (1 - H).astype(np.uint8)
+    _, Pf = scan_all(Hf, y0[:, None])
+    Hp = np.ascontiguousarray(H.reshape(n, 2, m)[perm].reshape(2 * n, m))
+    _, Pp = scan_all(Hp, y0[perm][:, None])
+    for tag, Q in (("recoded", Pf), ("reordered", Pp)):
+        d = float(np.max(np.abs(np.log(Q[:, 0]) - np.log(P0[:, 0]))))
+        ok = d < 1e-6
+        print("%-10s max |log p - log p0| = %.2e  %s" % (tag, d, "PASS" if ok else "FAIL"))
+        if not ok:
+            fails.append(tag)
+    print("selftest:", "all checks passed" if not fails else "FAILED: " + ", ".join(fails))
+    return 0 if not fails else 1
 
 def main(argv=None):
-    p = argparse.ArgumentParser(prog="hapdc", description="Haplotype + diplotype GWAS with a permutation null")
+    p = argparse.ArgumentParser(prog="hapdc", description="Multi-scale haplotype and diplotype association scans in a linear mixed model")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     q = sub.add_parser("prep", help="intersect VCF, GRM and phenotypes")
-    q.add_argument("vcf"); q.add_argument("grm", help="GCTA .grm prefix, or 'auto' to compute a VanRaden GRM from the VCF"); q.add_argument("pheno", help="comma separated")
+    q.add_argument("vcf"); q.add_argument("grm", help="GCTA .grm prefix, or 'auto' to compute a VanRaden GRM from the VCF"); q.add_argument("pheno", help="comma separated phenotype tables (header; IID then one column per trait)")
     q.add_argument("--grm-thin", type=int, default=10, help="with grm=auto: use every k-th marker")
     q.add_argument("out"); q.add_argument("--nmax", type=int, default=None)
     q.add_argument("--miss", default="-9", help="comma separated missing codes")
@@ -406,7 +616,8 @@ def main(argv=None):
     q.add_argument("--wstep", type=int, default=2)
     q.add_argument("--minf", type=float, default=0.05)
     q.add_argument("--minc", type=int, default=5)
-    q.add_argument("--nperm", type=int, default=1000)
+    q.add_argument("--nperm", type=int, default=1000,
+                   help="null replicates by permuting whitened LMM residuals (variance ratio fixed at its estimate)")
     q.add_argument("--seed", type=int, default=20261110)
     q.add_argument("--lo", type=int, default=None); q.add_argument("--hi", type=int, default=None)
     q.add_argument("--quiet", action="store_true")
@@ -417,13 +628,21 @@ def main(argv=None):
     q = sub.add_parser("ms", help="multi-scale anchor scan (primary analysis, statistic D)")
     q.add_argument("data", help="directory written by `hapdc prep`"); q.add_argument("out")
     q.add_argument("trait", type=int, help="0-based trait column from prep")
-    q.add_argument("--covar", default=None, help="tab-separated covariate table: IID then numeric columns, header line")
+    q.add_argument("--covar", default=None, help="tab-separated covariate table: IID then numeric columns, header line; the intercept is always added, do not include it")
+    q.add_argument("--covar-rank", choices=["drop", "error"], default="drop",
+                   help="covariate columns that are constant or linearly dependent on the intercept and earlier columns (checked on the analysed samples, before REML): drop and log them (default) or stop with an error")
+    q.add_argument("--lambda-ref", default=None,
+                   help="optional LO,HI condition-matched null range of lambda_gc (from null phenotypes scanned with the same panel and options); only reported, never used to change the threshold")
     q.add_argument("--transform", choices=["int", "none"], default="int",
                    help="phenotype transformation: rank-based inverse normal (default; skipped for binary traits) or none")
     q.add_argument("--chrom", default=None, help="comma separated subset of chromosomes")
+    q.add_argument("--n-tests", type=int, default=None,
+                   help="genome-wide anchor count for the Bonferroni threshold when --chrom scans a subset")
     q.add_argument("--anchor-min", type=int, default=16, help="minimum markers per anchor")
     q.add_argument("--ld-dmin", type=float, default=0.8); q.add_argument("--ld-maxspan", type=int, default=200000)
-    q.add_argument("--minf", type=float, default=0.05); q.add_argument("--minc", type=int, default=5)
+    q.add_argument("--ld-hapcover", type=float, default=0.8, help="split an LD block until haplotypes with frequency >= --minf cover this fraction of chromosomes")
+    q.add_argument("--minf", type=float, default=0.05, help="haplotype frequency floor, used both for LD-block splitting and for haplotype classes")
+    q.add_argument("--minc", type=int, default=5)
     q.add_argument("--chunk", type=int, default=500, help="anchors per batch (memory)")
     q.add_argument("--jobs", type=int, default=1, help="chromosomes scanned in parallel (POSIX fork); results identical to --jobs 1")
     q.add_argument("--threads", type=int, default=0, help="BLAS threads per worker (default 1; more threads give no speed-up for hapdc's small per-unit matrices)")
@@ -431,6 +650,11 @@ def main(argv=None):
     q.add_argument("--kernel-power", choices=["auto", "1"], default="1",
                    help="relationship kernel: 1 = standard GRM (default); auto = spectral power K^g selected by REML (LRT, 1 df, 0.05), sensitivity analysis")
     q.set_defaults(func=cmd_ms)
+
+    q = sub.add_parser("merge", help="combine per-chromosome `ms` anchor tables with a genome-wide Bonferroni threshold")
+    q.add_argument("out", help="output prefix"); q.add_argument("tables", nargs="+")
+    q.add_argument("--alpha", type=float, default=0.05)
+    q.set_defaults(func=cmd_merge)
 
     q = sub.add_parser("report", help="tables and SVG figures")
     q.add_argument("scans", nargs="+"); q.add_argument("--out", default="report")
